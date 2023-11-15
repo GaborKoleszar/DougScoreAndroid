@@ -40,7 +40,12 @@ class MainViewModel @Inject constructor(
 							}
 						}
 
-						is Resource.Error -> Unit
+						is Resource.Error -> {
+							state = state.copy(
+								isLoading = false
+							)
+						}
+
 						is Resource.Loading -> {
 							state = state.copy(
 								isLoading = true

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -20,11 +21,13 @@ import gabor.koleszar.dougscore.presentation.theme.DougScoreTheme
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
+		val splashScreen = installSplashScreen()
 		super.onCreate(savedInstanceState)
+		val mainViewModel by viewModels<MainViewModel>()
+
 		setContent {
 			DougScoreTheme {
 				val navController = rememberNavController()
-				val mainViewModel by viewModels<MainViewModel>()
 				Scaffold(
 					modifier = Modifier.fillMaxSize()
 				) { scaffoldPadding ->
