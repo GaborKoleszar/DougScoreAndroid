@@ -32,20 +32,23 @@ class CarRepositoryImpl @Inject constructor(
 			emit(Resource.Loading())
 
 			val localCars = dao.getAllCars()
-			emit(Resource.Success(
-				data = localCars.map { carEntity ->
-					carEntity.toDomainModel()
-				}
-			))
-
 			val isDbEmpty = localCars.isEmpty()
+
+			if (!isDbEmpty) {
+				emit(Resource.Success(
+					data = localCars.map { carEntity ->
+						carEntity.toDomainModel()
+					}
+				))
+			}
+
 			val shouldLoadFromCache = !isDbEmpty && !shouldFetchFromRemote
 
 			if (shouldLoadFromCache) {
-				emit(Resource.Loading(false))
 				return@flow
 			}
 
+			emit(Resource.Loading())
 			val remoteCars = try {
 				val response = api.getDougScoreExcelFile()
 				carDataParser.parse(response.byteStream())
@@ -75,7 +78,6 @@ class CarRepositoryImpl @Inject constructor(
 				emit(Resource.Success(
 					data = dao.getAllCars().map { it.toDomainModel() }
 				))
-				emit(Resource.Loading(false))
 			}
 		}
 	}
