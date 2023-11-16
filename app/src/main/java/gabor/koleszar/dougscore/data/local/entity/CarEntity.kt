@@ -13,6 +13,7 @@ data class CarEntity(
 	@Embedded(prefix = "daily_score_") val dailyScore: DailyScoreEntity,
 	val dougScore: Int,
 	val videoLink: String?,
+	val imageLink: String?,
 	val filmingLocationCity: String,
 	val filmingLocationState: String,
 	val vehicleCountry: String,

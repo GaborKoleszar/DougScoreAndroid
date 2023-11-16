@@ -1,5 +1,6 @@
 package gabor.koleszar.dougscore.data.remote
 
+import gabor.koleszar.dougscore.common.Constants.YT_IMAGE_URL
 import gabor.koleszar.dougscore.domain.model.Car
 import gabor.koleszar.dougscore.domain.model.DailyScore
 import gabor.koleszar.dougscore.domain.model.WeekendScore
@@ -31,6 +32,7 @@ class XlsxCarDataParser @Inject constructor() : CarDataParser<Car> {
 					val row = rowIterator.next()
 					if (row.getCell(YEAR_COLUMN).toString().isEmpty())
 						break
+					val youtubeUrl = getYtUrl(row.getCell(VIDEOLINK_COLUMN) as XSSFCell)
 					carIntroductions.add(
 						Car(
 							year = row.getCell(YEAR_COLUMN).numericCellValue.toInt(),
@@ -65,7 +67,8 @@ class XlsxCarDataParser @Inject constructor() : CarDataParser<Car> {
 									.toByte(),
 							),
 							dougScore = row.getCell(DOUGSCORE_COLUMN).numericCellValue.toInt(),
-							videoLink = getYtUrl(row.getCell(VIDEOLINK_COLUMN) as XSSFCell),
+							videoLink = youtubeUrl,
+							imageLink = getImageUrl(youtubeUrl),
 							filmingLocationCity = row.getCell(CITY_COLUMN).toString(),
 							filmingLocationState = row.getCell(STATE_COLUMN).toString(),
 							vehicleCountry = row.getCell(VEHICLE_COUNTRY_COLUMN).toString()
@@ -101,6 +104,14 @@ class XlsxCarDataParser @Inject constructor() : CarDataParser<Car> {
 		} else {
 			return null
 		}
+	}
+
+	private fun getImageUrl(url: String?): String? {
+		if (url == null)
+			return null
+		val index = url.indexOf('?')
+		val videoId = url.substring(index + 3, index + 14)
+		return YT_IMAGE_URL.replace("VIDEO_ID", videoId)
 	}
 
 	companion object {

@@ -1,5 +1,6 @@
 package gabor.koleszar.dougscore.presentation.overview
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,7 +21,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import gabor.koleszar.dougscore.domain.model.Car
 import gabor.koleszar.dougscore.domain.model.DailyScore
 import gabor.koleszar.dougscore.domain.model.WeekendScore
@@ -70,12 +75,31 @@ fun CarListItem(
 			.fillMaxWidth()
 			.padding(horizontal = SPACER_WIDTH)
 	) {
-		Row(modifier = Modifier.padding(DEFAULT_PADDING)) {
-			Text(text = car.manufacturer)
-			Spacer(modifier = Modifier.width(SPACER_WIDTH))
-			Text(text = car.model)
-			Spacer(modifier = Modifier.width(SPACER_WIDTH))
-			car.videoLink?.let { Text(text = it) }
+		Row(
+			modifier = Modifier
+				.padding(DEFAULT_PADDING)
+				.fillMaxWidth(),
+			horizontalArrangement = Arrangement.SpaceBetween,
+			verticalAlignment = Alignment.CenterVertically
+		) {
+			Column(
+				horizontalAlignment = Alignment.Start,
+				verticalArrangement = Arrangement.SpaceBetween
+			) {
+				Text(text = car.manufacturer)
+				Text(text = car.model)
+			}
+			car.imageLink?.let {
+				AsyncImage(
+					model = car.imageLink,
+					contentDescription = null,
+					modifier = Modifier
+						.width(150.dp)
+						.height(100.dp)
+						.clip(RoundedCornerShape(DEFAULT_PADDING)),
+					contentScale = ContentScale.Crop
+				)
+			}
 		}
 	}
 	Spacer(
@@ -117,7 +141,8 @@ fun CarListItemPreview() {
 				34
 			),
 			85,
-			"THIS IS A URL",
+			"https://www.youtube.com/watch?v=_UKBxM7m7qo",
+			"https://i.ytimg.com/vi/UKBxM7m7qo/maxresdefault.jpg",
 			"Los Angeles",
 			"California",
 			"Japan"

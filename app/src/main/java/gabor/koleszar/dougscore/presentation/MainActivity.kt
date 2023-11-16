@@ -24,6 +24,9 @@ class MainActivity : ComponentActivity() {
 		val splashScreen = installSplashScreen()
 		super.onCreate(savedInstanceState)
 		val mainViewModel by viewModels<MainViewModel>()
+		splashScreen.setKeepOnScreenCondition	{
+			mainViewModel.state.isLoading
+		}
 
 		setContent {
 			DougScoreTheme {

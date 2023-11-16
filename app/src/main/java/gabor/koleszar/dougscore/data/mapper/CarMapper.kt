@@ -30,6 +30,7 @@ fun CarEntity.toDomainModel(): Car {
 		),
 		dougScore = dougScore,
 		videoLink = videoLink,
+		imageLink = imageLink,
 		filmingLocationCity = filmingLocationCity,
 		filmingLocationState = filmingLocationState,
 		vehicleCountry = vehicleCountry
@@ -59,6 +60,7 @@ fun Car.toEntity(): CarEntity {
 		),
 		dougScore = dougScore,
 		videoLink = videoLink,
+		imageLink = imageLink,
 		filmingLocationCity = filmingLocationCity,
 		filmingLocationState = filmingLocationState,
 		vehicleCountry = vehicleCountry

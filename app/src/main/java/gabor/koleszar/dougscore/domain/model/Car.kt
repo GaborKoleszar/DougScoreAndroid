@@ -8,6 +8,7 @@ data class Car(
 	val dailyScore: DailyScore,
 	val dougScore: Int,
 	val videoLink: String?,
+	val imageLink: String?,
 	val filmingLocationCity: String,
 	val filmingLocationState: String,
 	val vehicleCountry: String
