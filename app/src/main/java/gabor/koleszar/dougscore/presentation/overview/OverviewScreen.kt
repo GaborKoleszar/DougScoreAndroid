@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -86,16 +87,24 @@ fun CarListItem(
 				horizontalAlignment = Alignment.Start,
 				verticalArrangement = Arrangement.SpaceBetween
 			) {
-				Text(text = car.manufacturer)
-				Text(text = car.model)
+				Text(
+					fontWeight = FontWeight.Bold,
+					text = car.manufacturer
+				)
+				Text(
+					fontWeight = FontWeight.Bold,
+					text = car.model
+				)
+				Text(text = "Dougscore: " + car.dougScore)
+				Text(text = "Country: " + car.vehicleCountry)
 			}
 			car.imageLink?.let {
 				AsyncImage(
 					model = car.imageLink,
 					contentDescription = null,
 					modifier = Modifier
-						.width(150.dp)
-						.height(100.dp)
+						.width(170.dp)
+						.height(95.dp)
 						.clip(RoundedCornerShape(DEFAULT_PADDING)),
 					contentScale = ContentScale.Crop
 				)
