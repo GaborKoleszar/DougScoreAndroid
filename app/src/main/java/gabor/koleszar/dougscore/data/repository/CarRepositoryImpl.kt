@@ -1,6 +1,7 @@
 package gabor.koleszar.dougscore.data.repository
 
 import gabor.koleszar.dougscore.common.Resource
+import gabor.koleszar.dougscore.data.dto.CarDto
 import gabor.koleszar.dougscore.data.local.CarDatabase
 import gabor.koleszar.dougscore.data.mapper.toDomainModel
 import gabor.koleszar.dougscore.data.mapper.toEntity
@@ -19,7 +20,7 @@ import javax.inject.Singleton
 class CarRepositoryImpl @Inject constructor(
 	database: CarDatabase,
 	private val api: DougScoreApi,
-	private val carDataParser: CarDataParser<Car>
+	private val carDataParser: CarDataParser<CarDto>
 ) : CarRepository {
 
 	private val dao = database.carDao
@@ -73,7 +74,9 @@ class CarRepositoryImpl @Inject constructor(
 			remoteCars?.let { cars ->
 				dao.deleteAllCars()
 				dao.insert(
-					cars.map { it.toEntity() }
+					cars.map {
+						it.toEntity()
+					}
 				)
 				emit(Resource.Success(
 					data = dao.getAllCars().map { it.toDomainModel() }
@@ -82,7 +85,7 @@ class CarRepositoryImpl @Inject constructor(
 		}
 	}
 
-	override suspend fun setCars(cars: List<Car>) {
+	override suspend fun setCars(cars: List<CarDto>) {
 		dao.deleteAllCars()
 		dao.insert(cars.map { car ->
 			car.toEntity()

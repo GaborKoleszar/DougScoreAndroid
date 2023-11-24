@@ -1,7 +1,7 @@
 package gabor.koleszar.dougscore.data.remote
 
 import gabor.koleszar.dougscore.common.Constants.YT_IMAGE_URL
-import gabor.koleszar.dougscore.domain.model.Car
+import gabor.koleszar.dougscore.data.dto.CarDto
 import gabor.koleszar.dougscore.domain.model.DailyScore
 import gabor.koleszar.dougscore.domain.model.WeekendScore
 import kotlinx.coroutines.Dispatchers
@@ -14,14 +14,15 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class XlsxCarDataParser @Inject constructor() : CarDataParser<Car> {
-	override suspend fun parse(stream: InputStream): List<Car> {
-		val carIntroductions = mutableListOf<Car>()
+class XlsxCarDataParser @Inject constructor() : CarDataParser<CarDto> {
+	override suspend fun parse(stream: InputStream): List<CarDto> {
+		val carIntroductions = mutableListOf<CarDto>()
 		withContext(Dispatchers.IO) {
 			try {
 				val workBook = XSSFWorkbook(stream)
 				val sheet = workBook.getSheetAt(0)
 				val rowIterator = sheet.iterator()
+				var index = 0
 
 				//Skip header rows
 				rowIterator.next()
@@ -34,7 +35,8 @@ class XlsxCarDataParser @Inject constructor() : CarDataParser<Car> {
 						break
 					val youtubeUrl = getYtUrl(row.getCell(VIDEOLINK_COLUMN) as XSSFCell)
 					carIntroductions.add(
-						Car(
+						CarDto(
+							id = index,
 							year = row.getCell(YEAR_COLUMN).numericCellValue.toInt(),
 							manufacturer = row.getCell(MANUFACTURER_COLUMN).toString(),
 							model = row.getCell(MODEL_COLUMN).toString(),
@@ -74,6 +76,7 @@ class XlsxCarDataParser @Inject constructor() : CarDataParser<Car> {
 							vehicleCountry = row.getCell(VEHICLE_COUNTRY_COLUMN).toString()
 						)
 					)
+					index++
 				}
 				return@withContext
 			} catch (e: IOException) {

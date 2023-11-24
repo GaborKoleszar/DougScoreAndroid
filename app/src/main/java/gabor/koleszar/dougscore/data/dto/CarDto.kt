@@ -1,6 +1,9 @@
-package gabor.koleszar.dougscore.domain.model
+package gabor.koleszar.dougscore.data.dto
 
-data class Car(
+import gabor.koleszar.dougscore.domain.model.DailyScore
+import gabor.koleszar.dougscore.domain.model.WeekendScore
+
+data class CarDto(
 	val id: Int,
 	val year: Int,
 	val manufacturer: String,

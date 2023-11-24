@@ -3,13 +3,14 @@ package gabor.koleszar.dougscore.presentation.overview
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,7 +22,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,7 +39,7 @@ import gabor.koleszar.dougscore.presentation.theme.DougScoreTheme
 
 @Composable
 fun OverviewScreen(
-	onCarClick: () -> Unit,
+	onCarClick: (Int) -> Unit,
 	overviewState: OverviewState,
 	modifier: Modifier = Modifier
 ) {
@@ -56,7 +58,7 @@ fun OverviewScreen(
 	} else {
 		LazyColumn(modifier = modifier.fillMaxSize()) {
 			items(overviewState.cars) { car ->
-				CarListItem(car, onCarClick)
+				CarListItem(car, { onCarClick(car.id) })
 			}
 		}
 	}
@@ -78,12 +80,16 @@ fun CarListItem(
 	) {
 		Row(
 			modifier = Modifier
-				.padding(DEFAULT_PADDING)
-				.fillMaxWidth(),
+				.height(IntrinsicSize.Min)
+				.fillMaxWidth()
+				.defaultMinSize(0.dp, 110.dp),
 			horizontalArrangement = Arrangement.SpaceBetween,
 			verticalAlignment = Alignment.CenterVertically
 		) {
 			Column(
+				modifier = Modifier
+					.padding(DEFAULT_PADDING, DEFAULT_PADDING, 0.dp, DEFAULT_PADDING)
+					.weight(0.5f),
 				horizontalAlignment = Alignment.Start,
 				verticalArrangement = Arrangement.SpaceBetween
 			) {
@@ -96,17 +102,17 @@ fun CarListItem(
 					text = car.model
 				)
 				Text(text = "Dougscore: " + car.dougScore)
-				Text(text = "Country: " + car.vehicleCountry)
 			}
 			car.imageLink?.let {
 				AsyncImage(
 					model = car.imageLink,
 					contentDescription = null,
 					modifier = Modifier
-						.width(170.dp)
-						.height(95.dp)
-						.clip(RoundedCornerShape(DEFAULT_PADDING)),
-					contentScale = ContentScale.Crop
+						.defaultMinSize(120.dp,110.dp)
+						.weight(0.5f)
+						.shadow(10.dp),
+					contentScale = ContentScale.Crop,
+					filterQuality = FilterQuality.Medium
 				)
 			}
 		}
@@ -130,6 +136,7 @@ fun CarListItem(
 fun CarListItemPreview() {
 	val car = remember {
 		Car(
+			1,
 			1992,
 			"Honda",
 			"Civic",

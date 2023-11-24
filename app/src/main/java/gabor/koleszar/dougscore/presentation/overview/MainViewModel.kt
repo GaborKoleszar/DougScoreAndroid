@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import gabor.koleszar.dougscore.common.Resource
 import gabor.koleszar.dougscore.domain.repository.CarRepository
+import gabor.koleszar.dougscore.presentation.details.DetailsState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,8 +16,10 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
 	private val repository: CarRepository
 ) : ViewModel() {
-	var state by mutableStateOf(OverviewState())
+	var overviewState by mutableStateOf(OverviewState())
 		private set
+
+	var detailsState by mutableStateOf(DetailsState())
 
 	init {
 		getCarIntroductions()
@@ -33,7 +36,7 @@ class MainViewModel @Inject constructor(
 
 						is Resource.Success -> {
 							result.data?.let { freshCars ->
-								state = state.copy(
+								overviewState = overviewState.copy(
 									cars = freshCars,
 									isLoading = false
 								)
@@ -41,13 +44,13 @@ class MainViewModel @Inject constructor(
 						}
 
 						is Resource.Error -> {
-							state = state.copy(
+							overviewState = overviewState.copy(
 								isLoading = false
 							)
 						}
 
 						is Resource.Loading -> {
-							state = state.copy(
+							overviewState = overviewState.copy(
 								isLoading = true
 							)
 						}

@@ -17,5 +17,5 @@ data class CarEntity(
 	val filmingLocationCity: String,
 	val filmingLocationState: String,
 	val vehicleCountry: String,
-	@PrimaryKey(autoGenerate = true) val id: Int = 0
+	@PrimaryKey val id: Int = 0
 )

@@ -1,5 +1,6 @@
 package gabor.koleszar.dougscore.data.mapper
 
+import gabor.koleszar.dougscore.data.dto.CarDto
 import gabor.koleszar.dougscore.data.local.entity.CarEntity
 import gabor.koleszar.dougscore.data.local.entity.DailyScoreEntity
 import gabor.koleszar.dougscore.data.local.entity.WeekendScoreEntity
@@ -9,6 +10,7 @@ import gabor.koleszar.dougscore.domain.model.WeekendScore
 
 fun CarEntity.toDomainModel(): Car {
 	return Car(
+		id = id,
 		year = year,
 		manufacturer = manufacturer,
 		model = model,
@@ -37,8 +39,9 @@ fun CarEntity.toDomainModel(): Car {
 	)
 }
 
-fun Car.toEntity(): CarEntity {
+fun CarDto.toEntity(): CarEntity {
 	return CarEntity(
+		id = id,
 		year = year,
 		manufacturer = manufacturer,
 		model = model,

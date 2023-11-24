@@ -26,8 +26,8 @@ class MainActivity : ComponentActivity() {
 		super.onCreate(savedInstanceState)
 		WindowCompat.setDecorFitsSystemWindows(window, false)
 		val mainViewModel by viewModels<MainViewModel>()
-		splashScreen.setKeepOnScreenCondition	{
-			mainViewModel.state.isLoading
+		splashScreen.setKeepOnScreenCondition {
+			mainViewModel.overviewState.isLoading
 		}
 
 		setContent {
@@ -45,14 +45,19 @@ class MainActivity : ComponentActivity() {
 							route = Route.OVERVIEW
 						) {
 							OverviewScreen(
-								onCarClick = {
+								onCarClick = { carId ->
+									mainViewModel.detailsState = mainViewModel.detailsState.copy(
+										car = mainViewModel.overviewState.cars[carId]
+									)
 									navController.navigate(Route.DETAILS)
 								},
-								overviewState = mainViewModel.state
+								overviewState = mainViewModel.overviewState
 							)
 						}
 						composable(route = Route.DETAILS) {
-							DetailsScreen()
+							DetailsScreen(
+								detailsState = mainViewModel.detailsState
+							)
 						}
 					}
 				}
