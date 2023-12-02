@@ -51,6 +51,7 @@ class MainActivity : ComponentActivity() {
 									)
 									navController.navigate(Route.DETAILS)
 								},
+								onPullRefresh = { mainViewModel.refresh() },
 								overviewState = mainViewModel.overviewState
 							)
 						}

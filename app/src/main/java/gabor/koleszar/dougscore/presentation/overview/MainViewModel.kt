@@ -25,6 +25,10 @@ class MainViewModel @Inject constructor(
 		getCarIntroductions()
 	}
 
+	fun refresh() {
+		getCarIntroductions(true)
+	}
+
 	private fun getCarIntroductions(
 		shouldFetchFromRemote: Boolean = false
 	) {
@@ -38,20 +42,23 @@ class MainViewModel @Inject constructor(
 							result.data?.let { freshCars ->
 								overviewState = overviewState.copy(
 									cars = freshCars,
-									isLoading = false
+									isLoading = false,
+									isRefreshing = false,
 								)
 							}
 						}
 
 						is Resource.Error -> {
 							overviewState = overviewState.copy(
-								isLoading = false
+								isLoading = false,
+								isRefreshing = false,
 							)
 						}
 
 						is Resource.Loading -> {
 							overviewState = overviewState.copy(
-								isLoading = true
+								isLoading = true,
+								isRefreshing = true,
 							)
 						}
 					}
