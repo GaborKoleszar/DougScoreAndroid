@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
@@ -26,15 +27,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import gabor.koleszar.dougscore.common.Constants.YT_IMAGE_HQDEFAULT
 import gabor.koleszar.dougscore.domain.model.Car
 import gabor.koleszar.dougscore.domain.model.DailyScore
 import gabor.koleszar.dougscore.domain.model.WeekendScore
@@ -74,8 +83,8 @@ fun OverviewScreen(
 				modifier = modifier
 					.fillMaxSize()
 			) {
-				items(overviewState.cars) { car ->
-					CarListItem(car, { onCarClick(car.id) })
+				itemsIndexed(overviewState.cars) { index, car ->
+					CarListItem(car, { onCarClick(index) })
 				}
 			}
 			PullRefreshIndicator(
@@ -118,31 +127,47 @@ fun CarListItem(
 			Column(
 				modifier = Modifier
 					.padding(DEFAULT_PADDING)
-					.weight(0.45f),
+					.weight(0.42f),
 				horizontalAlignment = Alignment.Start,
 				verticalArrangement = Arrangement.SpaceBetween
 			) {
 				Text(
 					fontWeight = FontWeight.Bold,
-					text = car.manufacturer
+					text = car.manufacturer,
+					maxLines = 1,
+					overflow = TextOverflow.Ellipsis
 				)
 				Text(
 					fontWeight = FontWeight.Bold,
-					text = car.model
+					text = car.model,
+					maxLines = 1,
+					overflow = TextOverflow.Ellipsis
 				)
 				Text(text = "Dougscore: " + car.dougScore)
 			}
 			car.imageLink?.let {
 				AsyncImage(
 					model = ImageRequest.Builder(LocalContext.current)
-						.data(car.imageLink)
+						.data(car.imageLink + YT_IMAGE_HQDEFAULT)
 						.crossfade(true)
 						.build(),
 					contentDescription = null,
 					modifier = Modifier
-						.weight(0.5f),
+						.weight(0.53f)
+						.graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
+						.drawWithContent {
+							val colors = listOf(
+								Color.Transparent,
+								Color.Black
+							)
+							drawContent()
+							drawRect(
+								brush = Brush.horizontalGradient(colors),
+								blendMode = BlendMode.DstIn
+							)
+						},
 					contentScale = ContentScale.Crop,
-					filterQuality = FilterQuality.Medium
+					filterQuality = FilterQuality.Low
 				)
 			}
 		}

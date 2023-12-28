@@ -1,0 +1,43 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt"
+    android:viewportWidth="1020"
+    android:viewportHeight="600"
+    android:width="1020dp"
+    android:height="600dp">
+    <path
+        android:pathData="M0 600.027h1019.972V-0.048H0z"
+        android:fillColor="#003893" />
+    <path
+        android:pathData="M0 453.36h1020.918v-51.04H0z"
+        android:fillColor="#FFFFFF" />
+    <path
+        android:pathData="M0 425.999h1021.297V300.23H0z"
+        android:fillColor="#FFFFFF" />
+    <path
+        android:pathData="M0 402.295h1021.389v-51.04H-0.001z"
+        android:fillColor="#CF2027" />
+    <group
+        android:scaleX="1.33333"
+        android:scaleY="-1.33333"
+        android:translateX="-409.399"
+        android:translateY="401.36">
+        <path
+            android:pathData="M487.011 -0.701l4.764 -14.636h15.426l-12.477 -9.05 4.767 -14.639 -12.48 9.047 -12.482 -9.047 4.769 14.639 -12.48 9.05h15.423m3.492 91.24L490.5 61.27h15.426l-12.48 -9.045 4.767 -14.636 -12.48 9.045 -12.48 -9.045 4.767 14.636 -12.477 9.045h15.423m222.873 14.585l4.767 -14.604h15.426l-12.48 -9.029 4.767 -14.604 -12.48 9.026 -12.48 -9.026 4.767 14.604 -12.48 9.029h15.423M702.413 -0.742l4.767 -14.607h15.429l-12.48 -9.029 4.767 -14.607 -12.482 9.026 -12.477 -9.026 4.764 14.607 -12.477 9.029h15.423"
+            android:fillColor="#F7D116" />
+        <path
+            android:pathData="M594.762 154.675l4.767 -14.671h15.429l-12.482 -9.066 4.769 -14.671 -12.482 9.066 -12.48 -9.066 4.767 14.671 -12.477 9.066h15.421"
+            android:fillColor="#F7D116" />
+        <path
+            android:pathData="M594.818 -75.184l4.764 -14.671h15.426l-12.477 -9.066 4.767 -14.671 -12.48 9.066 -12.482 -9.066 4.769 14.671 -12.48 9.066h15.423"
+            android:fillColor="#F7D116" />
+        <group
+            android:translateX="-67.424"
+            android:translateY="-21.877">
+            <path
+                android:pathData="M594.762 154.675l4.767 -14.671h15.429l-12.482 -9.066 4.769 -14.671 -12.482 9.066 -12.48 -9.066 4.767 14.671 -12.477 9.066h15.421"
+                android:fillColor="#F7D116" />
+        </group>
+        <path
+            android:pathData="M662.105 -53.358l4.764 -14.671h15.429l-12.48 -9.066 4.769 -14.673 -12.482 9.066 -12.48 -9.066 4.767 14.673 -12.48 9.066h15.423m-127.64 12.933l4.767 -14.671h15.426l-12.48 -9.066 4.767 -14.673 -12.48 9.069 -12.48 -9.069 4.767 14.673 -12.48 9.066h15.426M660.152 134.48l4.767 -14.671h15.426l-12.477 -9.066 4.767 -14.671 -12.482 9.066 -12.48 -9.066 4.767 14.671 -12.477 9.066h15.423"
+            android:fillColor="#F7D116" />
+    </group>
+</vector>

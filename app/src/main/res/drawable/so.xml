@@ -1,0 +1,79 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt"
+    android:viewportWidth="162"
+    android:viewportHeight="108"
+    android:width="900dp"
+    android:height="600dp">
+    <group
+        android:translateX="81"
+        android:translateY="54">
+        <path
+            android:pathData="M-81 -54H81V54H-81z"
+            android:fillColor="#4189DD" />
+        <group
+            android:rotation="18"
+            android:pivotY="-26">
+            <clip-path
+                android:pathData="M0 -26V0h-26" />
+            <path
+                android:pathData="M0 -26V0h26"
+                android:fillColor="#FFFFFF" />
+        </group>
+        <group
+            android:rotation="72">
+            <group
+                android:rotation="18"
+                android:pivotY="-26">
+                <clip-path
+                    android:pathData="M0 -26V0h-26" />
+                <path
+                    android:pathData="M0 -26V0h26"
+                    android:fillColor="#FFFFFF" />
+            </group>
+        </group>
+        <group
+            android:rotation="-36"
+            android:scaleX="-1"
+            android:scaleY="-1">
+            <group
+                android:rotation="18"
+                android:pivotY="-26">
+                <clip-path
+                    android:pathData="M0 -26V0h-26" />
+                <path
+                    android:pathData="M0 -26V0h26"
+                    android:fillColor="#FFFFFF" />
+            </group>
+        </group>
+        <group
+            android:rotation="-36"
+            android:scaleX="-1"
+            android:scaleY="-1">
+            <group
+                android:rotation="72">
+                <group
+                    android:rotation="18"
+                    android:pivotY="-26">
+                    <clip-path
+                        android:pathData="M0 -26V0h-26" />
+                    <path
+                        android:pathData="M0 -26V0h26"
+                        android:fillColor="#FFFFFF" />
+                </group>
+            </group>
+            <group
+                android:rotation="-36"
+                android:scaleX="-1"
+                android:scaleY="-1">
+                <group
+                    android:rotation="18"
+                    android:pivotY="-26">
+                    <clip-path
+                        android:pathData="M0 -26V0h-26" />
+                    <path
+                        android:pathData="M0 -26V0h26"
+                        android:fillColor="#FFFFFF" />
+                </group>
+            </group>
+        </group>
+    </group>
+</vector>

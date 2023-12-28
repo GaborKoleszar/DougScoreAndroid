@@ -12,6 +12,7 @@ import gabor.koleszar.dougscore.data.local.CarDatabase
 import gabor.koleszar.dougscore.data.remote.DougScoreApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
@@ -21,26 +22,32 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class ProviderAppModule {
 
-	@Provides
-	@Singleton
-	fun provideDougScoreApi(): DougScoreApi {
-		return Retrofit.Builder()
-			.baseUrl(Constants.BASE_URL)
-			.addConverterFactory(MoshiConverterFactory.create())
-			.client(OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().apply {
-				level = HttpLoggingInterceptor.Level.BASIC
-			}).build())
-			.build()
-			.create()
-	}
+    @Provides
+    @Singleton
+    fun provideDougScoreApi(converterFactory: Converter.Factory): DougScoreApi {
+        return Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(converterFactory)
+            .client(OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BASIC
+            }).build())
+            .build()
+            .create()
+    }
 
-	@Provides
-	@Singleton
-	fun provideDougScoreDatabase(@ApplicationContext context: Context): CarDatabase {
-		return Room.databaseBuilder(
-			context,
-			CarDatabase::class.java,
-			"car_db"
-		).build()
-	}
+    @Provides
+    @Singleton
+    fun provideConverterFactory(): Converter.Factory {
+        return MoshiConverterFactory.create()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDougScoreDatabase(@ApplicationContext context: Context): CarDatabase {
+        return Room.databaseBuilder(
+            context,
+            CarDatabase::class.java,
+            "car_db"
+        ).build()
+    }
 }
