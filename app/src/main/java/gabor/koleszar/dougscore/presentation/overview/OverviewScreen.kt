@@ -156,18 +156,15 @@ fun CarListItem(
 						.weight(0.53f)
 						.graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
 						.drawWithContent {
-							val colors = listOf(
-								Color.Transparent,
-								Color.Black
-							)
 							drawContent()
 							drawRect(
-								brush = Brush.horizontalGradient(colors),
+								brush = Brush.horizontalGradient(
+                                    0.0f to Color.Transparent,
+                                    0.3f to Color.Black),
 								blendMode = BlendMode.DstIn
 							)
 						},
-					contentScale = ContentScale.Crop,
-					filterQuality = FilterQuality.Low
+					contentScale = ContentScale.Crop
 				)
 			}
 		}
