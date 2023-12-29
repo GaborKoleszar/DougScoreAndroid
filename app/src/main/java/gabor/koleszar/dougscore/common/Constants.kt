@@ -8,6 +8,6 @@ object Constants {
 	const val YT_IMAGE_URL = "https://i.ytimg.com/vi/VIDEO_ID"
 
 	const val YT_IMAGE_MAXRESDEFAULT = "/maxresdefault.jpg"
-	const val YT_IMAGE_HQDEFAULT = "/hqdefault.jpg"
+	const val YT_IMAGE_HQDEFAULT = "/sddefault.jpg"
 
 }
