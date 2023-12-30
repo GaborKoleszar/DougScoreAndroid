@@ -11,10 +11,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.TextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -22,6 +25,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -32,7 +36,6 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
-import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -76,13 +79,25 @@ fun OverviewScreen(
 		val pullRefreshState = rememberPullRefreshState(overviewState.isRefreshing, onPullRefresh)
 		Box(
 			modifier = Modifier
-				.fillMaxSize()
-				.pullRefresh(pullRefreshState)
+                .fillMaxSize()
+                .pullRefresh(pullRefreshState)
 		) {
 			LazyColumn(
 				modifier = modifier
-					.fillMaxSize()
+                    .fillMaxSize()
+                    .padding(horizontal = SPACER_WIDTH)
 			) {
+				item {
+					TextField(
+						value = "",
+						onValueChange = { },
+						placeholder = { Text("Search") },
+						leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+						modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = SPACER_WIDTH)
+					)
+				}
 				itemsIndexed(overviewState.cars) { index, car ->
 					CarListItem(car, { onCarClick(index) })
 				}
@@ -104,19 +119,19 @@ fun CarListItem(
 	modifier: Modifier = Modifier
 ) {
 	Card(
+		colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
 		shape = RoundedCornerShape(BORDER_RADIUS),
 		onClick = onCarClick,
 		modifier = modifier
-			.fillMaxWidth()
-			.padding(horizontal = SPACER_WIDTH),
+			.fillMaxWidth(),
 		elevation = CardDefaults.cardElevation(
 			defaultElevation = 5.dp
 		)
 	) {
 		Row(
 			modifier = Modifier
-				.height(IntrinsicSize.Min)
-				.fillMaxWidth(),
+                .height(IntrinsicSize.Min)
+                .fillMaxWidth(),
 			horizontalArrangement = Arrangement.SpaceBetween,
 			verticalAlignment = Alignment.CenterVertically
 		) {
@@ -126,8 +141,8 @@ fun CarListItem(
 			)
 			Column(
 				modifier = Modifier
-					.padding(DEFAULT_PADDING)
-					.weight(0.42f),
+                    .padding(DEFAULT_PADDING)
+                    .weight(0.42f),
 				horizontalAlignment = Alignment.Start,
 				verticalArrangement = Arrangement.SpaceBetween
 			) {
@@ -153,17 +168,18 @@ fun CarListItem(
 						.build(),
 					contentDescription = null,
 					modifier = Modifier
-						.weight(0.53f)
-						.graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
-						.drawWithContent {
-							drawContent()
-							drawRect(
-								brush = Brush.horizontalGradient(
+                        .weight(0.53f)
+                        .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
+                        .drawWithContent {
+                            drawContent()
+                            drawRect(
+                                brush = Brush.horizontalGradient(
                                     0.0f to Color.Transparent,
-                                    0.3f to Color.Black),
-								blendMode = BlendMode.DstIn
-							)
-						},
+                                    0.3f to Color.Black
+                                ),
+                                blendMode = BlendMode.DstIn
+                            )
+                        },
 					contentScale = ContentScale.Crop
 				)
 			}
@@ -171,8 +187,8 @@ fun CarListItem(
 	}
 	Spacer(
 		modifier = modifier
-			.fillMaxWidth()
-			.height(SPACER_WIDTH)
+            .fillMaxWidth()
+            .height(SPACER_WIDTH)
 	)
 }
 /*
