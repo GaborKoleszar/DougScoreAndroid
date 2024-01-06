@@ -1,9 +1,10 @@
 package gabor.koleszar.dougscore.presentation.overview
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,9 +42,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -56,7 +59,10 @@ import gabor.koleszar.dougscore.domain.model.WeekendScore
 import gabor.koleszar.dougscore.presentation.StyleConstants.BORDER_RADIUS
 import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
 import gabor.koleszar.dougscore.presentation.StyleConstants.SPACER_WIDTH
+import gabor.koleszar.dougscore.presentation.theme.Bronze
 import gabor.koleszar.dougscore.presentation.theme.DougScoreTheme
+import gabor.koleszar.dougscore.presentation.theme.Gold
+import gabor.koleszar.dougscore.presentation.theme.Silver
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -128,7 +134,7 @@ fun OverviewScreen(
 	}
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun CarListItem(
 	car: Car,
@@ -147,23 +153,26 @@ fun CarListItem(
 	) {
 		Row(
 			modifier = Modifier
-				.height(IntrinsicSize.Min)
+				.height(110.dp)
 				.fillMaxWidth(),
 			horizontalArrangement = Arrangement.SpaceBetween,
 			verticalAlignment = Alignment.CenterVertically
 		) {
+			Spacer(modifier = Modifier.width(SPACER_WIDTH))
 			Text(
 				fontStyle = FontStyle.Italic,
-				text = " #${car.id + 1}",
+				text = "#${car.id + 1}",
 				modifier = Modifier
-					.weight(0.09f)
-					.rotate(-90.0f),
+					.vertical()
+					.rotate(-90.0f)
+					.height(25.dp),
 				color = when (car.id + 1) {
-					1 -> Color(255, 215, 0, 255) //Gold
-					2 -> Color(192, 192, 192, 255) //Silver
-					3 -> Color(205, 127, 50, 255) //Bronze
+					1 -> Gold
+					2 -> Silver
+					3 -> Bronze
 					else -> MaterialTheme.colorScheme.onSurface
-				}
+				},
+				textAlign = TextAlign.Center
 			)
 			Column(
 				modifier = Modifier
@@ -182,7 +191,7 @@ fun CarListItem(
 					fontWeight = FontWeight.Bold,
 					text = car.model,
 					maxLines = 1,
-					overflow = TextOverflow.Ellipsis
+					modifier = Modifier.basicMarquee()
 				)
 				Text(text = "Dougscore: " + car.dougScore)
 			}
@@ -195,7 +204,7 @@ fun CarListItem(
 						.build(),
 					contentDescription = null,
 					modifier = Modifier
-						.weight(0.53f)
+						.width(200.dp)
 						.graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
 						.drawWithContent {
 							drawContent()
@@ -218,6 +227,18 @@ fun CarListItem(
 			.height(SPACER_WIDTH)
 	)
 }
+
+fun Modifier.vertical() =
+	layout { measurable, constraints ->
+		val placeable = measurable.measure(constraints)
+		layout(placeable.height, placeable.width) {
+			placeable.place(
+				x = -(placeable.width / 2 - placeable.height / 2),
+				y = -(placeable.height / 2 - placeable.width / 2)
+			)
+		}
+	}
+
 /*
 * * * * * * * * * *
 *  PREVIEW BELOW  *
