@@ -10,12 +10,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
-import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
@@ -27,11 +27,14 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -79,23 +82,37 @@ fun OverviewScreen(
 		val pullRefreshState = rememberPullRefreshState(overviewState.isRefreshing, onPullRefresh)
 		Box(
 			modifier = Modifier
-                .fillMaxSize()
-                .pullRefresh(pullRefreshState)
+				.fillMaxSize()
+				.pullRefresh(pullRefreshState)
 		) {
 			LazyColumn(
 				modifier = modifier
-                    .fillMaxSize()
-                    .padding(horizontal = SPACER_WIDTH)
+					.fillMaxSize()
+					.padding(horizontal = SPACER_WIDTH)
 			) {
 				item {
 					TextField(
 						value = "",
 						onValueChange = { },
 						placeholder = { Text("Search") },
-						leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+						leadingIcon = {
+							Icon(
+								Icons.Default.Search,
+								contentDescription = null,
+								tint = MaterialTheme.colorScheme.onSurface
+							)
+						},
+						shape = RoundedCornerShape(BORDER_RADIUS),
+						maxLines = 1,
+						singleLine = true,
 						modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = SPACER_WIDTH)
+							.fillMaxWidth()
+							.padding(bottom = SPACER_WIDTH),
+						colors = TextFieldDefaults.colors(
+							focusedIndicatorColor = Color.Transparent,
+							unfocusedIndicatorColor = Color.Transparent,
+							disabledIndicatorColor = Color.Transparent,
+						)
 					)
 				}
 				itemsIndexed(overviewState.cars) { index, car ->
@@ -125,24 +142,33 @@ fun CarListItem(
 		modifier = modifier
 			.fillMaxWidth(),
 		elevation = CardDefaults.cardElevation(
-			defaultElevation = 5.dp
+			defaultElevation = 10.dp
 		)
 	) {
 		Row(
 			modifier = Modifier
-                .height(IntrinsicSize.Min)
-                .fillMaxWidth(),
+				.height(IntrinsicSize.Min)
+				.fillMaxWidth(),
 			horizontalArrangement = Arrangement.SpaceBetween,
 			verticalAlignment = Alignment.CenterVertically
 		) {
 			Text(
 				fontStyle = FontStyle.Italic,
-				text = " #${car.id + 1}"
+				text = " #${car.id + 1}",
+				modifier = Modifier
+					.weight(0.09f)
+					.rotate(-90.0f),
+				color = when (car.id + 1) {
+					1 -> Color(255, 215, 0, 255) //Gold
+					2 -> Color(192, 192, 192, 255) //Silver
+					3 -> Color(205, 127, 50, 255) //Bronze
+					else -> MaterialTheme.colorScheme.onSurface
+				}
 			)
 			Column(
 				modifier = Modifier
-                    .padding(DEFAULT_PADDING)
-                    .weight(0.42f),
+					.padding(vertical = DEFAULT_PADDING)
+					.weight(0.41f),
 				horizontalAlignment = Alignment.Start,
 				verticalArrangement = Arrangement.SpaceBetween
 			) {
@@ -160,6 +186,7 @@ fun CarListItem(
 				)
 				Text(text = "Dougscore: " + car.dougScore)
 			}
+			Spacer(modifier = Modifier.width(SPACER_WIDTH))
 			car.imageLink?.let {
 				AsyncImage(
 					model = ImageRequest.Builder(LocalContext.current)
@@ -168,18 +195,18 @@ fun CarListItem(
 						.build(),
 					contentDescription = null,
 					modifier = Modifier
-                        .weight(0.53f)
-                        .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
-                        .drawWithContent {
-                            drawContent()
-                            drawRect(
-                                brush = Brush.horizontalGradient(
-                                    0.0f to Color.Transparent,
-                                    0.3f to Color.Black
-                                ),
-                                blendMode = BlendMode.DstIn
-                            )
-                        },
+						.weight(0.53f)
+						.graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
+						.drawWithContent {
+							drawContent()
+							drawRect(
+								brush = Brush.horizontalGradient(
+									0.0f to Color.Transparent,
+									0.02f to Color.Black
+								),
+								blendMode = BlendMode.DstIn
+							)
+						},
 					contentScale = ContentScale.Crop
 				)
 			}
@@ -187,8 +214,8 @@ fun CarListItem(
 	}
 	Spacer(
 		modifier = modifier
-            .fillMaxWidth()
-            .height(SPACER_WIDTH)
+			.fillMaxWidth()
+			.height(SPACER_WIDTH)
 	)
 }
 /*
