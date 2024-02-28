@@ -2,6 +2,7 @@ package gabor.koleszar.dougscore.presentation.overview
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -69,8 +71,8 @@ fun OverviewScreen(
 	onCarClick: (Int) -> Unit,
 	onPullRefresh: () -> Unit,
 	onSearchTextChanged: (String) -> Unit,
+	onClearSearchField: () -> Unit,
 	cars: List<Car>,
-	isLoading: Boolean,
 	isRefreshing: Boolean,
 	searchText: String,
 	modifier: Modifier = Modifier
@@ -81,8 +83,7 @@ fun OverviewScreen(
 			contentAlignment = Alignment.Center
 		) {
 			Column(horizontalAlignment = Alignment.CenterHorizontally) {
-				Text(text = "First time parsing of table.")
-				Text(text = "Subsequent opens will be faster.")
+				Text(text = "Loading data...")
 				Spacer(modifier = Modifier.height(SPACER_WIDTH))
 				CircularProgressIndicator()
 			}
@@ -103,11 +104,20 @@ fun OverviewScreen(
 					TextField(
 						value = searchText,
 						onValueChange = onSearchTextChanged,
-						placeholder = { Text("Search") },
 						leadingIcon = {
 							Icon(
 								Icons.Default.Search,
 								contentDescription = null,
+								tint = MaterialTheme.colorScheme.onSurface
+							)
+						},
+						trailingIcon = {
+							Icon(
+								Icons.Default.Clear,
+								contentDescription = null,
+								modifier = Modifier.clickable {
+									onClearSearchField()
+								},
 								tint = MaterialTheme.colorScheme.onSurface
 							)
 						},
@@ -273,8 +283,8 @@ fun CarListPreview() {
 			onCarClick = {},
 			onPullRefresh = {},
 			onSearchTextChanged = {},
+			onClearSearchField = {},
 			cars = dummyCars(),
-			isLoading = false,
 			isRefreshing = false,
 			searchText = ""
 		)

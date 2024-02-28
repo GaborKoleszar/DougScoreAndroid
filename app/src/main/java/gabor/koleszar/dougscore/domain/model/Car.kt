@@ -13,4 +13,8 @@ data class Car(
 	val filmingLocationCity: String,
 	val filmingLocationState: String,
 	val vehicleCountry: String
-)
+) {
+	fun doesMatchSearchQuery(searchQuery: String): Boolean {
+		return manufacturer.contains(searchQuery) || model.contains(searchQuery)
+	}
+}

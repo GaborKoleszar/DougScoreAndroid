@@ -56,8 +56,8 @@ class MainActivity : ComponentActivity() {
 								},
 								onPullRefresh = mainViewModel::refresh,
 								onSearchTextChanged = mainViewModel::onSearchTextChange,
+								onClearSearchField = mainViewModel::clearSearchField,
 								cars = cars,
-								isLoading = mainViewModel.isLoading,
 								isRefreshing = mainViewModel.isRefreshing,
 								searchText = mainViewModel.searchText.collectAsState().value
 							)
