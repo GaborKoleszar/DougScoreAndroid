@@ -165,7 +165,7 @@ fun CarListItem(
 				modifier = Modifier
 					.vertical()
 					.rotate(-90.0f)
-					.height(25.dp),
+					.height(30.dp),
 				color = when (car.id + 1) {
 					1 -> Gold
 					2 -> Silver
@@ -211,7 +211,7 @@ fun CarListItem(
 							drawRect(
 								brush = Brush.horizontalGradient(
 									0.0f to Color.Transparent,
-									0.02f to Color.Black
+									0.1f to Color.Black
 								),
 								blendMode = BlendMode.DstIn
 							)
@@ -276,7 +276,7 @@ fun CarListPreview() {
 
 private fun dummyCars(): List<Car> {
 	val cars = mutableListOf<Car>()
-	for (i in 1..5) {
+	for (i in 0..5) {
 		cars.add(
 			Car(
 				i,
