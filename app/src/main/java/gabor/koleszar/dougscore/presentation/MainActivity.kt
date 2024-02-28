@@ -3,13 +3,15 @@ package gabor.koleszar.dougscore.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -24,10 +26,12 @@ class MainActivity : ComponentActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		val splashScreen = installSplashScreen()
 		super.onCreate(savedInstanceState)
-		WindowCompat.setDecorFitsSystemWindows(window, false)
+
+		enableEdgeToEdge()
+
 		val mainViewModel by viewModels<MainViewModel>()
 		splashScreen.setKeepOnScreenCondition {
-			mainViewModel.overviewState.isLoading
+			mainViewModel.isLoading
 		}
 
 		setContent {
@@ -44,21 +48,27 @@ class MainActivity : ComponentActivity() {
 						composable(
 							route = Route.OVERVIEW
 						) {
+							val cars by mainViewModel.cars.collectAsState()
 							OverviewScreen(
 								onCarClick = { carId ->
-									mainViewModel.detailsState = mainViewModel.detailsState.copy(
-										car = mainViewModel.overviewState.cars[carId]
-									)
+									mainViewModel.onCarSelected(carId)
 									navController.navigate(Route.DETAILS)
 								},
-								onPullRefresh = { mainViewModel.refresh() },
-								overviewState = mainViewModel.overviewState
+								onPullRefresh = mainViewModel::refresh,
+								onSearchTextChanged = mainViewModel::onSearchTextChange,
+								cars = cars,
+								isLoading = mainViewModel.isLoading,
+								isRefreshing = mainViewModel.isRefreshing,
+								searchText = mainViewModel.searchText.collectAsState().value
 							)
 						}
 						composable(route = Route.DETAILS) {
-							DetailsScreen(
-								detailsState = mainViewModel.detailsState
-							)
+							val car by mainViewModel.carInDetailsScreen.collectAsState()
+							car?.let { nonNullCar ->
+								DetailsScreen(
+									car = nonNullCar
+								)
+							}
 						}
 					}
 				}

@@ -12,24 +12,20 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import gabor.koleszar.dougscore.common.Constants.YT_IMAGE_MAXRESDEFAULT
-import gabor.koleszar.dougscore.presentation.StyleConstants
+import gabor.koleszar.dougscore.domain.model.Car
 import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
 import gabor.koleszar.dougscore.presentation.StyleConstants.SPACER_WIDTH
 
 @Composable
 fun DetailsScreen(
 	modifier: Modifier = Modifier,
-	detailsState: DetailsState
+	car: Car
 ) {
-	val car = remember {
-		detailsState.car
-	}
 	Column(
 		modifier = modifier.fillMaxSize()
 	) {
@@ -37,13 +33,13 @@ fun DetailsScreen(
 			colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
 			modifier = Modifier
 				.fillMaxWidth()
-				.padding(StyleConstants.DEFAULT_PADDING),
+				.padding(DEFAULT_PADDING),
 			elevation = CardDefaults.cardElevation(
 				defaultElevation = 5.dp
 			)
 		) {
 			AsyncImage(
-				model = car?.imageLink + YT_IMAGE_MAXRESDEFAULT,
+				model = car.imageLink + YT_IMAGE_MAXRESDEFAULT,
 				contentDescription = null
 			)
 			//Basic info
@@ -65,10 +61,10 @@ fun DetailsScreen(
 				Column(
 					modifier = Modifier.weight(0.5f)
 				) {
-					Text(text = car?.manufacturer ?: "")
-					Text(text = car?.model ?: "")
-					Text(text = car?.vehicleCountry ?: "")
-					Text(text = car?.filmingLocationState + ", " + car?.filmingLocationCity)
+					Text(text = car.manufacturer)
+					Text(text = car.model)
+					Text(text = car.vehicleCountry)
+					Text(text = car.filmingLocationState + ", " + car.filmingLocationCity)
 				}
 			}
 			//Dougscores

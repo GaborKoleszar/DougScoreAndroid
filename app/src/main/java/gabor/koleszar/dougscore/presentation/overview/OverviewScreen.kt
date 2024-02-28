@@ -25,7 +25,6 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -69,10 +68,14 @@ import gabor.koleszar.dougscore.presentation.theme.Silver
 fun OverviewScreen(
 	onCarClick: (Int) -> Unit,
 	onPullRefresh: () -> Unit,
-	overviewState: OverviewState,
+	onSearchTextChanged: (String) -> Unit,
+	cars: List<Car>,
+	isLoading: Boolean,
+	isRefreshing: Boolean,
+	searchText: String,
 	modifier: Modifier = Modifier
 ) {
-	if (overviewState.cars.isEmpty()) {
+	if (cars.isEmpty()) {
 		Box(
 			modifier = modifier.fillMaxSize(),
 			contentAlignment = Alignment.Center
@@ -85,7 +88,7 @@ fun OverviewScreen(
 			}
 		}
 	} else {
-		val pullRefreshState = rememberPullRefreshState(overviewState.isRefreshing, onPullRefresh)
+		val pullRefreshState = rememberPullRefreshState(isRefreshing, onPullRefresh)
 		Box(
 			modifier = Modifier
 				.fillMaxSize()
@@ -98,8 +101,8 @@ fun OverviewScreen(
 			) {
 				item {
 					TextField(
-						value = "",
-						onValueChange = { },
+						value = searchText,
+						onValueChange = onSearchTextChanged,
 						placeholder = { Text("Search") },
 						leadingIcon = {
 							Icon(
@@ -121,12 +124,12 @@ fun OverviewScreen(
 						)
 					)
 				}
-				itemsIndexed(overviewState.cars) { index, car ->
+				itemsIndexed(cars) { index, car ->
 					CarListItem(car, { onCarClick(index) })
 				}
 			}
 			PullRefreshIndicator(
-				overviewState.isRefreshing,
+				isRefreshing,
 				pullRefreshState,
 				Modifier.align(Alignment.TopCenter)
 			)
@@ -134,7 +137,7 @@ fun OverviewScreen(
 	}
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CarListItem(
 	car: Car,
@@ -268,8 +271,12 @@ fun CarListPreview() {
 	DougScoreTheme {
 		OverviewScreen(
 			onCarClick = {},
-			overviewState = OverviewState(dummyCars()),
-			onPullRefresh = {}
+			onPullRefresh = {},
+			onSearchTextChanged = {},
+			cars = dummyCars(),
+			isLoading = false,
+			isRefreshing = false,
+			searchText = ""
 		)
 	}
 }
