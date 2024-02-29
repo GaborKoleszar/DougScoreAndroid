@@ -1,5 +1,8 @@
 package gabor.koleszar.dougscore.domain.model
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+
 data class Car(
 	val id: Int,
 	val year: Int,
@@ -14,7 +17,10 @@ data class Car(
 	val filmingLocationState: String,
 	val vehicleCountry: String
 ) {
-	fun doesMatchSearchQuery(searchQuery: String): Boolean {
-		return manufacturer.contains(searchQuery) || model.contains(searchQuery)
+	suspend fun doesMatchSearchQuery(searchQuery: String): Boolean {
+		return withContext(Dispatchers.Default) {
+			return@withContext manufacturer.lowercase().contains(searchQuery) ||
+					model.lowercase().contains(searchQuery)
+		}
 	}
 }

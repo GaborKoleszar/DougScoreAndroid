@@ -77,7 +77,7 @@ fun OverviewScreen(
 	searchText: String,
 	modifier: Modifier = Modifier
 ) {
-	if (cars.isEmpty()) {
+	if (cars.isEmpty() && searchText.isEmpty()) {
 		Box(
 			modifier = modifier.fillMaxSize(),
 			contentAlignment = Alignment.Center

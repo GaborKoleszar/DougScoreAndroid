@@ -39,7 +39,7 @@ class MainViewModel @Inject constructor(
 			} else {
 				delay(1000L)
 				cars.filter { car ->
-					car.doesMatchSearchQuery(text)
+					car.doesMatchSearchQuery(text.lowercase())
 				}
 			}
 		}
