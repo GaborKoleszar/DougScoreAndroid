@@ -3,6 +3,8 @@ plugins {
 	id("org.jetbrains.kotlin.android")
 	id("dagger.hilt.android.plugin")
 	id("com.google.devtools.ksp")
+	id("com.google.gms.google-services")
+	id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -65,6 +67,11 @@ dependencies {
 	implementation("androidx.compose.material:material:1.6.2")
 	debugImplementation("androidx.compose.ui:ui-tooling")
 	debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+	//Firebase
+	implementation(platform("com.google.firebase:firebase-bom:32.7.3"))
+	implementation("com.google.firebase:firebase-crashlytics")
+	implementation("com.google.firebase:firebase-analytics")
 
 	//Coil
 	implementation("io.coil-kt:coil-compose:2.5.0")
