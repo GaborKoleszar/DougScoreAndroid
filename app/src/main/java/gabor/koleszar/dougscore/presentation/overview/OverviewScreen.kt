@@ -2,7 +2,6 @@ package gabor.koleszar.dougscore.presentation.overview
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,21 +15,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -65,103 +54,70 @@ import gabor.koleszar.dougscore.presentation.theme.DougScoreTheme
 import gabor.koleszar.dougscore.presentation.theme.Gold
 import gabor.koleszar.dougscore.presentation.theme.Silver
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun OverviewScreen(
 	onCarClick: (Int) -> Unit,
-	onPullRefresh: () -> Unit,
-	onSearchTextChanged: (String) -> Unit,
-	onClearSearchField: () -> Unit,
 	cars: List<Car>,
-	isRefreshing: Boolean,
-	searchText: String,
 	modifier: Modifier = Modifier
 ) {
-	if (cars.isEmpty() && searchText.isEmpty()) {
-		Box(
-			modifier = modifier.fillMaxSize(),
-			contentAlignment = Alignment.Center
-		) {
-			Column(horizontalAlignment = Alignment.CenterHorizontally) {
-				Text(text = "Loading data...")
-				Spacer(modifier = Modifier.height(SPACER_WIDTH))
-				CircularProgressIndicator()
-			}
-		}
+	if (cars.isEmpty()) {
+		InitialListView(modifier)
 	} else {
-		val pullRefreshState = rememberPullRefreshState(isRefreshing, onPullRefresh)
-		Box(
-			modifier = Modifier
+		LoadedListView(
+			onCarClick,
+			cars,
+			modifier
+		)
+	}
+}
+
+@Composable
+fun LoadedListView(
+	onCarClick: (Int) -> Unit,
+	cars: List<Car>,
+	modifier: Modifier = Modifier
+) {
+	Box(
+		modifier = Modifier
+			.fillMaxSize()
+	) {
+		LazyColumn(
+			modifier = modifier
 				.fillMaxSize()
-				.pullRefresh(pullRefreshState)
+				.padding(horizontal = SPACER_WIDTH)
 		) {
-			LazyColumn(
-				modifier = modifier
-					.fillMaxSize()
-					.padding(horizontal = SPACER_WIDTH)
-			) {
-				item {
-					TextField(
-						value = searchText,
-						onValueChange = onSearchTextChanged,
-						leadingIcon = {
-							Icon(
-								Icons.Default.Search,
-								contentDescription = null,
-								tint = MaterialTheme.colorScheme.onSurface
-							)
-						},
-						trailingIcon = {
-							Icon(
-								Icons.Default.Clear,
-								contentDescription = null,
-								modifier = Modifier.clickable {
-									onClearSearchField()
-								},
-								tint = MaterialTheme.colorScheme.onSurface
-							)
-						},
-						shape = RoundedCornerShape(BORDER_RADIUS),
-						maxLines = 1,
-						singleLine = true,
-						modifier = Modifier
-							.fillMaxWidth()
-							.padding(bottom = SPACER_WIDTH),
-						colors = TextFieldDefaults.colors(
-							focusedIndicatorColor = Color.Transparent,
-							unfocusedIndicatorColor = Color.Transparent,
-							disabledIndicatorColor = Color.Transparent,
-						)
-					)
-				}
-				itemsIndexed(cars) { index, car ->
-					CarListItem(car, { onCarClick(index) })
-				}
+			itemsIndexed(cars) { index, car ->
+				CarListItem(car, { onCarClick(index) })
 			}
-			PullRefreshIndicator(
-				isRefreshing,
-				pullRefreshState,
-				Modifier.align(Alignment.TopCenter)
-			)
 		}
+	}
+}
+
+@Composable
+fun InitialListView(modifier: Modifier = Modifier) {
+	Column(
+		verticalArrangement = Arrangement.Center,
+		horizontalAlignment = Alignment.CenterHorizontally,
+		modifier = modifier
+			.fillMaxSize()
+	) {
+		Text(text = "Loading data...")
+		Spacer(modifier = Modifier.height(SPACER_WIDTH))
+		CircularProgressIndicator()
 	}
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CarListItem(
-	car: Car,
-	onCarClick: () -> Unit,
-	modifier: Modifier = Modifier
+	car: Car, onCarClick: () -> Unit, modifier: Modifier = Modifier
 ) {
 	Card(
-		colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
 		shape = RoundedCornerShape(BORDER_RADIUS),
 		onClick = onCarClick,
-		modifier = modifier
-			.fillMaxWidth(),
+		modifier = modifier.fillMaxWidth(),
 		elevation = CardDefaults.cardElevation(
-			defaultElevation = 10.dp
+			defaultElevation = 5.dp
 		)
 	) {
 		Row(
@@ -212,9 +168,7 @@ fun CarListItem(
 			car.imageLink?.let {
 				AsyncImage(
 					model = ImageRequest.Builder(LocalContext.current)
-						.data(car.imageLink + YT_IMAGE_HQDEFAULT)
-						.crossfade(true)
-						.build(),
+						.data(car.imageLink + YT_IMAGE_HQDEFAULT).crossfade(true).build(),
 					contentDescription = null,
 					modifier = Modifier
 						.width(200.dp)
@@ -223,10 +177,8 @@ fun CarListItem(
 							drawContent()
 							drawRect(
 								brush = Brush.horizontalGradient(
-									0.0f to Color.Transparent,
-									0.1f to Color.Black
-								),
-								blendMode = BlendMode.DstIn
+									0.0f to Color.Transparent, 0.1f to Color.Black
+								), blendMode = BlendMode.DstIn
 							)
 						},
 					contentScale = ContentScale.Crop
@@ -241,16 +193,15 @@ fun CarListItem(
 	)
 }
 
-fun Modifier.vertical() =
-	layout { measurable, constraints ->
-		val placeable = measurable.measure(constraints)
-		layout(placeable.height, placeable.width) {
-			placeable.place(
-				x = -(placeable.width / 2 - placeable.height / 2),
-				y = -(placeable.height / 2 - placeable.width / 2)
-			)
-		}
+fun Modifier.vertical() = layout { measurable, constraints ->
+	val placeable = measurable.measure(constraints)
+	layout(placeable.height, placeable.width) {
+		placeable.place(
+			x = -(placeable.width / 2 - placeable.height / 2),
+			y = -(placeable.height / 2 - placeable.width / 2)
+		)
 	}
+}
 
 /*
 * * * * * * * * * *
@@ -272,21 +223,14 @@ fun CarListItemPreview() {
 }
 
 @Preview(
-	showBackground = true,
-	heightDp = 500,
-	widthDp = 380
+	showBackground = true, heightDp = 500, widthDp = 380
 )
 @Composable
 fun CarListPreview() {
 	DougScoreTheme {
 		OverviewScreen(
 			onCarClick = {},
-			onPullRefresh = {},
-			onSearchTextChanged = {},
-			onClearSearchField = {},
-			cars = dummyCars(),
-			isRefreshing = false,
-			searchText = ""
+			cars = dummyCars()
 		)
 	}
 }
@@ -301,20 +245,10 @@ private fun dummyCars(): List<Car> {
 				"Honda",
 				"Civic",
 				WeekendScore(
-					6,
-					5,
-					8,
-					9,
-					4,
-					45
+					6, 5, 8, 9, 4, 45
 				),
 				DailyScore(
-					4,
-					7,
-					5,
-					3,
-					2,
-					34
+					4, 7, 5, 3, 2, 34
 				),
 				85,
 				"https://www.youtube.com/watch?v=_UKBxM7m7qo",

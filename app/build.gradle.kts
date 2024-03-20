@@ -5,6 +5,7 @@ plugins {
 	id("com.google.devtools.ksp")
 	id("com.google.gms.google-services")
 	id("com.google.firebase.crashlytics")
+	id("androidx.baselineprofile")
 }
 
 android {
@@ -64,7 +65,9 @@ dependencies {
 	implementation("androidx.compose.ui:ui-graphics")
 	implementation("androidx.compose.ui:ui-tooling-preview")
 	implementation("androidx.compose.material3:material3")
-	implementation("androidx.compose.material:material:1.6.2")
+	implementation("androidx.profileinstaller:profileinstaller:1.3.1")
+	"baselineProfile"(project(":baselineprofile"))
+	//implementation("androidx.compose.material:material:1.6.2")
 	debugImplementation("androidx.compose.ui:ui-tooling")
 	debugImplementation("androidx.compose.ui:ui-test-manifest")
 
@@ -74,7 +77,7 @@ dependencies {
 	implementation("com.google.firebase:firebase-analytics")
 
 	//Coil
-	implementation("io.coil-kt:coil-compose:2.5.0")
+	implementation("io.coil-kt:coil-compose:2.6.0")
 
 	// Dagger - Hilt
 	implementation("com.google.dagger:hilt-android:2.50")
@@ -89,10 +92,9 @@ dependencies {
 	implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
 	// Room
-	val roomVersion = "2.6.1"
-	implementation("androidx.room:room-ktx:$roomVersion")
-	implementation("androidx.room:room-runtime:$roomVersion")
-	ksp("androidx.room:room-compiler:$roomVersion")
+	implementation("androidx.room:room-ktx:2.6.1")
+	implementation("androidx.room:room-runtime:2.6.1")
+	ksp("androidx.room:room-compiler:2.6.1")
 
 	// Navigation
 	implementation("androidx.navigation:navigation-compose:2.7.7")
