@@ -85,6 +85,20 @@ class CarRepositoryImpl @Inject constructor(
 		}
 	}
 
+	override suspend fun getCarWithId(id: Int): Flow<Resource<Car>> {
+		return flow {
+			emit(Resource.Loading())
+			try {
+				val car = dao.getCarWithId(id).toDomainModel()
+				emit(Resource.Success(car))
+			} catch (e: Exception) {
+				emit(
+					Resource.Error("Getting car $id failed")
+				)
+			}
+		}
+	}
+
 	override suspend fun setCars(cars: List<CarDto>) {
 		dao.deleteAllCars()
 		dao.insert(cars.map { car ->

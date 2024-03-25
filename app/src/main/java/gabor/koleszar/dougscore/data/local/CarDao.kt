@@ -16,4 +16,7 @@ interface CarDao {
 
 	@Query("DELETE FROM cars")
 	suspend fun deleteAllCars()
+
+	@Query("SELECT * FROM cars WHERE id = :id LIMIT 1")
+	suspend fun getCarWithId(id: Int): CarEntity
 }
