@@ -114,7 +114,7 @@ class XlsxCarDataParser @Inject constructor() : CarDataParser<CarDto> {
 			return null
 		val index = url.indexOf('?')
 		val videoId = url.substring(index + 3, index + 14)
-		return YT_IMAGE_URL.replace("VIDEO_ID", videoId)
+		return YT_IMAGE_URL + videoId
 	}
 
 	companion object {

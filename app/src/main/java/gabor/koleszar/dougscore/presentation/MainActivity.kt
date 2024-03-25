@@ -5,26 +5,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberTopAppBarState
@@ -33,18 +24,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import gabor.koleszar.dougscore.presentation.StyleConstants.BORDER_RADIUS
 import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
-import gabor.koleszar.dougscore.presentation.StyleConstants.SPACER_WIDTH
+import gabor.koleszar.dougscore.presentation.components.BottomSheetDropdownMenu
+import gabor.koleszar.dougscore.presentation.components.SearchField
 import gabor.koleszar.dougscore.presentation.details.DetailsScreen
 import gabor.koleszar.dougscore.presentation.overview.MainViewModel
 import gabor.koleszar.dougscore.presentation.overview.OverviewScreen
@@ -63,7 +54,7 @@ class MainActivity : ComponentActivity() {
 		setContent {
 			DougScoreTheme {
 				val scrollBehavior =
-					TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+					TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 				val navController = rememberNavController()
 				val scaffoldState = rememberBottomSheetScaffoldState()
 				val coroutineScope = rememberCoroutineScope()
@@ -97,10 +88,6 @@ class MainActivity : ComponentActivity() {
 							scrollBehavior = scrollBehavior
 						)
 					},
-					sheetShape = RoundedCornerShape(
-						topStart = BORDER_RADIUS,
-						topEnd = BORDER_RADIUS
-					),
 					sheetPeekHeight = 0.dp,
 					sheetContent = {
 						Column(
@@ -108,40 +95,14 @@ class MainActivity : ComponentActivity() {
 							modifier = Modifier
 								.padding(DEFAULT_PADDING)
 						) {
-							Text(text = "Filters", style = MaterialTheme.typography.labelLarge)
-							Spacer(modifier = Modifier.height(SPACER_WIDTH))
-							TextField(
-								value = mainViewModel.searchText.collectAsState().value,
-								onValueChange = mainViewModel::onSearchTextChange,
-								leadingIcon = {
-									Icon(
-										Icons.Default.Search,
-										contentDescription = "Search icon",
-										tint = MaterialTheme.colorScheme.onSurface
-									)
-								},
-								trailingIcon = {
-									Icon(
-										Icons.Default.Clear,
-										contentDescription = "Clear search",
-										modifier = Modifier.clickable {
-											mainViewModel.clearSearchField()
-										}
-									)
-								},
-								placeholder = { Text("Search...") },
-								textStyle = MaterialTheme.typography.bodyLarge,
-								shape = RoundedCornerShape(BORDER_RADIUS),
-								maxLines = 1,
-								singleLine = true,
-								modifier = Modifier
-									.fillMaxWidth(),
-								colors = TextFieldDefaults.colors(
-									focusedIndicatorColor = Color.Transparent,
-									unfocusedIndicatorColor = Color.Transparent,
-									disabledIndicatorColor = Color.Transparent,
-								)
+							val searchFieldValue =
+								mainViewModel.searchText.collectAsStateWithLifecycle().value
+							SearchField(
+								searchFieldValue,
+								mainViewModel::onSearchTextChange,
+								mainViewModel::onClearSearchField
 							)
+							BottomSheetDropdownMenu()
 						}
 					},
 					modifier = Modifier

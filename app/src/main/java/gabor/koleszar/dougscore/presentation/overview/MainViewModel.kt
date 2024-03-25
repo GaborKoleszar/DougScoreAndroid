@@ -70,7 +70,7 @@ class MainViewModel @Inject constructor(
 		getCarIntroductions(true)
 	}
 
-	fun clearSearchField() {
+	fun onClearSearchField() {
 		_searchText.value = ""
 	}
 

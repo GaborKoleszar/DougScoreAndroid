@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">DougScore</string>
+    <string name="overview_loading_data">Loading data…</string>
+    <string name="details_car_daily_features">Features</string>
+    <string name="details_car_daily_comfort">Comfort</string>
+    <string name="details_car_daily_quality">Quality</string>
+    <string name="details_car_daily_practicality">Practicality</string>
+    <string name="details_car_daily_value">Value</string>
+    <string name="details_car_daily_total">Total Daily</string>
+    <string name="details_car_weekend_styling">Styling</string>
+    <string name="details_car_weekend_acceleration">Acceleration</string>
+    <string name="details_car_weekend_handling">Handling</string>
+    <string name="details_car_weekend_fun_factor">Fun factor</string>
+    <string name="details_car_weekend_cool_factor">Cool factor</string>
+    <string name="details_car_weekend_total">Total Weekend</string>
 </resources>
