@@ -12,7 +12,7 @@ data class CarDto(
 	val dailyScore: DailyScore,
 	val dougScore: Int,
 	val videoLink: String?,
-	val imageLink: String?,
+	val videoId: String?,
 	val filmingLocationCity: String,
 	val filmingLocationState: String,
 	val vehicleCountry: String

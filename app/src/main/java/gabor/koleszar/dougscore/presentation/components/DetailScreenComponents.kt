@@ -90,30 +90,3 @@ fun OneLineText(
 ) {
 	Text(text = text, modifier = modifier.basicMarquee(), maxLines = 1)
 }
-
-@Composable
-fun AsyncImageWithPlaceHolder(
-	model: Any?,
-	modifier: Modifier = Modifier
-) {
-	var shouldShowPlaceHolder by rememberSaveable {
-		mutableStateOf(false)
-	}
-	if (shouldShowPlaceHolder) {
-		Image(
-			painter = painterResource(id = R.drawable.placeholder),
-			contentDescription = null
-		)
-	} else {
-		AsyncImage(
-			model = model,
-			contentDescription = null,
-			onError = {
-				shouldShowPlaceHolder = true
-			},
-			clipToBounds = true,
-			placeholder = painterResource(id = R.drawable.placeholder),
-			modifier = modifier
-		)
-	}
-}

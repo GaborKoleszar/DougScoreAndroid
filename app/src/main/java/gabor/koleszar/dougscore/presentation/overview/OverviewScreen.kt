@@ -40,17 +40,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import gabor.koleszar.dougscore.R
-import gabor.koleszar.dougscore.common.Constants.YT_IMAGE_FALLBACK_URL
-import gabor.koleszar.dougscore.common.Constants.YT_IMAGE_HQDEFAULT
-import gabor.koleszar.dougscore.common.Constants.YT_IMAGE_SDDEFAULT
-import gabor.koleszar.dougscore.common.Constants.YT_IMAGE_URL
 import gabor.koleszar.dougscore.domain.model.Car
 import gabor.koleszar.dougscore.domain.model.DailyScore
 import gabor.koleszar.dougscore.domain.model.WeekendScore
 import gabor.koleszar.dougscore.presentation.StyleConstants.BORDER_RADIUS
 import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
 import gabor.koleszar.dougscore.presentation.StyleConstants.SPACER_WIDTH
-import gabor.koleszar.dougscore.presentation.components.AsyncImageWithFallbackUrl
+import gabor.koleszar.dougscore.presentation.components.AsyncImageWithMultipleFallback
 import gabor.koleszar.dougscore.presentation.theme.Bronze
 import gabor.koleszar.dougscore.presentation.theme.DougScoreTheme
 import gabor.koleszar.dougscore.presentation.theme.Gold
@@ -172,9 +168,9 @@ fun CarListItem(
 				Text(text = "Dougscore: " + car.dougScore)
 			}
 			Spacer(modifier = Modifier.width(SPACER_WIDTH))
-			AsyncImageWithFallbackUrl(
-				model = YT_IMAGE_URL + car.imageLink + YT_IMAGE_SDDEFAULT,
-				fallbackModel = YT_IMAGE_FALLBACK_URL + car.imageLink + YT_IMAGE_HQDEFAULT,
+			AsyncImageWithMultipleFallback(
+				model = car.getSdImageLink(),
+				fallbackModel = car.getHqFallbackImageLink(),
 				modifier = Modifier
 					.width(200.dp)
 					.graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)

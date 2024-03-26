@@ -69,7 +69,7 @@ class XlsxCarDataParser @Inject constructor() : CarDataParser<CarDto> {
 							),
 							dougScore = row.getCell(DOUGSCORE_COLUMN).numericCellValue.toInt(),
 							videoLink = youtubeUrl,
-							imageLink = getImageUrl(youtubeUrl),
+							videoId = getVideoId(youtubeUrl),
 							filmingLocationCity = row.getCell(CITY_COLUMN).toString(),
 							filmingLocationState = row.getCell(STATE_COLUMN).toString(),
 							vehicleCountry = row.getCell(VEHICLE_COUNTRY_COLUMN).toString()
@@ -108,7 +108,7 @@ class XlsxCarDataParser @Inject constructor() : CarDataParser<CarDto> {
 		}
 	}
 
-	private fun getImageUrl(url: String?): String? {
+	private fun getVideoId(url: String?): String? {
 		if (url == null)
 			return null
 		val index = url.indexOf('?')

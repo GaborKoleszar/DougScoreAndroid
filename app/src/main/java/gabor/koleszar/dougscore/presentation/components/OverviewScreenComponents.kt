@@ -12,7 +12,7 @@ import coil.compose.AsyncImage
 import gabor.koleszar.dougscore.R
 
 @Composable
-fun AsyncImageWithFallbackUrl(
+fun AsyncImageWithMultipleFallback(
 	model: Any?,
 	fallbackModel: Any?,
 	modifier: Modifier = Modifier
