@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -31,6 +32,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
@@ -58,13 +60,22 @@ class MainActivity : ComponentActivity() {
 				val navController = rememberNavController()
 				val scaffoldState = rememberBottomSheetScaffoldState()
 				val coroutineScope = rememberCoroutineScope()
+				val currentDestination =
+					navController.currentBackStackEntryAsState().value?.destination?.route
 
 				BottomSheetScaffold(
 					scaffoldState = scaffoldState,
 					topBar = {
 						CenterAlignedTopAppBar(
 							navigationIcon = {
-
+								if (currentDestination.equals(Route.DETAILS)) {
+									IconButton(onClick = { navController.popBackStack() }) {
+										Icon(
+											imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+											contentDescription = "Open search"
+										)
+									}
+								}
 							},
 							title = {
 								Text(
@@ -74,15 +85,17 @@ class MainActivity : ComponentActivity() {
 								)
 							},
 							actions = {
-								IconButton(onClick = {
-									coroutineScope.launch {
-										scaffoldState.bottomSheetState.expand()
+								if (currentDestination.equals(Route.OVERVIEW)) {
+									IconButton(onClick = {
+										coroutineScope.launch {
+											scaffoldState.bottomSheetState.expand()
+										}
+									}) {
+										Icon(
+											imageVector = Icons.Default.Search,
+											contentDescription = "Open search"
+										)
 									}
-								}) {
-									Icon(
-										imageVector = Icons.Default.Search,
-										contentDescription = "Open search"
-									)
 								}
 							},
 							scrollBehavior = scrollBehavior

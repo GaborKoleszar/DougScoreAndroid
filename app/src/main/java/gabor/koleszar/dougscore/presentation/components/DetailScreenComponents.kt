@@ -1,5 +1,7 @@
 package gabor.koleszar.dougscore.presentation.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,12 +32,12 @@ fun DougScoreTable(
 			Modifier.weight(0.3f),
 			horizontalAlignment = Alignment.End
 		) {
-			Text(text = stringResource(id = R.string.details_car_daily_value))
-			Text(text = stringResource(id = R.string.details_car_daily_comfort))
-			Text(text = stringResource(id = R.string.details_car_daily_features))
-			Text(text = stringResource(id = R.string.details_car_daily_practicality))
-			Text(text = stringResource(id = R.string.details_car_daily_quality))
-			Text(text = stringResource(id = R.string.details_car_daily_total))
+			OneLineText(text = stringResource(id = R.string.details_car_daily_value))
+			OneLineText(text = stringResource(id = R.string.details_car_daily_comfort))
+			OneLineText(text = stringResource(id = R.string.details_car_daily_features))
+			OneLineText(text = stringResource(id = R.string.details_car_daily_practicality))
+			OneLineText(text = stringResource(id = R.string.details_car_daily_quality))
+			OneLineText(text = stringResource(id = R.string.details_car_daily_total))
 		}
 		Column(
 			Modifier.weight(0.2f),
@@ -52,12 +54,12 @@ fun DougScoreTable(
 			Modifier.weight(0.3f),
 			horizontalAlignment = Alignment.End
 		) {
-			Text(text = stringResource(id = R.string.details_car_weekend_acceleration))
-			Text(text = stringResource(id = R.string.details_car_weekend_styling))
-			Text(text = stringResource(id = R.string.details_car_weekend_handling))
-			Text(text = stringResource(id = R.string.details_car_weekend_fun_factor))
-			Text(text = stringResource(id = R.string.details_car_weekend_cool_factor))
-			Text(text = stringResource(id = R.string.details_car_weekend_total))
+			OneLineText(text = stringResource(id = R.string.details_car_weekend_acceleration))
+			OneLineText(text = stringResource(id = R.string.details_car_weekend_styling))
+			OneLineText(text = stringResource(id = R.string.details_car_weekend_handling))
+			OneLineText(text = stringResource(id = R.string.details_car_weekend_fun_factor))
+			OneLineText(text = stringResource(id = R.string.details_car_weekend_cool_factor))
+			OneLineText(text = stringResource(id = R.string.details_car_weekend_total))
 		}
 		Column(
 			Modifier.weight(0.2f),
@@ -71,4 +73,13 @@ fun DougScoreTable(
 			Text(text = car.weekendScore.total.toString())
 		}
 	}
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun OneLineText(
+	text: String,
+	modifier: Modifier = Modifier
+) {
+	Text(text = text, modifier = modifier.basicMarquee(), maxLines = 1, )
 }
