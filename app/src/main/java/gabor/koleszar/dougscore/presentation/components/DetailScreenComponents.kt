@@ -1,6 +1,7 @@
 package gabor.koleszar.dougscore.presentation.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,9 +10,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import coil.compose.AsyncImage
 import gabor.koleszar.dougscore.R
 import gabor.koleszar.dougscore.domain.model.Car
 import gabor.koleszar.dougscore.presentation.StyleConstants.SPACER_WIDTH
@@ -81,5 +88,32 @@ fun OneLineText(
 	text: String,
 	modifier: Modifier = Modifier
 ) {
-	Text(text = text, modifier = modifier.basicMarquee(), maxLines = 1, )
+	Text(text = text, modifier = modifier.basicMarquee(), maxLines = 1)
+}
+
+@Composable
+fun AsyncImageWithPlaceHolder(
+	model: Any?,
+	modifier: Modifier = Modifier
+) {
+	var shouldShowPlaceHolder by rememberSaveable {
+		mutableStateOf(false)
+	}
+	if (shouldShowPlaceHolder) {
+		Image(
+			painter = painterResource(id = R.drawable.placeholder),
+			contentDescription = null
+		)
+	} else {
+		AsyncImage(
+			model = model,
+			contentDescription = null,
+			onError = {
+				shouldShowPlaceHolder = true
+			},
+			clipToBounds = true,
+			placeholder = painterResource(id = R.drawable.placeholder),
+			modifier = modifier
+		)
+	}
 }

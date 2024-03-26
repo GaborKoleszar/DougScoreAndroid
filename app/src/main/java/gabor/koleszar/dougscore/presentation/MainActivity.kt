@@ -5,12 +5,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,6 +44,7 @@ import gabor.koleszar.dougscore.presentation.components.SearchField
 import gabor.koleszar.dougscore.presentation.details.DetailsScreen
 import gabor.koleszar.dougscore.presentation.overview.MainViewModel
 import gabor.koleszar.dougscore.presentation.overview.OverviewScreen
+import gabor.koleszar.dougscore.presentation.settings.SettingsScreen
 import gabor.koleszar.dougscore.presentation.theme.DougScoreTheme
 import kotlinx.coroutines.launch
 
@@ -68,11 +72,18 @@ class MainActivity : ComponentActivity() {
 					topBar = {
 						CenterAlignedTopAppBar(
 							navigationIcon = {
-								if (currentDestination.equals(Route.DETAILS)) {
+								if (!currentDestination.equals(Route.OVERVIEW)) {
 									IconButton(onClick = { navController.popBackStack() }) {
 										Icon(
 											imageVector = Icons.AutoMirrored.Filled.ArrowBack,
 											contentDescription = "Open search"
+										)
+									}
+								} else	{
+									IconButton(onClick = { navController.navigate(Route.SETTINGS)}) {
+										Icon(
+											imageVector = Icons.Default.Settings,
+											contentDescription = "Settings"
 										)
 									}
 								}
@@ -98,7 +109,10 @@ class MainActivity : ComponentActivity() {
 									}
 								}
 							},
-							scrollBehavior = scrollBehavior
+							scrollBehavior = scrollBehavior,
+							colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
+								scrolledContainerColor = TopAppBarDefaults.centerAlignedTopAppBarColors().containerColor
+							)
 						)
 					},
 					sheetPeekHeight = 0.dp,
@@ -125,7 +139,31 @@ class MainActivity : ComponentActivity() {
 					NavHost(
 						modifier = Modifier.padding(scaffoldPadding),
 						navController = navController,
-						startDestination = Route.OVERVIEW
+						startDestination = Route.OVERVIEW,
+						enterTransition = {
+							slideIntoContainer(
+								towards = AnimatedContentTransitionScope.SlideDirection.Companion.Down,
+								animationSpec = tween(500)
+							)
+						},
+						exitTransition = {
+							slideOutOfContainer(
+								towards = AnimatedContentTransitionScope.SlideDirection.Companion.Down,
+								animationSpec = tween(500)
+							)
+						},
+						popEnterTransition = {
+							slideIntoContainer(
+								towards = AnimatedContentTransitionScope.SlideDirection.Companion.Up,
+								animationSpec = tween(500)
+							)
+						},
+						popExitTransition = {
+							slideOutOfContainer(
+								towards = AnimatedContentTransitionScope.SlideDirection.Companion.Up,
+								animationSpec = tween(500)
+							)
+						}
 					) {
 						composable(
 							route = Route.OVERVIEW
@@ -139,13 +177,22 @@ class MainActivity : ComponentActivity() {
 								cars = cars
 							)
 						}
-						composable(route = Route.DETAILS) {
+						composable(
+							route = Route.DETAILS
+						) {
 							val car by mainViewModel.carInDetailsScreen.collectAsState()
 							car?.let { nonNullCar ->
 								DetailsScreen(
 									car = nonNullCar
 								)
 							}
+						}
+						composable(
+							route = Route.SETTINGS
+						) {
+							SettingsScreen(
+								onRefreshData = mainViewModel::refresh
+							)
 						}
 					}
 				}

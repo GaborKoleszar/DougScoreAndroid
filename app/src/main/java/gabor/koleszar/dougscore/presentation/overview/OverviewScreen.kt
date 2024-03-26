@@ -31,24 +31,26 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import gabor.koleszar.dougscore.R
+import gabor.koleszar.dougscore.common.Constants.YT_IMAGE_FALLBACK_URL
 import gabor.koleszar.dougscore.common.Constants.YT_IMAGE_HQDEFAULT
+import gabor.koleszar.dougscore.common.Constants.YT_IMAGE_SDDEFAULT
+import gabor.koleszar.dougscore.common.Constants.YT_IMAGE_URL
 import gabor.koleszar.dougscore.domain.model.Car
 import gabor.koleszar.dougscore.domain.model.DailyScore
 import gabor.koleszar.dougscore.domain.model.WeekendScore
 import gabor.koleszar.dougscore.presentation.StyleConstants.BORDER_RADIUS
 import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
 import gabor.koleszar.dougscore.presentation.StyleConstants.SPACER_WIDTH
+import gabor.koleszar.dougscore.presentation.components.AsyncImageWithFallbackUrl
 import gabor.koleszar.dougscore.presentation.theme.Bronze
 import gabor.koleszar.dougscore.presentation.theme.DougScoreTheme
 import gabor.koleszar.dougscore.presentation.theme.Gold
@@ -101,7 +103,7 @@ fun InitialListView(modifier: Modifier = Modifier) {
 		modifier = modifier
 			.fillMaxSize()
 	) {
-		Text(text = "Loading data...")
+		Text(text = stringResource(R.string.overview_scree_loading_data_please_wait))
 		Spacer(modifier = Modifier.height(SPACER_WIDTH))
 		CircularProgressIndicator()
 	}
@@ -112,6 +114,11 @@ fun InitialListView(modifier: Modifier = Modifier) {
 fun CarListItem(
 	car: Car, onCarClick: () -> Unit, modifier: Modifier = Modifier
 ) {
+	Spacer(
+		modifier = modifier
+			.fillMaxWidth()
+			.height(SPACER_WIDTH / 2)
+	)
 	Card(
 		shape = RoundedCornerShape(BORDER_RADIUS),
 		onClick = onCarClick,
@@ -165,31 +172,27 @@ fun CarListItem(
 				Text(text = "Dougscore: " + car.dougScore)
 			}
 			Spacer(modifier = Modifier.width(SPACER_WIDTH))
-			car.imageLink?.let {
-				AsyncImage(
-					model = ImageRequest.Builder(LocalContext.current)
-						.data(car.imageLink + YT_IMAGE_HQDEFAULT).crossfade(true).build(),
-					contentDescription = null,
-					modifier = Modifier
-						.width(200.dp)
-						.graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
-						.drawWithContent {
-							drawContent()
-							drawRect(
-								brush = Brush.horizontalGradient(
-									0.0f to Color.Transparent, 0.1f to Color.Black
-								), blendMode = BlendMode.DstIn
-							)
-						},
-					contentScale = ContentScale.Crop
-				)
-			}
+			AsyncImageWithFallbackUrl(
+				model = YT_IMAGE_URL + car.imageLink + YT_IMAGE_SDDEFAULT,
+				fallbackModel = YT_IMAGE_FALLBACK_URL + car.imageLink + YT_IMAGE_HQDEFAULT,
+				modifier = Modifier
+					.width(200.dp)
+					.graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
+					.drawWithContent {
+						drawContent()
+						drawRect(
+							brush = Brush.horizontalGradient(
+								0.0f to Color.Transparent, 0.1f to Color.Black
+							), blendMode = BlendMode.DstIn
+						)
+					}
+			)
 		}
 	}
 	Spacer(
 		modifier = modifier
 			.fillMaxWidth()
-			.height(SPACER_WIDTH)
+			.height(SPACER_WIDTH / 2)
 	)
 }
 

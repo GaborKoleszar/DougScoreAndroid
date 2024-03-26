@@ -22,11 +22,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
-import coil.compose.AsyncImage
 import gabor.koleszar.dougscore.common.Constants.YT_IMAGE_MAXRESDEFAULT
+import gabor.koleszar.dougscore.common.Constants.YT_IMAGE_URL
 import gabor.koleszar.dougscore.domain.model.Car
 import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
 import gabor.koleszar.dougscore.presentation.StyleConstants.SPACER_WIDTH
+import gabor.koleszar.dougscore.presentation.components.AsyncImageWithPlaceHolder
 import gabor.koleszar.dougscore.presentation.components.DougScoreTable
 
 @Composable
@@ -53,9 +54,8 @@ fun DetailsScreen(
 				modifier.fillMaxWidth(),
 				horizontalAlignment = Alignment.CenterHorizontally
 			) {
-				AsyncImage(
-					model = car.imageLink + YT_IMAGE_MAXRESDEFAULT,
-					contentDescription = null
+				AsyncImageWithPlaceHolder(
+					YT_IMAGE_URL + car.imageLink + YT_IMAGE_MAXRESDEFAULT
 				)
 				//Basic info
 				Spacer(modifier = Modifier.height(DEFAULT_PADDING))

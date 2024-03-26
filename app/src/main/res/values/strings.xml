@@ -13,4 +13,5 @@
     <string name="details_car_weekend_fun_factor">Fun factor</string>
     <string name="details_car_weekend_cool_factor">Cool factor</string>
     <string name="details_car_weekend_total">Total Weekend</string>
+    <string name="overview_scree_loading_data_please_wait">Loading data, please wait ...</string>
 </resources>

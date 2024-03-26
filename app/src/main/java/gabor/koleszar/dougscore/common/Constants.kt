@@ -6,8 +6,10 @@ object Constants {
 		"/spreadsheets/d/1HcFstlJdQMlMEWhbdKXZWdAzR5RFMtj3kywLQcgkGPw/export?format=xlsx&id=1HcFstlJdQMlMEWhbdKXZWdAzR5RFMtj3kywLQcgkGPw&gid=0"
 
 	const val YT_IMAGE_URL = "https://i.ytimg.com/vi/"
+	const val YT_IMAGE_FALLBACK_URL = "https://img.youtube.com/vi/"
 
 	const val YT_IMAGE_MAXRESDEFAULT = "/maxresdefault.jpg"
-	const val YT_IMAGE_HQDEFAULT = "/sddefault.jpg"
+	const val YT_IMAGE_SDDEFAULT = "/sddefault.jpg"
+	const val YT_IMAGE_HQDEFAULT = "/hqdefault.jpg"
 
 }

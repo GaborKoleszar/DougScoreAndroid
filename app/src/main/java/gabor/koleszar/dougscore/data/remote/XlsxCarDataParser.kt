@@ -1,6 +1,5 @@
 package gabor.koleszar.dougscore.data.remote
 
-import gabor.koleszar.dougscore.common.Constants.YT_IMAGE_URL
 import gabor.koleszar.dougscore.data.dto.CarDto
 import gabor.koleszar.dougscore.domain.model.DailyScore
 import gabor.koleszar.dougscore.domain.model.WeekendScore
@@ -113,8 +112,7 @@ class XlsxCarDataParser @Inject constructor() : CarDataParser<CarDto> {
 		if (url == null)
 			return null
 		val index = url.indexOf('?')
-		val videoId = url.substring(index + 3, index + 14)
-		return YT_IMAGE_URL + videoId
+		return url.substring(index + 3, index + 14)
 	}
 
 	companion object {
