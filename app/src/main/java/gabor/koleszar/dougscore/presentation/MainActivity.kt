@@ -38,6 +38,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import gabor.koleszar.dougscore.domain.preferences.Preferences
 import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
 import gabor.koleszar.dougscore.presentation.components.BottomSheetDropdownMenu
 import gabor.koleszar.dougscore.presentation.components.SearchField
@@ -47,9 +48,14 @@ import gabor.koleszar.dougscore.presentation.overview.OverviewScreen
 import gabor.koleszar.dougscore.presentation.settings.SettingsScreen
 import gabor.koleszar.dougscore.presentation.theme.DougScoreTheme
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+	@Inject
+	lateinit var preferences: Preferences
+
 	@OptIn(ExperimentalMaterial3Api::class)
 	override fun onCreate(savedInstanceState: Bundle?) {
 		installSplashScreen()
@@ -191,6 +197,8 @@ class MainActivity : ComponentActivity() {
 							route = Route.SETTINGS
 						) {
 							SettingsScreen(
+								lastRefreshTimeInMillis = preferences.loadLastTimeDataUpdated(),
+								isLoading = mainViewModel.isLoading,
 								onRefreshData = mainViewModel::refresh
 							)
 						}

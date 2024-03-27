@@ -17,6 +17,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -57,7 +58,8 @@ fun DetailsScreen(
 				AsyncImage(
 					model = car.getMaxresImageLink(),
 					contentDescription = null,
-					error = painterResource(id = R.drawable.placeholder)
+					error = painterResource(id = R.drawable.placeholder),
+					placeholder = painterResource(id = R.drawable.placeholder)
 				)
 				//Basic info
 				Spacer(modifier = Modifier.height(DEFAULT_PADDING))
@@ -89,11 +91,16 @@ fun DetailsScreen(
 				Text(text = "Total DougScore : ${car.dougScore}")
 				Text(text = "Global ranking : #${car.id + 1}")
 				Spacer(modifier = Modifier.height(DEFAULT_PADDING))
-				Button(onClick = {
-					val intent = Intent(Intent.ACTION_VIEW, Uri.parse(car.videoLink))
-					startActivity(context, intent, null)
-				}) {
-					Text(text = "Watch on youtube")
+				val videoAvailable = remember(key1 = car) {
+					car.videoId != null
+				}
+				if (videoAvailable) {
+					Button(onClick = {
+						val intent = Intent(Intent.ACTION_VIEW, Uri.parse(car.videoLink))
+						startActivity(context, intent, null)
+					}) {
+						Text(text = "Watch on youtube")
+					}
 				}
 				Spacer(modifier = Modifier.height(DEFAULT_PADDING))
 			}

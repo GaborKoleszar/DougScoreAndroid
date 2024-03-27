@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import gabor.koleszar.dougscore.common.Resource
 import gabor.koleszar.dougscore.domain.model.Car
+import gabor.koleszar.dougscore.domain.preferences.Preferences
 import gabor.koleszar.dougscore.domain.repository.CarRepository
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
@@ -23,7 +24,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-	private val repository: CarRepository
+	private val repository: CarRepository,
+	private val preferences: Preferences
 ) : ViewModel() {
 
 	private val _searchText = MutableStateFlow("")
@@ -95,6 +97,7 @@ class MainViewModel @Inject constructor(
 								isLoading = false
 								isRefreshing = false
 							}
+							preferences.saveLastTimeDataUpdated(System.currentTimeMillis())
 						}
 
 						is Resource.Error -> {
