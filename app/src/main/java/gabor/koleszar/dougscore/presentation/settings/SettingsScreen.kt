@@ -1,5 +1,6 @@
 package gabor.koleszar.dougscore.presentation.settings
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import gabor.koleszar.dougscore.common.DateTimeFormatter
 import gabor.koleszar.dougscore.presentation.StyleConstants
 import java.util.Date
 
@@ -30,13 +32,13 @@ fun SettingsScreen(
 	Box(
 		modifier = modifier
 			.fillMaxWidth()
+			.padding(StyleConstants.DEFAULT_PADDING)
 			.verticalScroll(rememberScrollState())
 	) {
 		Card(
 			colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
 			modifier = Modifier
-				.fillMaxWidth()
-				.padding(StyleConstants.DEFAULT_PADDING),
+				.fillMaxWidth(),
 			elevation = CardDefaults.cardElevation(
 				defaultElevation = 5.dp
 			)
@@ -45,14 +47,22 @@ fun SettingsScreen(
 				modifier.fillMaxWidth(),
 				horizontalAlignment = Alignment.CenterHorizontally
 			) {
-				Row {
+				Row(
+					horizontalArrangement = Arrangement.SpaceBetween
+				) {
 					Button(onClick = onRefreshData) {
 						Text(text = "Refresh data")
 					}
-					Text(text = "Last refresh:\n${Date(lastRefreshTimeInMillis)}")
-					if (isLoading) {
-						CircularProgressIndicator()
-					}
+					Text(
+						text = "Last refresh:\n${
+							DateTimeFormatter.getDefaultFormattedDate(
+								Date(lastRefreshTimeInMillis)
+							)
+						}"
+					)
+				}
+				if (isLoading) {
+					CircularProgressIndicator()
 				}
 			}
 		}

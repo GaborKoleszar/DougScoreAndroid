@@ -8,13 +8,13 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import gabor.koleszar.dougscore.common.Resource
 import gabor.koleszar.dougscore.domain.model.Car
-import gabor.koleszar.dougscore.domain.preferences.Preferences
 import gabor.koleszar.dougscore.domain.repository.CarRepository
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.stateIn
@@ -24,8 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-	private val repository: CarRepository,
-	private val preferences: Preferences
+	private val repository: CarRepository
 ) : ViewModel() {
 
 	private val _searchText = MutableStateFlow("")
@@ -88,7 +87,7 @@ class MainViewModel @Inject constructor(
 		viewModelScope.launch {
 			repository
 				.getAllCars(shouldFetchFromRemote)
-				.collect { result ->
+				.collectLatest { result ->
 					when (result) {
 
 						is Resource.Success -> {
@@ -97,7 +96,6 @@ class MainViewModel @Inject constructor(
 								isLoading = false
 								isRefreshing = false
 							}
-							preferences.saveLastTimeDataUpdated(System.currentTimeMillis())
 						}
 
 						is Resource.Error -> {

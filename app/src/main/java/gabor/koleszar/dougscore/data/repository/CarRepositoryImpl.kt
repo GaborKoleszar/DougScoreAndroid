@@ -8,6 +8,7 @@ import gabor.koleszar.dougscore.data.mapper.toEntity
 import gabor.koleszar.dougscore.data.remote.CarDataParser
 import gabor.koleszar.dougscore.data.remote.DougScoreApi
 import gabor.koleszar.dougscore.domain.model.Car
+import gabor.koleszar.dougscore.domain.preferences.Preferences
 import gabor.koleszar.dougscore.domain.repository.CarRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -20,7 +21,8 @@ import javax.inject.Singleton
 class CarRepositoryImpl @Inject constructor(
 	database: CarDatabase,
 	private val api: DougScoreApi,
-	private val carDataParser: CarDataParser<CarDto>
+	private val carDataParser: CarDataParser<CarDto>,
+	private val preferences: Preferences
 ) : CarRepository {
 
 	private val dao = database.carDao
@@ -33,23 +35,17 @@ class CarRepositoryImpl @Inject constructor(
 			emit(Resource.Loading())
 
 			val localCars = dao.getAllCars()
-			val isDbEmpty = localCars.isEmpty()
+			val cacheExists = localCars.isNotEmpty()
 
-			if (!isDbEmpty) {
+			if (cacheExists && !shouldFetchFromRemote) {
 				emit(Resource.Success(
 					data = localCars.map { carEntity ->
 						carEntity.toDomainModel()
 					}
 				))
-			}
-
-			val shouldLoadFromCache = !isDbEmpty && !shouldFetchFromRemote
-
-			if (shouldLoadFromCache) {
 				return@flow
 			}
 
-			emit(Resource.Loading())
 			val remoteCars = try {
 				val response = api.getDougScoreExcelFile()
 				carDataParser.parse(response.byteStream())
@@ -81,6 +77,7 @@ class CarRepositoryImpl @Inject constructor(
 				emit(Resource.Success(
 					data = dao.getAllCars().map { it.toDomainModel() }
 				))
+				preferences.saveLastTimeDataUpdated(System.currentTimeMillis())
 			}
 		}
 	}

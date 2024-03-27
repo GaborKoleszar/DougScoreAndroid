@@ -2,7 +2,9 @@ package gabor.koleszar.dougscore.presentation.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -58,6 +60,7 @@ fun SearchField(
 			disabledIndicatorColor = Color.Transparent,
 		)
 	)
+	Spacer(modifier = Modifier.height(StyleConstants.DEFAULT_PADDING))
 }
 
 @Composable

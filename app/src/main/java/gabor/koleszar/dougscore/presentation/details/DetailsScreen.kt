@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import coil.compose.AsyncImage
@@ -63,10 +64,25 @@ fun DetailsScreen(
 				)
 				//Basic info
 				Spacer(modifier = Modifier.height(DEFAULT_PADDING))
-				Text(text = "Manufacturer : ${car.manufacturer}")
-				Text(text = "Model : ${car.model}")
-				Text(text = "Vehicle country : ${car.vehicleCountry}")
-				Text(text = "Filming location : ${car.filmingLocationCity}, ${car.filmingLocationState}")
+				Row {
+					Text(text = "Manufacturer : ")
+					Text(fontWeight = FontWeight.Bold, text = car.manufacturer)
+				}
+				Row {
+					Text(text = "Model : ")
+					Text(fontWeight = FontWeight.Bold, text = car.model)
+				}
+				Row {
+					Text(text = "Vehicle country : ")
+					Text(fontWeight = FontWeight.Bold, text = car.vehicleCountry)
+				}
+				Row {
+					Text(text = "Filming location : ")
+					Text(
+						fontWeight = FontWeight.Bold,
+						text = "${car.filmingLocationCity}, ${car.filmingLocationState}"
+					)
+				}
 				//Dougscores
 				Row(
 					Modifier
@@ -77,19 +93,19 @@ fun DetailsScreen(
 						modifier = Modifier.weight(0.5f),
 						horizontalAlignment = Alignment.CenterHorizontally
 					) {
-						Text(text = "Daily score")
+						Text(fontWeight = FontWeight.Bold, text = "Daily score")
 					}
 					Column(
 						modifier = Modifier.weight(0.5f),
 						horizontalAlignment = Alignment.CenterHorizontally
 					) {
-						Text(text = "Weekend score")
+						Text(fontWeight = FontWeight.Bold, text = "Weekend score")
 					}
 				}
 				DougScoreTable(car)
 				Spacer(modifier = Modifier.height(DEFAULT_PADDING))
-				Text(text = "Total DougScore : ${car.dougScore}")
-				Text(text = "Global ranking : #${car.id + 1}")
+				Text(fontWeight = FontWeight.Bold, text = "Total DougScore : ${car.dougScore}")
+				Text(fontWeight = FontWeight.Bold, text = "Global ranking : #${car.id + 1}")
 				Spacer(modifier = Modifier.height(DEFAULT_PADDING))
 				val videoAvailable = remember(key1 = car) {
 					car.videoId != null
