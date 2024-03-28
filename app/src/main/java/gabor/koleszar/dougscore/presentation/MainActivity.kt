@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -25,6 +26,8 @@ import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -64,7 +67,15 @@ class MainActivity : ComponentActivity() {
 
 		val mainViewModel by viewModels<MainViewModel>()
 		setContent {
-			DougScoreTheme {
+			val userSettings by remember {
+				mutableStateOf(preferences.loadUserSettings())
+			}
+			val shouldUseDarkTheme =
+				(isSystemInDarkTheme() && userSettings.useDeviceTheme) || userSettings.useDarkTheme
+
+			DougScoreTheme(
+				darkTheme = shouldUseDarkTheme
+			) {
 				val scrollBehavior =
 					TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 				val navController = rememberNavController()
@@ -85,8 +96,8 @@ class MainActivity : ComponentActivity() {
 											contentDescription = "Open search"
 										)
 									}
-								} else	{
-									IconButton(onClick = { navController.navigate(Route.SETTINGS)}) {
+								} else {
+									IconButton(onClick = { navController.navigate(Route.SETTINGS) }) {
 										Icon(
 											imageVector = Icons.Default.Settings,
 											contentDescription = "Settings"

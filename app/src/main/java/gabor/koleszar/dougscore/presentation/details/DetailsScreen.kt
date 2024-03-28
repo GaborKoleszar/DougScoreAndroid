@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -28,6 +29,7 @@ import androidx.core.content.ContextCompat.startActivity
 import coil.compose.AsyncImage
 import gabor.koleszar.dougscore.R
 import gabor.koleszar.dougscore.domain.model.Car
+import gabor.koleszar.dougscore.presentation.StyleConstants
 import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
 import gabor.koleszar.dougscore.presentation.StyleConstants.SPACER_WIDTH
 import gabor.koleszar.dougscore.presentation.components.DougScoreTable
@@ -49,7 +51,7 @@ fun DetailsScreen(
 				.fillMaxWidth()
 				.padding(DEFAULT_PADDING),
 			elevation = CardDefaults.cardElevation(
-				defaultElevation = 5.dp
+				defaultElevation = StyleConstants.ELEVATION
 			)
 		) {
 			Column(
@@ -60,7 +62,9 @@ fun DetailsScreen(
 					model = car.getMaxresImageLink(),
 					contentDescription = null,
 					error = painterResource(id = R.drawable.placeholder),
-					placeholder = painterResource(id = R.drawable.placeholder)
+					placeholder = painterResource(id = R.drawable.placeholder),
+					modifier = Modifier.fillMaxWidth(),
+					contentScale = ContentScale.FillWidth
 				)
 				//Basic info
 				Spacer(modifier = Modifier.height(DEFAULT_PADDING))

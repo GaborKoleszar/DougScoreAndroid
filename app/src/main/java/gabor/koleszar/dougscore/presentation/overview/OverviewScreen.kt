@@ -43,6 +43,7 @@ import gabor.koleszar.dougscore.R
 import gabor.koleszar.dougscore.domain.model.Car
 import gabor.koleszar.dougscore.domain.model.DailyScore
 import gabor.koleszar.dougscore.domain.model.WeekendScore
+import gabor.koleszar.dougscore.presentation.StyleConstants
 import gabor.koleszar.dougscore.presentation.StyleConstants.BORDER_RADIUS
 import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
 import gabor.koleszar.dougscore.presentation.StyleConstants.SPACER_WIDTH
@@ -82,7 +83,7 @@ fun LoadedListView(
 		LazyColumn(
 			modifier = modifier
 				.fillMaxSize()
-				.padding(horizontal = SPACER_WIDTH)
+				.padding(horizontal = DEFAULT_PADDING)
 		) {
 			itemsIndexed(cars) { index, car ->
 				CarListItem(car, { onCarClick(index) })
@@ -120,7 +121,7 @@ fun CarListItem(
 		onClick = onCarClick,
 		modifier = modifier.fillMaxWidth(),
 		elevation = CardDefaults.cardElevation(
-			defaultElevation = 5.dp
+			defaultElevation = StyleConstants.ELEVATION
 		)
 	) {
 		Row(
