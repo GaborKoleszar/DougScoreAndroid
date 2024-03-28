@@ -20,6 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -63,8 +69,16 @@ fun DetailsScreen(
 					contentDescription = null,
 					error = painterResource(id = R.drawable.placeholder),
 					placeholder = painterResource(id = R.drawable.placeholder),
-					modifier = Modifier.fillMaxWidth(),
-					contentScale = ContentScale.FillWidth
+					modifier = Modifier.fillMaxWidth().graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
+						.drawWithContent {
+							drawContent()
+							drawRect(
+								brush = Brush.verticalGradient(
+									0.97f to Color.Black, 1f to Color.Transparent
+								), blendMode = BlendMode.DstIn
+							)
+						},
+					contentScale = ContentScale.FillWidth,
 				)
 				//Basic info
 				Spacer(modifier = Modifier.height(DEFAULT_PADDING))

@@ -57,9 +57,10 @@ import gabor.koleszar.dougscore.presentation.theme.Silver
 fun OverviewScreen(
 	onCarClick: (Int) -> Unit,
 	cars: List<Car>,
+	isLoading: Boolean,
 	modifier: Modifier = Modifier
 ) {
-	if (cars.isEmpty()) {
+	if (isLoading) {
 		InitialListView(modifier)
 	} else {
 		LoadedListView(
@@ -179,7 +180,7 @@ fun CarListItem(
 						drawContent()
 						drawRect(
 							brush = Brush.horizontalGradient(
-								0.0f to Color.Transparent, 0.1f to Color.Black
+								0.0f to Color.Transparent, 0.03f to Color.Black
 							), blendMode = BlendMode.DstIn
 						)
 					}
@@ -230,7 +231,8 @@ fun CarListPreview() {
 	DougScoreTheme {
 		OverviewScreen(
 			onCarClick = {},
-			cars = dummyCars()
+			cars = dummyCars(),
+			isLoading = false
 		)
 	}
 }

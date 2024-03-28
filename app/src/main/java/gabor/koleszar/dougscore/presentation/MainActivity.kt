@@ -191,7 +191,8 @@ class MainActivity : ComponentActivity() {
 									mainViewModel.onCarSelected(carId)
 									navController.navigate(Route.DETAILS)
 								},
-								cars = cars
+								cars = cars,
+								isLoading = mainViewModel.isLoading
 							)
 						}
 						composable(

@@ -89,7 +89,7 @@ fun SettingsScreen(
 					}
 				}
 				Spacer(modifier = Modifier.height(StyleConstants.SPACER_WIDTH))
-				Row(
+				/*Row(
 					modifier = Modifier.fillMaxWidth(),
 					verticalAlignment = Alignment.CenterVertically
 				) {
@@ -119,7 +119,7 @@ fun SettingsScreen(
 						enabled = !settingsViewModel.useDeviceTheme,
 						modifier = Modifier.weight(1f)
 					)
-				}
+				}*/
 			}
 		}
 	}
