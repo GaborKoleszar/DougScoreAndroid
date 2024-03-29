@@ -16,7 +16,7 @@ android {
 		applicationId = "gabor.koleszar.dougscore"
 		minSdk = 26
 		targetSdk = 34
-		versionCode = 1
+		versionCode = 3
 		versionName = "0.1"
 
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

@@ -66,7 +66,7 @@ fun DetailsScreen(
 			) {
 				AsyncImage(
 					model = car.getMaxresImageLink(),
-					contentDescription = null,
+					contentDescription = "Image of ${car.model}",
 					error = painterResource(id = R.drawable.placeholder),
 					placeholder = painterResource(id = R.drawable.placeholder),
 					modifier = Modifier.fillMaxWidth().graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
