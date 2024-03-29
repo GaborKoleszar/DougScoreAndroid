@@ -53,9 +53,6 @@ class MainViewModel @Inject constructor(
 	var isLoading by mutableStateOf(true)
 		private set
 
-	var isRefreshing by mutableStateOf(false)
-		private set
-
 	private val _carInDetailsScreen = MutableStateFlow<Car?>(null)
 	val carInDetailsScreen = _carInDetailsScreen.asStateFlow()
 
@@ -94,18 +91,15 @@ class MainViewModel @Inject constructor(
 							result.data?.let { freshCars ->
 								_cars.update { freshCars }
 								isLoading = false
-								isRefreshing = false
 							}
 						}
 
 						is Resource.Error -> {
 							isLoading = false
-							isRefreshing = false
 						}
 
 						is Resource.Loading -> {
 							isLoading = true
-							isRefreshing = true
 						}
 					}
 				}

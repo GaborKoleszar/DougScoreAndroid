@@ -1,7 +1,6 @@
 package gabor.koleszar.dougscore.presentation.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,17 +9,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import coil.compose.AsyncImage
 import gabor.koleszar.dougscore.R
 import gabor.koleszar.dougscore.domain.model.Car
+import gabor.koleszar.dougscore.presentation.StyleConstants
 import gabor.koleszar.dougscore.presentation.StyleConstants.SPACER_WIDTH
 
 @Composable
@@ -50,12 +44,15 @@ fun DougScoreTable(
 			Modifier.weight(0.2f),
 			horizontalAlignment = Alignment.CenterHorizontally
 		) {
-			Text(text = car.dailyScore.value.toString())
-			Text(text = car.dailyScore.comfort.toString())
-			Text(text = car.dailyScore.features.toString())
-			Text(text = car.dailyScore.practicality.toString())
-			Text(text = car.dailyScore.quality.toString())
-			Text(text = car.dailyScore.total.toString())
+			SubScoreColoredTextField(score = car.dailyScore.value)
+			SubScoreColoredTextField(score = car.dailyScore.comfort)
+			SubScoreColoredTextField(score = car.dailyScore.features)
+			SubScoreColoredTextField(score = car.dailyScore.practicality)
+			SubScoreColoredTextField(score = car.dailyScore.quality)
+			Text(
+				text = car.dailyScore.total.toString(),
+				color = StyleConstants.getColorFromScore(car.dailyScore.total)
+			)
 		}
 		Column(
 			Modifier.weight(0.3f),
@@ -72,14 +69,29 @@ fun DougScoreTable(
 			Modifier.weight(0.2f),
 			horizontalAlignment = Alignment.CenterHorizontally
 		) {
-			Text(text = car.weekendScore.acceleration.toString())
-			Text(text = car.weekendScore.styling.toString())
-			Text(text = car.weekendScore.handling.toString())
-			Text(text = car.weekendScore.funFactor.toString())
-			Text(text = car.weekendScore.coolFactor.toString())
-			Text(text = car.weekendScore.total.toString())
+			SubScoreColoredTextField(score = car.weekendScore.acceleration)
+			SubScoreColoredTextField(score = car.weekendScore.styling)
+			SubScoreColoredTextField(score = car.weekendScore.handling)
+			SubScoreColoredTextField(score = car.weekendScore.funFactor)
+			SubScoreColoredTextField(score = car.weekendScore.coolFactor)
+			Text(
+				text = car.weekendScore.total.toString(),
+				color = StyleConstants.getColorFromScore(car.weekendScore.total)
+			)
 		}
 	}
+}
+
+@Composable
+fun SubScoreColoredTextField(
+	score: Byte,
+	modifier: Modifier = Modifier
+) {
+	Text(
+		text = score.toString(),
+		modifier,
+		color = StyleConstants.getColorFromSubScore(score)
+	)
 }
 
 @OptIn(ExperimentalFoundationApi::class)

@@ -16,7 +16,7 @@ android {
 		applicationId = "gabor.koleszar.dougscore"
 		minSdk = 26
 		targetSdk = 34
-		versionCode = 1
+		versionCode = 3
 		versionName = "0.1"
 
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -28,6 +28,7 @@ android {
 	buildTypes {
 		release {
 			isMinifyEnabled = true
+			isShrinkResources = true
 			proguardFiles(
 				getDefaultProguardFile("proguard-android-optimize.txt"),
 				"proguard-rules.pro"
@@ -66,13 +67,14 @@ dependencies {
 	implementation("androidx.compose.ui:ui-tooling-preview")
 	implementation("androidx.compose.material3:material3")
 	implementation("androidx.profileinstaller:profileinstaller:1.3.1")
-	"baselineProfile"(project(":baselineprofile"))
-	//implementation("androidx.compose.material:material:1.6.2")
 	debugImplementation("androidx.compose.ui:ui-tooling")
 	debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+	//Baseline Profiles
+	"baselineProfile"(project(":baselineprofile"))
+
 	//Firebase
-	implementation(platform("com.google.firebase:firebase-bom:32.7.4"))
+	implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
 	implementation("com.google.firebase:firebase-crashlytics")
 	implementation("com.google.firebase:firebase-analytics")
 
@@ -80,8 +82,8 @@ dependencies {
 	implementation("io.coil-kt:coil-compose:2.6.0")
 
 	// Dagger - Hilt
-	implementation("com.google.dagger:hilt-android:2.50")
-	ksp("com.google.dagger:hilt-compiler:2.50")
+	implementation("com.google.dagger:hilt-android:2.51")
+	ksp("com.google.dagger:hilt-compiler:2.51")
 
 	// Retrofit
 	implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -101,7 +103,7 @@ dependencies {
 
 	// Navigation
 	implementation("androidx.navigation:navigation-compose:2.7.7")
-	//implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+	implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
 	//Apache Poi
 	implementation("org.apache.poi:poi-ooxml:5.2.5")

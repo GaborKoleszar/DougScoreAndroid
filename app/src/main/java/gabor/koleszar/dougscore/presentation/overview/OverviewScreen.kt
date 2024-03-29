@@ -43,6 +43,7 @@ import gabor.koleszar.dougscore.R
 import gabor.koleszar.dougscore.domain.model.Car
 import gabor.koleszar.dougscore.domain.model.DailyScore
 import gabor.koleszar.dougscore.domain.model.WeekendScore
+import gabor.koleszar.dougscore.presentation.StyleConstants
 import gabor.koleszar.dougscore.presentation.StyleConstants.BORDER_RADIUS
 import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
 import gabor.koleszar.dougscore.presentation.StyleConstants.SPACER_WIDTH
@@ -56,9 +57,10 @@ import gabor.koleszar.dougscore.presentation.theme.Silver
 fun OverviewScreen(
 	onCarClick: (Int) -> Unit,
 	cars: List<Car>,
+	isLoading: Boolean,
 	modifier: Modifier = Modifier
 ) {
-	if (cars.isEmpty()) {
+	if (isLoading) {
 		InitialListView(modifier)
 	} else {
 		LoadedListView(
@@ -82,7 +84,7 @@ fun LoadedListView(
 		LazyColumn(
 			modifier = modifier
 				.fillMaxSize()
-				.padding(horizontal = SPACER_WIDTH)
+				.padding(horizontal = DEFAULT_PADDING)
 		) {
 			itemsIndexed(cars) { index, car ->
 				CarListItem(car, { onCarClick(index) })
@@ -120,7 +122,7 @@ fun CarListItem(
 		onClick = onCarClick,
 		modifier = modifier.fillMaxWidth(),
 		elevation = CardDefaults.cardElevation(
-			defaultElevation = 5.dp
+			defaultElevation = StyleConstants.ELEVATION
 		)
 	) {
 		Row(
@@ -178,7 +180,7 @@ fun CarListItem(
 						drawContent()
 						drawRect(
 							brush = Brush.horizontalGradient(
-								0.0f to Color.Transparent, 0.1f to Color.Black
+								0.0f to Color.Transparent, 0.03f to Color.Black
 							), blendMode = BlendMode.DstIn
 						)
 					}
@@ -229,7 +231,8 @@ fun CarListPreview() {
 	DougScoreTheme {
 		OverviewScreen(
 			onCarClick = {},
-			cars = dummyCars()
+			cars = dummyCars(),
+			isLoading = false
 		)
 	}
 }

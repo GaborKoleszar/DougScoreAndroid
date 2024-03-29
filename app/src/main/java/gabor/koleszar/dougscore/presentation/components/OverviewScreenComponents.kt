@@ -23,7 +23,7 @@ fun AsyncImageWithMultipleFallback(
 	if (fallbackNeeded) {
 		AsyncImage(
 			model = fallbackModel,
-			contentDescription = null,
+			contentDescription = "car image",
 			error = painterResource(id = R.drawable.placeholder),
 			modifier = modifier,
 			contentScale = ContentScale.Crop
@@ -31,7 +31,7 @@ fun AsyncImageWithMultipleFallback(
 	} else {
 		AsyncImage(
 			model = model,
-			contentDescription = null,
+			contentDescription = "car image",
 			onError = { fallbackNeeded = true },
 			modifier = modifier,
 			contentScale = ContentScale.Crop
