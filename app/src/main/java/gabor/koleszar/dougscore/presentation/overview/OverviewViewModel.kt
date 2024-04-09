@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class OverviewViewModel @Inject constructor(
 	private val repository: CarRepository
 ) : ViewModel() {
 
@@ -53,9 +53,6 @@ class MainViewModel @Inject constructor(
 	var isLoading by mutableStateOf(true)
 		private set
 
-	private val _carInDetailsScreen = MutableStateFlow<Car?>(null)
-	val carInDetailsScreen = _carInDetailsScreen.asStateFlow()
-
 	init {
 		getCarIntroductions()
 	}
@@ -70,12 +67,6 @@ class MainViewModel @Inject constructor(
 
 	fun onClearSearchField() {
 		_searchText.value = ""
-	}
-
-	fun onCarSelected(carId: Int) {
-		_carInDetailsScreen.update {
-			cars.value[carId]
-		}
 	}
 
 	private fun getCarIntroductions(

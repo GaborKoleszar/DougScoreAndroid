@@ -14,9 +14,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,11 +33,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import gabor.koleszar.dougscore.R
-import gabor.koleszar.dougscore.domain.model.Car
 import gabor.koleszar.dougscore.presentation.StyleConstants
 import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
 import gabor.koleszar.dougscore.presentation.StyleConstants.SPACER_WIDTH
@@ -43,8 +46,13 @@ import gabor.koleszar.dougscore.presentation.components.DougScoreTable
 @Composable
 fun DetailsScreen(
 	modifier: Modifier = Modifier,
-	car: Car
+	carId: Int,
+	detailsViewModel: DetailsViewModel = hiltViewModel()
 ) {
+	LaunchedEffect(carId) {
+		detailsViewModel.setCarInDetails(carId)
+	}
+	val car by detailsViewModel.carInDetailsScreen.collectAsStateWithLifecycle()
 	Box(
 		modifier = modifier
 			.fillMaxWidth()
@@ -64,79 +72,86 @@ fun DetailsScreen(
 				modifier.fillMaxWidth(),
 				horizontalAlignment = Alignment.CenterHorizontally
 			) {
-				AsyncImage(
-					model = car.getMaxresImageLink(),
-					contentDescription = "Image of ${car.model}",
-					error = painterResource(id = R.drawable.placeholder),
-					placeholder = painterResource(id = R.drawable.placeholder),
-					modifier = Modifier.fillMaxWidth().graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
-						.drawWithContent {
-							drawContent()
-							drawRect(
-								brush = Brush.verticalGradient(
-									0.97f to Color.Black, 1f to Color.Transparent
-								), blendMode = BlendMode.DstIn
-							)
-						},
-					contentScale = ContentScale.FillWidth,
-				)
-				//Basic info
-				Spacer(modifier = Modifier.height(DEFAULT_PADDING))
-				Row {
-					Text(text = "Manufacturer : ")
-					Text(fontWeight = FontWeight.Bold, text = car.manufacturer)
-				}
-				Row {
-					Text(text = "Model : ")
-					Text(fontWeight = FontWeight.Bold, text = car.model)
-				}
-				Row {
-					Text(text = "Vehicle country : ")
-					Text(fontWeight = FontWeight.Bold, text = car.vehicleCountry)
-				}
-				Row {
-					Text(text = "Filming location : ")
-					Text(
-						fontWeight = FontWeight.Bold,
-						text = "${car.filmingLocationCity}, ${car.filmingLocationState}"
+				if (car != null) {
+					val notNullCar = car!!
+					AsyncImage(
+						model = notNullCar.getMaxresImageLink(),
+						contentDescription = "Image of ${notNullCar.model}",
+						error = painterResource(id = R.drawable.placeholder),
+						placeholder = painterResource(id = R.drawable.placeholder),
+						modifier = Modifier
+							.fillMaxWidth()
+							.graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
+							.drawWithContent {
+								drawContent()
+								drawRect(
+									brush = Brush.verticalGradient(
+										0.97f to Color.Black, 1f to Color.Transparent
+									), blendMode = BlendMode.DstIn
+								)
+							},
+						contentScale = ContentScale.FillWidth,
 					)
-				}
-				//Dougscores
-				Row(
-					Modifier
-						.fillMaxWidth()
-						.padding(SPACER_WIDTH)
-				) {
-					Column(
-						modifier = Modifier.weight(0.5f),
-						horizontalAlignment = Alignment.CenterHorizontally
+					//Basic info
+					Spacer(modifier = Modifier.height(DEFAULT_PADDING))
+					Row {
+						Text(text = "Manufacturer : ")
+						Text(fontWeight = FontWeight.Bold, text = notNullCar.manufacturer)
+					}
+					Row {
+						Text(text = "Model : ")
+						Text(fontWeight = FontWeight.Bold, text = notNullCar.model)
+					}
+					Row {
+						Text(text = "Vehicle country : ")
+						Text(fontWeight = FontWeight.Bold, text = notNullCar.vehicleCountry)
+					}
+					Row {
+						Text(text = "Filming location : ")
+						Text(
+							fontWeight = FontWeight.Bold,
+							text = "${notNullCar.filmingLocationCity}, ${notNullCar.filmingLocationState}"
+						)
+					}
+					//Dougscores
+					Row(
+						Modifier
+							.fillMaxWidth()
+							.padding(SPACER_WIDTH)
 					) {
-						Text(fontWeight = FontWeight.Bold, text = "Daily score")
+						Column(
+							modifier = Modifier.weight(0.5f),
+							horizontalAlignment = Alignment.CenterHorizontally
+						) {
+							Text(fontWeight = FontWeight.Bold, text = "Daily score")
+						}
+						Column(
+							modifier = Modifier.weight(0.5f),
+							horizontalAlignment = Alignment.CenterHorizontally
+						) {
+							Text(fontWeight = FontWeight.Bold, text = "Weekend score")
+						}
 					}
-					Column(
-						modifier = Modifier.weight(0.5f),
-						horizontalAlignment = Alignment.CenterHorizontally
-					) {
-						Text(fontWeight = FontWeight.Bold, text = "Weekend score")
+					DougScoreTable(notNullCar)
+					Spacer(modifier = Modifier.height(DEFAULT_PADDING))
+					Text(fontWeight = FontWeight.Bold, text = "Total DougScore : ${notNullCar.dougScore}")
+					Text(fontWeight = FontWeight.Bold, text = "Global ranking : #${notNullCar.id + 1}")
+					Spacer(modifier = Modifier.height(DEFAULT_PADDING))
+					val videoAvailable = remember(key1 = car) {
+						notNullCar.videoId != null
 					}
-				}
-				DougScoreTable(car)
-				Spacer(modifier = Modifier.height(DEFAULT_PADDING))
-				Text(fontWeight = FontWeight.Bold, text = "Total DougScore : ${car.dougScore}")
-				Text(fontWeight = FontWeight.Bold, text = "Global ranking : #${car.id + 1}")
-				Spacer(modifier = Modifier.height(DEFAULT_PADDING))
-				val videoAvailable = remember(key1 = car) {
-					car.videoId != null
-				}
-				if (videoAvailable) {
-					Button(onClick = {
-						val intent = Intent(Intent.ACTION_VIEW, Uri.parse(car.videoLink))
-						startActivity(context, intent, null)
-					}) {
-						Text(text = "Watch on youtube")
+					if (videoAvailable) {
+						Button(onClick = {
+							val intent = Intent(Intent.ACTION_VIEW, Uri.parse(notNullCar.videoLink))
+							startActivity(context, intent, null)
+						}) {
+							Text(text = "Watch on youtube")
+						}
 					}
+					Spacer(modifier = Modifier.height(DEFAULT_PADDING))
+				} else {
+					CircularProgressIndicator()
 				}
-				Spacer(modifier = Modifier.height(DEFAULT_PADDING))
 			}
 		}
 	}

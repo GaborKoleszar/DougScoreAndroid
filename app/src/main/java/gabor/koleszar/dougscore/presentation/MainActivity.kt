@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -35,19 +34,22 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
 import gabor.koleszar.dougscore.domain.preferences.Preferences
 import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
 import gabor.koleszar.dougscore.presentation.components.BottomSheetDropdownMenu
 import gabor.koleszar.dougscore.presentation.components.SearchField
 import gabor.koleszar.dougscore.presentation.details.DetailsScreen
-import gabor.koleszar.dougscore.presentation.overview.MainViewModel
 import gabor.koleszar.dougscore.presentation.overview.OverviewScreen
+import gabor.koleszar.dougscore.presentation.overview.OverviewViewModel
 import gabor.koleszar.dougscore.presentation.settings.SettingsScreen
 import gabor.koleszar.dougscore.presentation.theme.DougScoreTheme
 import kotlinx.coroutines.launch
@@ -65,7 +67,6 @@ class MainActivity : ComponentActivity() {
 		enableEdgeToEdge()
 		super.onCreate(savedInstanceState)
 
-		val mainViewModel by viewModels<MainViewModel>()
 		setContent {
 			val userSettings by remember {
 				mutableStateOf(preferences.loadUserSettings())
@@ -83,6 +84,7 @@ class MainActivity : ComponentActivity() {
 				val coroutineScope = rememberCoroutineScope()
 				val currentDestination =
 					navController.currentBackStackEntryAsState().value?.destination?.route
+				val overviewViewModel = hiltViewModel<OverviewViewModel>()
 
 				BottomSheetScaffold(
 					scaffoldState = scaffoldState,
@@ -140,11 +142,11 @@ class MainActivity : ComponentActivity() {
 								.padding(DEFAULT_PADDING)
 						) {
 							val searchFieldValue =
-								mainViewModel.searchText.collectAsStateWithLifecycle().value
+								overviewViewModel.searchText.collectAsStateWithLifecycle().value
 							SearchField(
 								searchFieldValue,
-								mainViewModel::onSearchTextChange,
-								mainViewModel::onClearSearchField
+								overviewViewModel::onSearchTextChange,
+								overviewViewModel::onClearSearchField
 							)
 							BottomSheetDropdownMenu()
 						}
@@ -185,33 +187,33 @@ class MainActivity : ComponentActivity() {
 						composable(
 							route = Route.OVERVIEW
 						) {
-							val cars by mainViewModel.cars.collectAsState()
+							val cars by overviewViewModel.cars.collectAsState()
 							OverviewScreen(
 								onCarClick = { carId ->
-									mainViewModel.onCarSelected(carId)
-									navController.navigate(Route.DETAILS)
+									navController.navigate(Route.DETAILS + "/$carId")
 								},
 								cars = cars,
-								isLoading = mainViewModel.isLoading
+								isLoading = overviewViewModel.isLoading
 							)
 						}
 						composable(
-							route = Route.DETAILS
+							route = Route.DETAILS + "/{carId}",
+							arguments = listOf(
+								navArgument("carId") {
+									type = NavType.IntType
+								}
+							)
 						) {
-							val car by mainViewModel.carInDetailsScreen.collectAsState()
-							car?.let { nonNullCar ->
-								DetailsScreen(
-									car = nonNullCar
-								)
-							}
+							val carId = it.arguments?.getInt("carId")!!
+							DetailsScreen(carId = carId)
 						}
 						composable(
 							route = Route.SETTINGS
 						) {
 							SettingsScreen(
 								lastRefreshTimeInMillis = preferences.loadLastTimeDataUpdated(),
-								isLoading = mainViewModel.isLoading,
-								onRefreshData = mainViewModel::refresh
+								isLoading = overviewViewModel.isLoading,
+								onRefreshData = overviewViewModel::refresh
 							)
 						}
 					}
