@@ -1,4 +1,4 @@
-package gabor.koleszar.dougscore.common
+package gabor.koleszar.dougscore.presentation.util
 
 import android.icu.util.Calendar
 import java.util.Date
