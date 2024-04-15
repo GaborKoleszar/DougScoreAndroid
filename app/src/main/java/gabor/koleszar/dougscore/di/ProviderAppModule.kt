@@ -1,8 +1,9 @@
 package gabor.koleszar.dougscore.di
 
-import android.app.Application
 import android.content.Context
-import android.content.SharedPreferences
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
@@ -11,9 +12,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import gabor.koleszar.dougscore.common.Constants
 import gabor.koleszar.dougscore.data.local.CarDatabase
-import gabor.koleszar.dougscore.data.local.preferences.PreferencesImpl
+import gabor.koleszar.dougscore.data.local.preferences.UserPreferencesImpl
 import gabor.koleszar.dougscore.data.remote.DougScoreApi
-import gabor.koleszar.dougscore.domain.preferences.Preferences
+import gabor.koleszar.dougscore.domain.preferences.UserPreferences
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
@@ -21,6 +22,12 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 import javax.inject.Singleton
+
+
+private const val DB_NAME = "car_db"
+private const val DATASTORE_NAME = "settings"
+
+private val Context.dataStore by preferencesDataStore(DATASTORE_NAME)
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -51,21 +58,21 @@ class ProviderAppModule {
 		return Room.databaseBuilder(
 			context,
 			CarDatabase::class.java,
-			"car_db"
+			DB_NAME
 		).build()
 	}
 
 	@Provides
 	@Singleton
-	fun provideSharedPreferences(
-		app: Application
-	): SharedPreferences {
-		return app.getSharedPreferences("shared_pref", Context.MODE_PRIVATE)
+	fun providePreferencesDataStore(
+		@ApplicationContext context: Context
+	): DataStore<Preferences> {
+		return context.dataStore
 	}
 
 	@Provides
 	@Singleton
-	fun providePreferences(sharedPreferences: SharedPreferences): Preferences {
-		return PreferencesImpl(sharedPreferences)
+	fun providePreferences(dataStore: DataStore<Preferences>): UserPreferences {
+		return UserPreferencesImpl(dataStore)
 	}
 }

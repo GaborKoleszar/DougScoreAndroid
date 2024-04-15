@@ -25,8 +25,6 @@ import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +41,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
-import gabor.koleszar.dougscore.domain.preferences.Preferences
 import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
 import gabor.koleszar.dougscore.presentation.components.BottomSheetDropdownMenu
 import gabor.koleszar.dougscore.presentation.components.SearchField
@@ -51,15 +48,12 @@ import gabor.koleszar.dougscore.presentation.details.DetailsScreen
 import gabor.koleszar.dougscore.presentation.overview.OverviewScreen
 import gabor.koleszar.dougscore.presentation.overview.OverviewViewModel
 import gabor.koleszar.dougscore.presentation.settings.SettingsScreen
+import gabor.koleszar.dougscore.presentation.settings.SettingsViewModel
 import gabor.koleszar.dougscore.presentation.theme.DougScoreTheme
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-	@Inject
-	lateinit var preferences: Preferences
 
 	@OptIn(ExperimentalMaterial3Api::class)
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,9 +62,9 @@ class MainActivity : ComponentActivity() {
 		super.onCreate(savedInstanceState)
 
 		setContent {
-			val userSettings by remember {
-				mutableStateOf(preferences.loadUserSettings())
-			}
+			val settingsViewModel = hiltViewModel<SettingsViewModel>()
+			val userSettings by settingsViewModel.userSettings.collectAsStateWithLifecycle()
+
 			val shouldUseDarkTheme =
 				(isSystemInDarkTheme() && userSettings.useDeviceTheme) || userSettings.useDarkTheme
 
@@ -210,8 +204,9 @@ class MainActivity : ComponentActivity() {
 						composable(
 							route = Route.SETTINGS
 						) {
+							val lastUpdated by settingsViewModel.lastUpdatedTimeStamp.collectAsStateWithLifecycle()
 							SettingsScreen(
-								lastRefreshTimeInMillis = preferences.loadLastTimeDataUpdated(),
+								lastRefreshTimeInMillis = lastUpdated,
 								isLoading = overviewViewModel.isLoading,
 								onRefreshData = overviewViewModel::refresh
 							)

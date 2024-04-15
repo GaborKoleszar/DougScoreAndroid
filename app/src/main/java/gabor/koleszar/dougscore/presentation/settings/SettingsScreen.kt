@@ -33,7 +33,6 @@ fun SettingsScreen(
 	onRefreshData: () -> Unit,
 	modifier: Modifier = Modifier
 ) {
-	val settingsViewModel: SettingsViewModel = hiltViewModel()
 	Box(
 		modifier = modifier
 			.fillMaxWidth()

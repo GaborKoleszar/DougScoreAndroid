@@ -1,26 +1,30 @@
 package gabor.koleszar.dougscore.presentation.settings
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import gabor.koleszar.dougscore.domain.preferences.Preferences
+import gabor.koleszar.dougscore.domain.model.UserSettings
+import gabor.koleszar.dougscore.domain.preferences.UserPreferences
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-	private val preferences: Preferences
+	private val userPreferences: UserPreferences
 ) : ViewModel() {
 
-	var useDarkTheme by mutableStateOf(false)
+	private val _userSettings = MutableStateFlow(UserSettings())
+	val userSettings = _userSettings.asStateFlow()
 
-	var useDeviceTheme by mutableStateOf(true)
+	private val _lastUpdatedTimeStamp = MutableStateFlow(System.currentTimeMillis())
+	val lastUpdatedTimeStamp = _lastUpdatedTimeStamp.asStateFlow()
 
 	init {
-		val userSettings = preferences.loadUserSettings()
-		useDarkTheme = userSettings.useDarkTheme
-		useDeviceTheme = userSettings.useDeviceTheme
+		viewModelScope.launch {
+			_userSettings.emit(userPreferences.loadUserSettings())
+			_lastUpdatedTimeStamp.emit(userPreferences.loadLastTimeDataUpdated())
+		}
 	}
-
 }
