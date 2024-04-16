@@ -43,6 +43,10 @@ class SettingsViewModel @Inject constructor(
 				SettingsEvent.TOGGLE_DEVICE_THEME -> {
 					userPreferencesRepository.saveUseDeviceTheme(!userSettings.value.useDeviceTheme)
 				}
+
+				SettingsEvent.TOGGLE_DYNAMIC_COLOR -> {
+					userPreferencesRepository.saveUseDynamicColor(!userSettings.value.useDynamicColor)
+				}
 			}
 		}
 	}

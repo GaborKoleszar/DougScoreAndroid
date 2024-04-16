@@ -23,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberTopAppBarState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -75,7 +74,8 @@ class MainActivity : ComponentActivity() {
 						userSettings.useDarkTheme && !userSettings.useDeviceTheme
 
 			DougScoreTheme(
-				darkTheme = shouldUseDarkTheme
+				darkTheme = shouldUseDarkTheme,
+				dynamicColor = userSettings.useDynamicColor
 			) {
 				val scrollBehavior =
 					TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
@@ -187,7 +187,7 @@ class MainActivity : ComponentActivity() {
 						composable(
 							route = Route.OVERVIEW
 						) {
-							val cars by overviewViewModel.cars.collectAsState()
+							val cars by overviewViewModel.cars.collectAsStateWithLifecycle()
 							OverviewScreen(
 								onCarClick = { carId ->
 									navController.navigate(Route.DETAILS + "/$carId")

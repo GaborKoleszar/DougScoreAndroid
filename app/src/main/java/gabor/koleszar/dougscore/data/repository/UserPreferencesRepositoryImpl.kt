@@ -50,10 +50,17 @@ class UserPreferencesRepositoryImpl(
 		}
 	}
 
+	override suspend fun saveUseDynamicColor(useDynamicColor: Boolean) {
+		val key = booleanPreferencesKey(UserPreferencesRepository.KEY_DYNAMIC_COLOR)
+		dataStore.edit { prefs ->
+			prefs[key] = useDynamicColor
+		}
+	}
 
 	override suspend fun loadUserSettings(): Flow<UserSettings> {
 		val keyDarkTheme = booleanPreferencesKey(UserPreferencesRepository.KEY_DARK_THEME)
 		val keyDeviceTheme = booleanPreferencesKey(UserPreferencesRepository.KEY_DEVICE_THEME)
+		val keyDynamicColor = booleanPreferencesKey(UserPreferencesRepository.KEY_DYNAMIC_COLOR)
 
 		return dataStore.data.catch {
 			if (it is IOException)
@@ -63,7 +70,8 @@ class UserPreferencesRepositoryImpl(
 		}.map { preferences ->
 			val darkTheme = preferences[keyDarkTheme] ?: false
 			val deviceTheme = preferences[keyDeviceTheme] ?: true
-			UserSettings(darkTheme, deviceTheme)
+			val dynamicColor = preferences[keyDynamicColor] ?: false
+			UserSettings(darkTheme, deviceTheme, dynamicColor)
 		}
 	}
 }

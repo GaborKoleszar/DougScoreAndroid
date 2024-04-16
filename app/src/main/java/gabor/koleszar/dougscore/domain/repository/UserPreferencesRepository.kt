@@ -12,11 +12,14 @@ interface UserPreferencesRepository {
 
 	suspend fun saveUseDeviceTheme(useDeviceTheme: Boolean)
 
+	suspend fun saveUseDynamicColor(useDynamicColor: Boolean)
+
 	suspend fun loadUserSettings(): Flow<UserSettings>
 
 	companion object {
 		const val KEY_LAST_UPDATE = "lastupdatekey"
 		const val KEY_DARK_THEME = "darkthemekey"
 		const val KEY_DEVICE_THEME = "devicethemekey"
+		const val KEY_DYNAMIC_COLOR = "dynamiccolorkey"
 	}
 }

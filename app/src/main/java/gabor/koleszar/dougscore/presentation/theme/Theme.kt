@@ -173,7 +173,7 @@ val DarkAndroidBackgroundTheme = BackgroundTheme(color = Color.Black)
 fun DougScoreTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     androidTheme: Boolean = false,
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     //Color scheme

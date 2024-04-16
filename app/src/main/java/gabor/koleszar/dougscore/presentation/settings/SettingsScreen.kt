@@ -1,5 +1,7 @@
 package gabor.koleszar.dougscore.presentation.settings
 
+import android.os.Build
+import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -121,7 +123,26 @@ fun SettingsScreen(
 						modifier = Modifier.weight(1f)
 					)
 				}
+				Row(
+					modifier = Modifier.fillMaxWidth(),
+					verticalAlignment = Alignment.CenterVertically
+				) {
+					Text(
+						text = "Dynamic colors",
+						modifier = Modifier.weight(1f),
+						textAlign = TextAlign.Center
+					)
+					Switch(
+						checked = userSettings.useDynamicColor,
+						onCheckedChange = { handleEvent(SettingsEvent.TOGGLE_DYNAMIC_COLOR) },
+						enabled = supportsDynamicTheming(),
+						modifier = Modifier.weight(1f)
+					)
+				}
 			}
 		}
 	}
 }
+
+@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.S)
+fun supportsDynamicTheming() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
