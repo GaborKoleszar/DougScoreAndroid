@@ -31,8 +31,7 @@ class OverviewViewModel @Inject constructor(
 
 	private val _cars = MutableStateFlow<List<Car>>(emptyList())
 
-	@OptIn(FlowPreview::class)
-	val cars = searchText.debounce(500L)
+	val cars = searchText
 		.combine(_cars) { text, cars ->
 			if (text.isBlank() || text.length < 3) {
 				cars

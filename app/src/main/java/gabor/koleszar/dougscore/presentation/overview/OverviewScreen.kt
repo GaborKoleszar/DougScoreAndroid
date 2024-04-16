@@ -79,16 +79,21 @@ fun LoadedListView(
 ) {
 	Box(
 		modifier = Modifier
-			.fillMaxSize()
+			.fillMaxSize(),
+		contentAlignment = Alignment.Center
 	) {
-		LazyColumn(
-			modifier = modifier
-				.fillMaxSize()
-				.padding(horizontal = DEFAULT_PADDING)
-		) {
-			itemsIndexed(cars) { index, car ->
-				CarListItem(car, { onCarClick(index) })
+		if (cars.isNotEmpty())	{
+			LazyColumn(
+				modifier = modifier
+					.fillMaxSize()
+					.padding(horizontal = DEFAULT_PADDING)
+			) {
+				itemsIndexed(cars) { index, car ->
+					CarListItem(car, { onCarClick(index) })
+				}
 			}
+		} else	{
+			Text(text = "No results found.")
 		}
 	}
 }

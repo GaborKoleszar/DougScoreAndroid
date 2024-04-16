@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomSheetScaffold
@@ -122,8 +123,8 @@ class MainActivity : ComponentActivity() {
 										}
 									}) {
 										Icon(
-											imageVector = Icons.Default.Search,
-											contentDescription = "Open search"
+											imageVector = Icons.Default.MoreVert,
+											contentDescription = "Open filters"
 										)
 									}
 								}
@@ -141,8 +142,8 @@ class MainActivity : ComponentActivity() {
 							modifier = Modifier
 								.padding(DEFAULT_PADDING)
 						) {
-							val searchFieldValue =
-								overviewViewModel.searchText.collectAsStateWithLifecycle().value
+							val searchFieldValue by
+								overviewViewModel.searchText.collectAsStateWithLifecycle()
 							SearchField(
 								searchFieldValue,
 								overviewViewModel::onSearchTextChange,
