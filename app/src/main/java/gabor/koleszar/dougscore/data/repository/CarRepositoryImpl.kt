@@ -8,7 +8,7 @@ import gabor.koleszar.dougscore.data.mapper.toEntity
 import gabor.koleszar.dougscore.data.remote.CarDataParser
 import gabor.koleszar.dougscore.data.remote.DougScoreApi
 import gabor.koleszar.dougscore.domain.model.Car
-import gabor.koleszar.dougscore.domain.preferences.UserPreferences
+import gabor.koleszar.dougscore.domain.repository.UserPreferencesRepository
 import gabor.koleszar.dougscore.domain.repository.CarRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -22,7 +22,7 @@ class CarRepositoryImpl @Inject constructor(
 	database: CarDatabase,
 	private val api: DougScoreApi,
 	private val carDataParser: CarDataParser<CarDto>,
-	private val userPreferences: UserPreferences
+	private val userPreferencesRepository: UserPreferencesRepository
 ) : CarRepository {
 
 	private val dao = database.carDao
@@ -77,7 +77,7 @@ class CarRepositoryImpl @Inject constructor(
 				emit(Resource.Success(
 					data = dao.getAllCars().map { it.toDomainModel() }
 				))
-				userPreferences.saveLastTimeDataUpdated(System.currentTimeMillis())
+				userPreferencesRepository.saveLastTimeDataUpdated(System.currentTimeMillis())
 			}
 		}
 	}

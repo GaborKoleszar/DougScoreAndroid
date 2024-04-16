@@ -1,17 +1,18 @@
-package gabor.koleszar.dougscore.domain.preferences
+package gabor.koleszar.dougscore.domain.repository
 
 import gabor.koleszar.dougscore.domain.model.UserSettings
+import kotlinx.coroutines.flow.Flow
 
-interface UserPreferences {
+interface UserPreferencesRepository {
 	suspend fun saveLastTimeDataUpdated(timeInMillis: Long)
 
-	suspend fun loadLastTimeDataUpdated(): Long
+	suspend fun loadLastTimeDataUpdated(): Flow<Long>
 
 	suspend fun saveUseDarkTheme(useDarkTheme: Boolean)
 
 	suspend fun saveUseDeviceTheme(useDeviceTheme: Boolean)
 
-	suspend fun loadUserSettings(): UserSettings
+	suspend fun loadUserSettings(): Flow<UserSettings>
 
 	companion object {
 		const val KEY_LAST_UPDATE = "lastupdatekey"

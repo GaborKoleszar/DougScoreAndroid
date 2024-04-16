@@ -65,8 +65,14 @@ class MainActivity : ComponentActivity() {
 			val settingsViewModel = hiltViewModel<SettingsViewModel>()
 			val userSettings by settingsViewModel.userSettings.collectAsStateWithLifecycle()
 
+			/*
+			 * Should use dark theme when system is dark and user wants to follow the system theme
+			 * OR
+			 * dark theme is enabled AND follow device theme is disabled
+			 */
 			val shouldUseDarkTheme =
-				(isSystemInDarkTheme() && userSettings.useDeviceTheme) || userSettings.useDarkTheme
+				(isSystemInDarkTheme() && userSettings.useDeviceTheme) ||
+						userSettings.useDarkTheme && !userSettings.useDeviceTheme
 
 			DougScoreTheme(
 				darkTheme = shouldUseDarkTheme
@@ -208,7 +214,9 @@ class MainActivity : ComponentActivity() {
 							SettingsScreen(
 								lastRefreshTimeInMillis = lastUpdated,
 								isLoading = overviewViewModel.isLoading,
-								onRefreshData = overviewViewModel::refresh
+								onRefreshData = overviewViewModel::refresh,
+								userSettings = userSettings,
+								handleEvent = settingsViewModel::handleEvent
 							)
 						}
 					}

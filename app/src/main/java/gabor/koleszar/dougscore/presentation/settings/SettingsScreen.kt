@@ -15,15 +15,17 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import gabor.koleszar.dougscore.presentation.util.DateTimeFormatter
+import gabor.koleszar.dougscore.domain.model.UserSettings
 import gabor.koleszar.dougscore.presentation.StyleConstants
+import gabor.koleszar.dougscore.presentation.util.DateTimeFormatter
 import java.util.Date
 
 @Composable
@@ -31,6 +33,8 @@ fun SettingsScreen(
 	lastRefreshTimeInMillis: Long,
 	isLoading: Boolean,
 	onRefreshData: () -> Unit,
+	userSettings: UserSettings,
+	handleEvent: (SettingsEvent) -> Unit,
 	modifier: Modifier = Modifier
 ) {
 	Box(
@@ -86,7 +90,7 @@ fun SettingsScreen(
 					}
 				}
 				Spacer(modifier = Modifier.height(StyleConstants.SPACER_WIDTH))
-				/*Row(
+				Row(
 					modifier = Modifier.fillMaxWidth(),
 					verticalAlignment = Alignment.CenterVertically
 				) {
@@ -96,8 +100,8 @@ fun SettingsScreen(
 						textAlign = TextAlign.Center
 					)
 					Switch(
-						checked = settingsViewModel.useDeviceTheme,
-						onCheckedChange = {},
+						checked = userSettings.useDeviceTheme,
+						onCheckedChange = { handleEvent(SettingsEvent.TOGGLE_DEVICE_THEME) },
 						modifier = Modifier.weight(1f)
 					)
 				}
@@ -111,12 +115,12 @@ fun SettingsScreen(
 						textAlign = TextAlign.Center
 					)
 					Switch(
-						checked = settingsViewModel.useDarkTheme,
-						onCheckedChange = { },
-						enabled = !settingsViewModel.useDeviceTheme,
+						checked = userSettings.useDarkTheme,
+						onCheckedChange = { handleEvent(SettingsEvent.TOGGLE_DARK_THEME) },
+						enabled = !userSettings.useDeviceTheme,
 						modifier = Modifier.weight(1f)
 					)
-				}*/
+				}
 			}
 		}
 	}

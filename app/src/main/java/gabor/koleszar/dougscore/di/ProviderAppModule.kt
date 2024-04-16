@@ -12,9 +12,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import gabor.koleszar.dougscore.common.Constants
 import gabor.koleszar.dougscore.data.local.CarDatabase
-import gabor.koleszar.dougscore.data.local.preferences.UserPreferencesImpl
+import gabor.koleszar.dougscore.data.repository.UserPreferencesRepositoryImpl
 import gabor.koleszar.dougscore.data.remote.DougScoreApi
-import gabor.koleszar.dougscore.domain.preferences.UserPreferences
+import gabor.koleszar.dougscore.domain.repository.UserPreferencesRepository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
@@ -72,7 +72,7 @@ class ProviderAppModule {
 
 	@Provides
 	@Singleton
-	fun providePreferences(dataStore: DataStore<Preferences>): UserPreferences {
-		return UserPreferencesImpl(dataStore)
+	fun providePreferences(dataStore: DataStore<Preferences>): UserPreferencesRepository {
+		return UserPreferencesRepositoryImpl(dataStore)
 	}
 }
