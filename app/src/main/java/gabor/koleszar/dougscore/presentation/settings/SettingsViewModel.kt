@@ -27,6 +27,8 @@ class SettingsViewModel @Inject constructor(
 			userPreferencesRepository.loadUserSettings().collectLatest {
 				_userSettings.emit(it)
 			}
+		}
+		viewModelScope.launch {
 			userPreferencesRepository.loadLastTimeDataUpdated().collectLatest {
 				_lastUpdatedTimeStamp.emit(it)
 			}

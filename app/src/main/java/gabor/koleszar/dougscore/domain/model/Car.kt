@@ -20,8 +20,8 @@ data class Car(
 ) {
 	suspend fun doesMatchSearchQuery(searchQuery: String): Boolean {
 		return withContext(Dispatchers.Default) {
-			return@withContext manufacturer.lowercase().contains(searchQuery) ||
-					model.lowercase().contains(searchQuery)
+			return@withContext ("${manufacturer.lowercase()} ${model.lowercase()}")
+				.contains(searchQuery.lowercase())
 		}
 	}
 

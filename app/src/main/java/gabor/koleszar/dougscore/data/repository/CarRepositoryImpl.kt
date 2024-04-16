@@ -8,8 +8,8 @@ import gabor.koleszar.dougscore.data.mapper.toEntity
 import gabor.koleszar.dougscore.data.remote.CarDataParser
 import gabor.koleszar.dougscore.data.remote.DougScoreApi
 import gabor.koleszar.dougscore.domain.model.Car
-import gabor.koleszar.dougscore.domain.repository.UserPreferencesRepository
 import gabor.koleszar.dougscore.domain.repository.CarRepository
+import gabor.koleszar.dougscore.domain.repository.UserPreferencesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okio.IOException

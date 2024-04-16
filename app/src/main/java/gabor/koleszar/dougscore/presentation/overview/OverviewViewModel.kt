@@ -18,13 +18,12 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class OverviewViewModel @Inject constructor(
-	private val repository: CarRepository
+	private val carRepository: CarRepository
 ) : ViewModel() {
 
 	private val _searchText = MutableStateFlow("")
@@ -73,14 +72,14 @@ class OverviewViewModel @Inject constructor(
 		shouldFetchFromRemote: Boolean = false
 	) {
 		viewModelScope.launch {
-			repository
+			carRepository
 				.getAllCars(shouldFetchFromRemote)
 				.collectLatest { result ->
 					when (result) {
 
 						is Resource.Success -> {
 							result.data?.let { freshCars ->
-								_cars.update { freshCars }
+								_cars.emit(freshCars)
 								isLoading = false
 							}
 						}

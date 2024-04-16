@@ -86,7 +86,10 @@ fun SettingsScreen(
 							fontStyle = FontStyle.Italic
 						)
 					}
-					Button(onClick = onRefreshData) {
+					Button(
+						onClick = onRefreshData,
+						enabled = !isLoading
+					) {
 						Text(text = "Refresh data")
 
 					}
