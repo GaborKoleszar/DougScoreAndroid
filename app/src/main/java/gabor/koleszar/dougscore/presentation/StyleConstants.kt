@@ -12,7 +12,8 @@ object StyleConstants {
 	val DEFAULT_PADDING = 16.dp
 	val BORDER_RADIUS = 10.dp
 	val SPACER_WIDTH = 8.dp
-	val ELEVATION = 5.dp
+	val ZERO_ELEVATION = 0.dp
+	val ELEVATION = 2.dp
 
 	fun getColorFromSubScore(score: Byte): Color {
 		return when (score) {

@@ -10,12 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,31 +21,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.CompositingStrategy
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
-import gabor.koleszar.dougscore.R
-import gabor.koleszar.dougscore.presentation.StyleConstants
 import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
 import gabor.koleszar.dougscore.presentation.StyleConstants.SPACER_WIDTH
+import gabor.koleszar.dougscore.presentation.components.AsyncImageWithMultipleFallback
 import gabor.koleszar.dougscore.presentation.components.DougScoreTable
 
 @Composable
 fun DetailsScreen(
-	modifier: Modifier = Modifier,
-	carId: Int,
-	detailsViewModel: DetailsViewModel = hiltViewModel()
+	modifier: Modifier = Modifier, carId: Int, detailsViewModel: DetailsViewModel = hiltViewModel()
 ) {
 	LaunchedEffect(carId) {
 		detailsViewModel.setCarInDetails(carId)
@@ -56,42 +44,26 @@ fun DetailsScreen(
 	Box(
 		modifier = modifier
 			.fillMaxWidth()
+			.padding(DEFAULT_PADDING)
 			.verticalScroll(rememberScrollState())
 	) {
 		val context = LocalContext.current
-		Card(
-			colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(DEFAULT_PADDING),
-			elevation = CardDefaults.cardElevation(
-				defaultElevation = StyleConstants.ELEVATION
-			)
+		Column(
+			modifier.fillMaxWidth()
 		) {
-			Column(
-				modifier.fillMaxWidth(),
-				horizontalAlignment = Alignment.CenterHorizontally
-			) {
-				if (car != null) {
-					val notNullCar = car!!
-					AsyncImage(
-						model = notNullCar.getMaxresImageLink(),
-						contentDescription = "Image of ${notNullCar.model}",
-						error = painterResource(id = R.drawable.placeholder),
-						placeholder = painterResource(id = R.drawable.placeholder),
-						modifier = Modifier
-							.fillMaxWidth()
-							.graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
-							.drawWithContent {
-								drawContent()
-								drawRect(
-									brush = Brush.verticalGradient(
-										0.97f to Color.Black, 1f to Color.Transparent
-									), blendMode = BlendMode.DstIn
-								)
-							},
-						contentScale = ContentScale.FillWidth,
-					)
+			if (car != null) {
+				val notNullCar = car!!
+				AsyncImageWithMultipleFallback(
+					model = notNullCar.getMaxresImageLink(),
+					fallbackModel = notNullCar.getHqFallbackImageLink(),
+					modifier = Modifier
+						.fillMaxWidth()
+						.clip(RoundedCornerShape(DEFAULT_PADDING)),
+					contentScale = ContentScale.FillWidth
+				)
+				Column(
+					modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
+				) {
 					//Basic info
 					Spacer(modifier = Modifier.height(DEFAULT_PADDING))
 					Row {
@@ -134,8 +106,14 @@ fun DetailsScreen(
 					}
 					DougScoreTable(notNullCar)
 					Spacer(modifier = Modifier.height(DEFAULT_PADDING))
-					Text(fontWeight = FontWeight.Bold, text = "Total DougScore : ${notNullCar.dougScore}")
-					Text(fontWeight = FontWeight.Bold, text = "Global ranking : #${notNullCar.id + 1}")
+					Text(
+						fontWeight = FontWeight.Bold,
+						text = "Total DougScore : ${notNullCar.dougScore}"
+					)
+					Text(
+						fontWeight = FontWeight.Bold,
+						text = "Global ranking : #${notNullCar.id + 1}"
+					)
 					Spacer(modifier = Modifier.height(DEFAULT_PADDING))
 					val videoAvailable = remember(key1 = car) {
 						notNullCar.videoId != null
@@ -149,9 +127,9 @@ fun DetailsScreen(
 						}
 					}
 					Spacer(modifier = Modifier.height(DEFAULT_PADDING))
-				} else {
-					CircularProgressIndicator()
 				}
+			} else {
+				CircularProgressIndicator()
 			}
 		}
 	}
