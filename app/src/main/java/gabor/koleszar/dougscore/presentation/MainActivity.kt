@@ -13,24 +13,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -50,7 +51,6 @@ import gabor.koleszar.dougscore.presentation.overview.OverviewViewModel
 import gabor.koleszar.dougscore.presentation.settings.SettingsScreen
 import gabor.koleszar.dougscore.presentation.settings.SettingsViewModel
 import gabor.koleszar.dougscore.presentation.theme.DougScoreTheme
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -81,14 +81,13 @@ class MainActivity : ComponentActivity() {
 				val scrollBehavior =
 					TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 				val navController = rememberNavController()
-				val scaffoldState = rememberBottomSheetScaffoldState()
-				val coroutineScope = rememberCoroutineScope()
+				val sheetState = rememberModalBottomSheetState()
+				var isSheetOpen by rememberSaveable { mutableStateOf(false) }
 				val currentDestination =
 					navController.currentBackStackEntryAsState().value?.destination?.route
 				val overviewViewModel = hiltViewModel<OverviewViewModel>()
 
-				BottomSheetScaffold(
-					scaffoldState = scaffoldState,
+				Scaffold(
 					topBar = {
 						CenterAlignedTopAppBar(
 							navigationIcon = {
@@ -118,9 +117,7 @@ class MainActivity : ComponentActivity() {
 							actions = {
 								if (currentDestination.equals(Route.OVERVIEW)) {
 									IconButton(onClick = {
-										coroutineScope.launch {
-											scaffoldState.bottomSheetState.expand()
-										}
+										isSheetOpen = true
 									}) {
 										Icon(
 											imageVector = Icons.Default.MoreVert,
@@ -134,23 +131,6 @@ class MainActivity : ComponentActivity() {
 								scrolledContainerColor = TopAppBarDefaults.centerAlignedTopAppBarColors().containerColor
 							)
 						)
-					},
-					sheetPeekHeight = 0.dp,
-					sheetContent = {
-						Column(
-							horizontalAlignment = Alignment.CenterHorizontally,
-							modifier = Modifier
-								.padding(DEFAULT_PADDING)
-						) {
-							val searchFieldValue by
-								overviewViewModel.searchText.collectAsStateWithLifecycle()
-							SearchField(
-								searchFieldValue,
-								overviewViewModel::onSearchTextChange,
-								overviewViewModel::onClearSearchField
-							)
-							BottomSheetDropdownMenu()
-						}
 					},
 					modifier = Modifier
 						.fillMaxSize()
@@ -196,6 +176,27 @@ class MainActivity : ComponentActivity() {
 								cars = cars,
 								isLoading = overviewViewModel.isLoading
 							)
+							if (isSheetOpen) {
+								ModalBottomSheet(
+									sheetState = sheetState,
+									onDismissRequest = { isSheetOpen = false }
+								) {
+									Column(
+										horizontalAlignment = Alignment.CenterHorizontally,
+										modifier = Modifier
+											.padding(DEFAULT_PADDING)
+									) {
+										val searchFieldValue by
+										overviewViewModel.searchText.collectAsStateWithLifecycle()
+										SearchField(
+											searchFieldValue,
+											overviewViewModel::onSearchTextChange,
+											overviewViewModel::onClearSearchField
+										)
+										BottomSheetDropdownMenu()
+									}
+								}
+							}
 						}
 						composable(
 							route = Route.DETAILS + "/{carId}",

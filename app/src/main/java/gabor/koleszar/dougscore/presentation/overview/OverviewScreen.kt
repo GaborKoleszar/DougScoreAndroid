@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.stringResource
@@ -89,8 +90,8 @@ fun LoadedListView(
 					.fillMaxSize()
 					.padding(horizontal = DEFAULT_PADDING)
 			) {
-				itemsIndexed(cars) { index, car ->
-					CarListItem(car, { onCarClick(index) })
+				itemsIndexed(cars) { _, car ->
+					CarListItem(car, { onCarClick(car.id) })
 				}
 			}
 		} else {
@@ -136,11 +137,12 @@ fun CarListItem(
 			verticalAlignment = Alignment.CenterVertically
 		) {
 			AsyncImageWithMultipleFallback(
-				model = car.getSdImageLink(),
+				model = car.getMaxresImageLink(),
 				fallbackModel = car.getHqFallbackImageLink(),
 				modifier = Modifier
 					.width(200.dp)
-					.clip(RoundedCornerShape(DEFAULT_PADDING))
+					.clip(RoundedCornerShape(DEFAULT_PADDING)),
+				filterQuality = FilterQuality.Low
 			)
 			Box(modifier = Modifier.fillMaxSize()) {
 				Card(
@@ -218,16 +220,6 @@ fun CarListItem(
 			.fillMaxWidth()
 			.height(SPACER_WIDTH)
 	)
-}
-
-fun Modifier.vertical() = layout { measurable, constraints ->
-	val placeable = measurable.measure(constraints)
-	layout(placeable.height, placeable.width) {
-		placeable.place(
-			x = -(placeable.width / 2 - placeable.height / 2),
-			y = -(placeable.height / 2 - placeable.width / 2)
-		)
-	}
 }
 
 /*
