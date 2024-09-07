@@ -46,7 +46,7 @@ android {
 		compose = true
 	}
 	composeOptions {
-		kotlinCompilerExtensionVersion = "1.5.11"
+		kotlinCompilerExtensionVersion = "1.5.15"
 	}
 	packaging {
 		resources {
@@ -58,9 +58,9 @@ android {
 dependencies {
 
 	implementation("androidx.core:core-ktx:1.13.1")
-	implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-	implementation("androidx.activity:activity-compose:1.9.0")
-	implementation(platform("androidx.compose:compose-bom:2024.05.00"))
+	implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.5")
+	implementation("androidx.activity:activity-compose:1.9.2")
+	implementation(platform("androidx.compose:compose-bom:2024.09.00"))
 	implementation("androidx.core:core-splashscreen:1.0.1")
 	implementation("androidx.compose.ui:ui")
 	implementation("androidx.compose.ui:ui-graphics")
@@ -75,7 +75,7 @@ dependencies {
 	implementation("androidx.profileinstaller:profileinstaller:1.3.1")
 
 	//Firebase
-	implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
+	implementation(platform("com.google.firebase:firebase-bom:33.2.0"))
 	implementation("com.google.firebase:firebase-crashlytics")
 	implementation("com.google.firebase:firebase-analytics")
 
@@ -83,8 +83,8 @@ dependencies {
 	implementation("io.coil-kt:coil-compose:2.6.0")
 
 	// Dagger - Hilt
-	implementation("com.google.dagger:hilt-android:2.51")
-	ksp("com.google.dagger:hilt-compiler:2.51")
+	implementation("com.google.dagger:hilt-android:2.51.1")
+	ksp("com.google.dagger:hilt-compiler:2.51.1")
 
 	// Retrofit
 	implementation("com.squareup.retrofit2:retrofit:2.11.0")
@@ -103,12 +103,12 @@ dependencies {
 	implementation ("androidx.datastore:datastore-preferences:1.1.1")
 
 	//Compose lifecycle
-	implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+	implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.5")
 
 	// Navigation
-	implementation("androidx.navigation:navigation-compose:2.7.7")
+	implementation("androidx.navigation:navigation-compose:2.8.0")
 	implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
 	//Apache Poi
-	implementation("org.apache.poi:poi-ooxml:5.2.5")
+	implementation("org.apache.poi:poi-ooxml:5.3.0")
 }
