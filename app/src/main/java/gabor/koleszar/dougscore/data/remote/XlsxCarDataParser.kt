@@ -30,8 +30,7 @@ class XlsxCarDataParser @Inject constructor() : CarDataParser<CarDto> {
 
 				while (rowIterator.hasNext()) {
 					val row = rowIterator.next()
-					if (row.getCell(YEAR_COLUMN).toString().isEmpty())
-						break
+					if (row.getCell(YEAR_COLUMN).toString().isEmpty()) break
 					val youtubeUrl = getYtUrl(row.getCell(VIDEOLINK_COLUMN) as XSSFCell)
 					carIntroductions.add(
 						CarDto(
@@ -90,8 +89,7 @@ class XlsxCarDataParser @Inject constructor() : CarDataParser<CarDto> {
 	private fun getYtUrl(url: XSSFCell): String? {
 		//Handle different format urls
 		//If cell contains 38:57:00.000
-		if (url.hyperlink != null)
-			return url.hyperlink.address
+		if (url.hyperlink != null) return url.hyperlink.address
 		//If cell contains =HYPERLINK("https://www.youtube.com/watch?v=EkYVXIWAPnc","39:50")
 		else if (url.rawValue != null) {
 			val regex = """HYPERLINK\("([^"]+)""".toRegex()
@@ -109,8 +107,7 @@ class XlsxCarDataParser @Inject constructor() : CarDataParser<CarDto> {
 	}
 
 	private fun getVideoId(url: String?): String? {
-		if (url == null)
-			return null
+		if (url == null) return null
 		val index = url.indexOf('?')
 		return url.substring(index + 3, index + 14)
 	}

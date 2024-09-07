@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface UserPreferencesRepository {
 	suspend fun saveLastTimeDataUpdated(timeInMillis: Long)
 
-	suspend fun loadLastTimeDataUpdated(): Flow<Long>
+	fun loadLastTimeDataUpdated(): Flow<Long>
 
 	suspend fun saveUseDarkTheme(useDarkTheme: Boolean)
 
@@ -14,7 +14,7 @@ interface UserPreferencesRepository {
 
 	suspend fun saveUseDynamicColor(useDynamicColor: Boolean)
 
-	suspend fun loadUserSettings(): Flow<UserSettings>
+	fun loadUserSettings(): Flow<UserSettings>
 
 	companion object {
 		const val KEY_LAST_UPDATE = "lastupdatekey"

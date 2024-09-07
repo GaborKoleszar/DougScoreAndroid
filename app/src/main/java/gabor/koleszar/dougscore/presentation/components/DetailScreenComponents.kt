@@ -1,6 +1,5 @@
 package gabor.koleszar.dougscore.presentation.components
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -94,7 +93,6 @@ fun SubScoreColoredTextField(
 	)
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OneLineText(
 	text: String,

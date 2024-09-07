@@ -24,7 +24,7 @@ class UserPreferencesRepositoryImpl(
 		}
 	}
 
-	override suspend fun loadLastTimeDataUpdated(): Flow<Long> {
+	override fun loadLastTimeDataUpdated(): Flow<Long> {
 		val key = longPreferencesKey(UserPreferencesRepository.KEY_LAST_UPDATE)
 		return dataStore.data.catch {
 			if (it is IOException)
@@ -57,7 +57,7 @@ class UserPreferencesRepositoryImpl(
 		}
 	}
 
-	override suspend fun loadUserSettings(): Flow<UserSettings> {
+	override fun loadUserSettings(): Flow<UserSettings> {
 		val keyDarkTheme = booleanPreferencesKey(UserPreferencesRepository.KEY_DARK_THEME)
 		val keyDeviceTheme = booleanPreferencesKey(UserPreferencesRepository.KEY_DEVICE_THEME)
 		val keyDynamicColor = booleanPreferencesKey(UserPreferencesRepository.KEY_DYNAMIC_COLOR)

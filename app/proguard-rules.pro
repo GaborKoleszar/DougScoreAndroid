@@ -50,6 +50,7 @@
 
 -keep class com.fasterxml.**
 
+#noinspection ShrinkerUnresolvedReference
 -keep class schemaorg_apache_xmlbeans.system.sF1327CCA741569E70F9CA8C9AF9B44B2.TypeSystemHolder { public final static *** typeSystem; }
 
 -keep class org.apache.** { *; }

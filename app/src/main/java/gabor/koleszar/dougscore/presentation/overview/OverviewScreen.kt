@@ -1,6 +1,5 @@
 package gabor.koleszar.dougscore.presentation.overview
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,7 +33,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -114,7 +112,6 @@ fun InitialListView(modifier: Modifier = Modifier) {
 	}
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CarListItem(
 	car: Car, onCarClick: () -> Unit, modifier: Modifier = Modifier

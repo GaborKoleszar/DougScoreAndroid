@@ -27,7 +27,7 @@ class CarRepositoryImpl @Inject constructor(
 
 	private val dao = database.carDao
 
-	override suspend fun getAllCars(
+	override fun getAllCars(
 		shouldFetchFromRemote: Boolean
 	): Flow<Resource<List<Car>>> {
 
@@ -82,7 +82,7 @@ class CarRepositoryImpl @Inject constructor(
 		}
 	}
 
-	override suspend fun getCarWithId(id: Int): Flow<Resource<Car>> {
+	override fun getCarWithId(id: Int): Flow<Resource<Car>> {
 		return flow {
 			emit(Resource.Loading())
 			try {
