@@ -140,30 +140,6 @@ class MainActivity : ComponentActivity() {
 						modifier = Modifier.padding(scaffoldPadding),
 						navController = navController,
 						startDestination = Route.OVERVIEW,
-						enterTransition = {
-							slideIntoContainer(
-								towards = AnimatedContentTransitionScope.SlideDirection.Companion.Down,
-								animationSpec = tween(500)
-							)
-						},
-						exitTransition = {
-							slideOutOfContainer(
-								towards = AnimatedContentTransitionScope.SlideDirection.Companion.Down,
-								animationSpec = tween(500)
-							)
-						},
-						popEnterTransition = {
-							slideIntoContainer(
-								towards = AnimatedContentTransitionScope.SlideDirection.Companion.Up,
-								animationSpec = tween(500)
-							)
-						},
-						popExitTransition = {
-							slideOutOfContainer(
-								towards = AnimatedContentTransitionScope.SlideDirection.Companion.Up,
-								animationSpec = tween(500)
-							)
-						}
 					) {
 						composable(
 							route = Route.OVERVIEW
