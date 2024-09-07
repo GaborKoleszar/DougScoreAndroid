@@ -4,8 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,6 +41,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
 import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
+import gabor.koleszar.dougscore.presentation.components.AnimatedIcon
 import gabor.koleszar.dougscore.presentation.components.BottomSheetDropdownMenu
 import gabor.koleszar.dougscore.presentation.components.SearchField
 import gabor.koleszar.dougscore.presentation.details.DetailsScreen
@@ -91,25 +90,19 @@ class MainActivity : ComponentActivity() {
 					topBar = {
 						CenterAlignedTopAppBar(
 							navigationIcon = {
-								if (!currentDestination.equals(Route.OVERVIEW)) {
-									IconButton(onClick = { navController.popBackStack() }) {
-										Icon(
-											imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-											contentDescription = "Open search"
-										)
-									}
-								} else {
-									IconButton(onClick = { navController.navigate(Route.SETTINGS) }) {
-										Icon(
-											imageVector = Icons.Default.Settings,
-											contentDescription = "Settings"
-										)
-									}
-								}
+								AnimatedIcon(
+									icon1 = Icons.Default.Settings,
+									contentDescription1 = "Settings",
+									onClick1 = { navController.navigate(Route.SETTINGS) },
+									icon2 = Icons.AutoMirrored.Default.ArrowBack,
+									contentDescription2 = "Back",
+									onClick2 = { navController.popBackStack() },
+									showButton1 = currentDestination.equals(Route.OVERVIEW)
+								)
 							},
 							title = {
 								Text(
-									text = "Unofficial DougScore",
+									text = "DougScore",
 									maxLines = 1,
 									overflow = TextOverflow.Ellipsis
 								)
