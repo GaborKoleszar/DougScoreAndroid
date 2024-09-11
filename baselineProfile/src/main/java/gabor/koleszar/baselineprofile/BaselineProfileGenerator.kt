@@ -1,9 +1,13 @@
 package gabor.koleszar.baselineprofile
 
+import androidx.benchmark.macro.MacrobenchmarkScope
 import androidx.benchmark.macro.junit4.BaselineProfileRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.By
+import androidx.test.uiautomator.Direction
+import androidx.test.uiautomator.Until
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -54,6 +58,7 @@ class BaselineProfileGenerator {
 			// Start default activity for your app
 			pressHome()
 			startActivityAndWait()
+			scrollList()
 
 			// TODO Write more interactions to optimize advanced journeys of your app.
 			// For example:
@@ -64,5 +69,13 @@ class BaselineProfileGenerator {
 			// Check UiAutomator documentation for more information how to interact with the app.
 			// https://d.android.com/training/testing/other-components/ui-automator
 		}
+	}
+
+	private fun MacrobenchmarkScope.scrollList() {
+		device.wait(Until.hasObject(By.textContains("Dougscore:")), 5000)
+		val list = device.findObject(By.res("car_list"))
+		list.setGestureMargin(device.displayWidth / 2)
+		list.fling(Direction.DOWN)
+		device.click(device.getDisplayWidth() / 2, device.getDisplayHeight() / 2)
 	}
 }
