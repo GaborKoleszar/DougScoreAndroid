@@ -72,7 +72,7 @@ class BaselineProfileGenerator {
 	}
 
 	private fun MacrobenchmarkScope.scrollList() {
-		device.wait(Until.hasObject(By.textContains("Dougscore:")), 5000)
+		device.wait(Until.hasObject(By.textContains("Dougscore:")), 15000)
 		val list = device.findObject(By.res("car_list"))
 		list.setGestureMargin(device.displayWidth / 2)
 		list.fling(Direction.DOWN)

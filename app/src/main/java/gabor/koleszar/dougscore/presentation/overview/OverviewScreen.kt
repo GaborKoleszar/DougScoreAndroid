@@ -244,7 +244,8 @@ fun SharedTransitionScope.CarListItem(
 							.sharedBounds(
 								sharedContentState = rememberSharedContentState(key = "car_dougscore_${car.id}"),
 								animatedVisibilityScope = animatedVisibilityScope,
-							))
+							)
+					)
 				}
 			}
 

@@ -80,23 +80,27 @@ fun SharedTransitionScope.DetailsScreen(
 					Spacer(modifier = Modifier.height(DEFAULT_PADDING))
 					Row {
 						Text(text = "Manufacturer : ")
-						Text(fontWeight = FontWeight.Bold,
+						Text(
+							fontWeight = FontWeight.Bold,
 							text = notNullCar.manufacturer,
 							modifier = Modifier
 								.sharedBounds(
 									sharedContentState = rememberSharedContentState(key = "car_manufacturer_${notNullCar.id}"),
 									animatedVisibilityScope = animatedVisibilityScope,
-								))
+								)
+						)
 					}
 					Row {
 						Text(text = "Model : ")
-						Text(fontWeight = FontWeight.Bold,
+						Text(
+							fontWeight = FontWeight.Bold,
 							text = notNullCar.model,
 							modifier = Modifier
 								.sharedBounds(
 									sharedContentState = rememberSharedContentState(key = "car_model_${notNullCar.id}"),
 									animatedVisibilityScope = animatedVisibilityScope,
-								))
+								)
+						)
 					}
 					Row {
 						Text(text = "Vehicle country : ")
