@@ -57,58 +57,58 @@ android {
 
 dependencies {
 
-	implementation("androidx.core:core-ktx:1.13.1")
-	implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.5")
-	implementation("androidx.activity:activity-compose:1.9.2")
-	implementation(platform("androidx.compose:compose-bom:2024.09.00"))
-	implementation("androidx.core:core-splashscreen:1.0.1")
-	implementation("androidx.compose.ui:ui")
-	implementation("androidx.compose.ui:ui-graphics")
-	implementation("androidx.compose.ui:ui-tooling-preview")
-	implementation("androidx.compose.material3:material3")
-	implementation("androidx.profileinstaller:profileinstaller:1.3.1")
+	implementation(libs.androidx.core.ktx)
+	implementation(libs.androidx.lifecycle.runtime.ktx)
+	implementation(libs.androidx.activity.compose)
+	implementation(platform(libs.androidx.compose.bom))
+	implementation(libs.androidx.core.splashscreen)
+	implementation(libs.androidx.ui)
+	implementation(libs.androidx.ui.graphics)
+	implementation(libs.androidx.ui.tooling.preview)
+	implementation(libs.androidx.material3)
+	implementation(libs.androidx.profileinstaller)
 	"baselineProfile"(project(":baselineprofile"))
-	debugImplementation("androidx.compose.ui:ui-tooling")
-	debugImplementation("androidx.compose.ui:ui-test-manifest")
+	debugImplementation(libs.androidx.ui.tooling)
+	debugImplementation(libs.androidx.ui.test.manifest)
 
 	//Baseline Profiles
-	implementation("androidx.profileinstaller:profileinstaller:1.3.1")
+	implementation(libs.androidx.profileinstaller)
 
 	//Firebase
-	implementation(platform("com.google.firebase:firebase-bom:33.2.0"))
-	implementation("com.google.firebase:firebase-crashlytics")
-	implementation("com.google.firebase:firebase-analytics")
+	implementation(platform(libs.firebase.bom))
+	implementation(libs.firebase.crashlytics)
+	implementation(libs.firebase.analytics)
 
 	//Coil
-	implementation("io.coil-kt:coil-compose:2.6.0")
+	implementation(libs.coil.compose)
 
 	// Dagger - Hilt
-	implementation("com.google.dagger:hilt-android:2.51.1")
-	ksp("com.google.dagger:hilt-compiler:2.51.1")
+	implementation(libs.hilt.android)
+	ksp(libs.hilt.compiler)
 
 	// Retrofit
-	implementation("com.squareup.retrofit2:retrofit:2.11.0")
-	implementation("com.squareup.retrofit2:converter-moshi:2.11.0")
+	implementation(libs.retrofit)
+	implementation(libs.converter.moshi)
 
 	// Okhttp
-	implementation("com.squareup.okhttp3:okhttp:4.12.0")
-	implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+	implementation(libs.okhttp)
+	implementation(libs.logging.interceptor)
 
 	// Room
-	implementation("androidx.room:room-ktx:2.6.1")
-	implementation("androidx.room:room-runtime:2.6.1")
-	ksp("androidx.room:room-compiler:2.6.1")
+	implementation(libs.androidx.room.ktx)
+	implementation(libs.androidx.room.runtime)
+	ksp(libs.androidx.room.compiler)
 
 	//Preferences Datastore
-	implementation ("androidx.datastore:datastore-preferences:1.1.1")
+	implementation (libs.androidx.datastore.preferences)
 
 	//Compose lifecycle
-	implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.5")
+	implementation(libs.androidx.lifecycle.runtime.compose)
 
 	// Navigation
-	implementation("androidx.navigation:navigation-compose:2.8.0")
-	implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+	implementation(libs.androidx.navigation.compose)
+	implementation(libs.androidx.hilt.navigation.compose)
 
 	//Apache Poi
-	implementation("org.apache.poi:poi-ooxml:5.3.0")
+	implementation(libs.poi.ooxml)
 }
