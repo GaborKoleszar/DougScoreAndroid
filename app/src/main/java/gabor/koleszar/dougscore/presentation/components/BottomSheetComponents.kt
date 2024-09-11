@@ -47,7 +47,7 @@ fun SearchField(
 				modifier = Modifier.clickable(onClick = onClearSearchField)
 			)
 		},
-		placeholder = { Text("Search car by name") },
+		placeholder = { Text("Filter car by name") },
 		textStyle = MaterialTheme.typography.bodyLarge,
 		shape = RoundedCornerShape(StyleConstants.BORDER_RADIUS),
 		maxLines = 1,

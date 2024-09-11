@@ -1,5 +1,10 @@
+@file:OptIn(ExperimentalSharedTransitionApi::class)
+
 package gabor.koleszar.dougscore.presentation.overview
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -54,11 +59,13 @@ import gabor.koleszar.dougscore.presentation.theme.DougScoreTheme
 import gabor.koleszar.dougscore.presentation.theme.Gold
 import gabor.koleszar.dougscore.presentation.theme.Silver
 
+
 @Composable
-fun OverviewScreen(
+fun SharedTransitionScope.OverviewScreen(
 	onCarClick: (Int) -> Unit,
 	cars: List<Car>,
 	isLoading: Boolean,
+	animatedVisibilityScope: AnimatedVisibilityScope,
 	modifier: Modifier = Modifier
 ) {
 	if (isLoading) {
@@ -67,15 +74,17 @@ fun OverviewScreen(
 		LoadedListView(
 			onCarClick,
 			cars,
+			animatedVisibilityScope,
 			modifier
 		)
 	}
 }
 
 @Composable
-fun LoadedListView(
+fun SharedTransitionScope.LoadedListView(
 	onCarClick: (Int) -> Unit,
 	cars: List<Car>,
+	animatedVisibilityScope: AnimatedVisibilityScope,
 	modifier: Modifier = Modifier
 ) {
 	Box(
@@ -91,7 +100,7 @@ fun LoadedListView(
 					.testTag("car_list")
 			) {
 				itemsIndexed(cars) { _, car ->
-					CarListItem(car, { onCarClick(car.id) })
+					CarListItem(car, { onCarClick(car.id) }, animatedVisibilityScope)
 				}
 			}
 		} else {
@@ -115,8 +124,11 @@ fun InitialListView(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun CarListItem(
-	car: Car, onCarClick: () -> Unit, modifier: Modifier = Modifier
+fun SharedTransitionScope.CarListItem(
+	car: Car,
+	onCarClick: () -> Unit,
+	animatedVisibilityScope: AnimatedVisibilityScope,
+	modifier: Modifier = Modifier
 ) {
 	Spacer(
 		modifier = modifier
@@ -139,6 +151,10 @@ fun CarListItem(
 				model = car.getMaxresImageLink(),
 				fallbackModel = car.getHqFallbackImageLink(),
 				modifier = Modifier
+					.sharedElement(
+						state = rememberSharedContentState(key = "car_image_${car.id}"),
+						animatedVisibilityScope = animatedVisibilityScope,
+					)
 					.width(200.dp)
 					.clip(RoundedCornerShape(DEFAULT_PADDING)),
 				filterQuality = FilterQuality.Low
@@ -185,6 +201,10 @@ fun CarListItem(
 							maxLines = 1,
 							overflow = TextOverflow.Ellipsis,
 							modifier = Modifier
+								.sharedBounds(
+									sharedContentState = rememberSharedContentState(key = "car_manufacturer_${car.id}"),
+									animatedVisibilityScope = animatedVisibilityScope,
+								)
 								.basicMarquee()
 								.weight(0.9f)
 						)
@@ -199,16 +219,32 @@ fun CarListItem(
 								else -> MaterialTheme.colorScheme.onSurface
 							},
 							textAlign = TextAlign.Center,
-							maxLines = 1
+							maxLines = 1,
+							modifier = Modifier
+								.sharedBounds(
+									sharedContentState = rememberSharedContentState(key = "car_rank_${car.id}"),
+									animatedVisibilityScope = animatedVisibilityScope,
+								)
 						)
 					}
 					Text(
 						fontWeight = FontWeight.Bold,
 						text = car.model,
 						maxLines = 1,
-						modifier = Modifier.basicMarquee()
+						modifier = Modifier
+							.sharedBounds(
+								sharedContentState = rememberSharedContentState(key = "car_model_${car.id}"),
+								animatedVisibilityScope = animatedVisibilityScope,
+							)
+							.basicMarquee()
 					)
-					Text(text = "Dougscore: " + car.dougScore)
+					Text(
+						text = "Dougscore: " + car.dougScore,
+						modifier = Modifier
+							.sharedBounds(
+								sharedContentState = rememberSharedContentState(key = "car_dougscore_${car.id}"),
+								animatedVisibilityScope = animatedVisibilityScope,
+							))
 				}
 			}
 
@@ -236,7 +272,7 @@ fun CarListItemPreview() {
 		dummyCars().first()
 	}
 	DougScoreTheme {
-		CarListItem(car, {})
+		//CarListItem(car, {})
 	}
 }
 
@@ -246,11 +282,11 @@ fun CarListItemPreview() {
 @Composable
 fun CarListPreview() {
 	DougScoreTheme {
-		OverviewScreen(
+		/*OverviewScreen(
 			onCarClick = {},
 			cars = dummyCars(),
 			isLoading = false
-		)
+		)*/
 	}
 }
 

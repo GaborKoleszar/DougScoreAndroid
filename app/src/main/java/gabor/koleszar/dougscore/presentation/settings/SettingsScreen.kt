@@ -20,8 +20,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -140,6 +143,24 @@ fun SettingsScreen(
 						onCheckedChange = { handleEvent(SettingsEvent.TOGGLE_DYNAMIC_COLOR) },
 						enabled = supportsDynamicTheming(),
 						modifier = Modifier.weight(1f)
+					)
+				}
+				Row(
+					modifier = Modifier.fillMaxWidth(),
+					verticalAlignment = Alignment.CenterVertically
+				) {
+					val context = LocalContext.current
+					val version = remember {
+						context.packageManager.getPackageInfo(
+							context.packageName,
+							0
+						).versionName
+					}
+					Text(
+						color = Color.Gray,
+						text = "Version $version",
+						modifier = Modifier.weight(1f),
+						textAlign = TextAlign.Center
 					)
 				}
 			}

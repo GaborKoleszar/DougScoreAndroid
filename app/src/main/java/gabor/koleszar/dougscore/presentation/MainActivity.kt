@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -58,7 +61,7 @@ import gabor.koleszar.dougscore.presentation.theme.DougScoreTheme
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-	@OptIn(ExperimentalMaterial3Api::class)
+	@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 	override fun onCreate(savedInstanceState: Bundle?) {
 		installSplashScreen()
 		enableEdgeToEdge()
@@ -117,7 +120,7 @@ class MainActivity : ComponentActivity() {
 										isSheetOpen = true
 									}) {
 										Icon(
-											imageVector = Icons.Default.MoreVert,
+											imageVector = Icons.Default.Search,
 											contentDescription = "Open filters"
 										)
 									}
@@ -133,68 +136,74 @@ class MainActivity : ComponentActivity() {
 						.fillMaxSize()
 						.nestedScroll(scrollBehavior.nestedScrollConnection)
 				) { scaffoldPadding ->
-					NavHost(
-						modifier = Modifier
-							.padding(scaffoldPadding)
-							.semantics { testTagsAsResourceId = true },
-						navController = navController,
-						startDestination = Route.OVERVIEW,
-					) {
-						composable(
-							route = Route.OVERVIEW
+					SharedTransitionLayout {
+						NavHost(
+							modifier = Modifier
+								.padding(scaffoldPadding)
+								.semantics { testTagsAsResourceId = true },
+							navController = navController,
+							startDestination = Route.OVERVIEW,
 						) {
-							val cars by overviewViewModel.cars.collectAsStateWithLifecycle()
-							OverviewScreen(
-								onCarClick = { carId ->
-									navController.navigate(Route.DETAILS + "/$carId")
-								},
-								cars = cars,
-								isLoading = overviewViewModel.isLoading
-							)
-							if (isSheetOpen) {
-								ModalBottomSheet(
-									sheetState = sheetState,
-									onDismissRequest = { isSheetOpen = false }
-								) {
-									Column(
-										horizontalAlignment = Alignment.CenterHorizontally,
-										modifier = Modifier
-											.padding(DEFAULT_PADDING)
+							composable(
+								route = Route.OVERVIEW
+							) {
+								val cars by overviewViewModel.cars.collectAsStateWithLifecycle()
+								OverviewScreen(
+									onCarClick = { carId ->
+										navController.navigate(Route.DETAILS + "/$carId")
+									},
+									cars = cars,
+									isLoading = overviewViewModel.isLoading,
+									animatedVisibilityScope = this@composable,
+								)
+								if (isSheetOpen) {
+									ModalBottomSheet(
+										sheetState = sheetState,
+										onDismissRequest = { isSheetOpen = false }
 									) {
-										val searchFieldValue by
-										overviewViewModel.searchText.collectAsStateWithLifecycle()
-										SearchField(
-											searchFieldValue,
-											overviewViewModel::onSearchTextChange,
-											overviewViewModel::onClearSearchField
-										)
-										BottomSheetDropdownMenu()
+										Column(
+											horizontalAlignment = Alignment.CenterHorizontally,
+											modifier = Modifier
+												.padding(DEFAULT_PADDING)
+										) {
+											val searchFieldValue by
+											overviewViewModel.searchText.collectAsStateWithLifecycle()
+											SearchField(
+												searchFieldValue,
+												overviewViewModel::onSearchTextChange,
+												overviewViewModel::onClearSearchField
+											)
+											BottomSheetDropdownMenu()
+										}
 									}
 								}
 							}
-						}
-						composable(
-							route = Route.DETAILS + "/{carId}",
-							arguments = listOf(
-								navArgument("carId") {
-									type = NavType.IntType
-								}
-							)
-						) {
-							val carId = it.arguments?.getInt("carId")!!
-							DetailsScreen(carId = carId)
-						}
-						composable(
-							route = Route.SETTINGS
-						) {
-							val lastUpdated by settingsViewModel.lastUpdatedTimeStamp.collectAsStateWithLifecycle()
-							SettingsScreen(
-								lastRefreshTimeInMillis = lastUpdated,
-								isLoading = overviewViewModel.isLoading,
-								onRefreshData = overviewViewModel::refresh,
-								userSettings = userSettings,
-								handleEvent = settingsViewModel::handleEvent
-							)
+							composable(
+								route = Route.DETAILS + "/{carId}",
+								arguments = listOf(
+									navArgument("carId") {
+										type = NavType.IntType
+									}
+								)
+							) {
+								val carId = it.arguments?.getInt("carId")!!
+								DetailsScreen(
+									carId = carId,
+									animatedVisibilityScope = this@composable,
+								)
+							}
+							composable(
+								route = Route.SETTINGS
+							) {
+								val lastUpdated by settingsViewModel.lastUpdatedTimeStamp.collectAsStateWithLifecycle()
+								SettingsScreen(
+									lastRefreshTimeInMillis = lastUpdated,
+									isLoading = overviewViewModel.isLoading,
+									onRefreshData = overviewViewModel::refresh,
+									userSettings = userSettings,
+									handleEvent = settingsViewModel::handleEvent,
+								)
+							}
 						}
 					}
 				}
