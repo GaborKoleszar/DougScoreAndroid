@@ -1,11 +1,12 @@
 plugins {
-	id("com.android.application")
-	id("org.jetbrains.kotlin.android")
-	id("dagger.hilt.android.plugin")
-	id("com.google.devtools.ksp")
-	id("com.google.gms.google-services")
-	id("com.google.firebase.crashlytics")
-	id("androidx.baselineprofile")
+	alias(libs.plugins.android.gradle.plugin)
+	alias(libs.plugins.kotlin.android)
+	alias(libs.plugins.hilt.android)
+	alias(libs.plugins.kotlin.devtools.ksp)
+	alias(libs.plugins.gms.services)
+	alias(libs.plugins.firebase.crashlytics)
+	alias(libs.plugins.baseline.profile)
+	alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -45,14 +46,15 @@ android {
 	buildFeatures {
 		compose = true
 	}
-	composeOptions {
-		kotlinCompilerExtensionVersion = "1.5.15"
-	}
 	packaging {
 		resources {
 			excludes += "/META-INF/{AL2.0,LGPL2.1}"
 		}
 	}
+}
+
+composeCompiler {
+	enableStrongSkippingMode = true
 }
 
 dependencies {

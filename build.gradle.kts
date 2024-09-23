@@ -7,10 +7,6 @@ plugins {
 	alias(libs.plugins.firebase.crashlytics) apply false
 	alias(libs.plugins.android.test) apply false
 	alias(libs.plugins.baseline.profile) apply false
-}
-
-buildscript {
-	dependencies {
-		classpath(libs.hilt.android.gradle.plugin)
-	}
+	alias(libs.plugins.compose.compiler) apply false
+	alias(libs.plugins.hilt.android) apply false
 }
