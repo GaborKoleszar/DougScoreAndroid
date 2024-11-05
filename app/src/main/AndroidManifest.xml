@@ -14,7 +14,8 @@
         android:roundIcon="@drawable/iconcircle"
         android:supportsRtl="true"
         android:theme="@style/Theme.App.Starting"
-        tools:targetApi="34">
+        android:enableOnBackInvokedCallback="true"
+        tools:targetApi="35">
         <activity
             android:name=".presentation.MainActivity"
             android:exported="true"
