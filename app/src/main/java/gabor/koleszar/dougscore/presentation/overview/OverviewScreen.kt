@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -97,7 +98,8 @@ fun SharedTransitionScope.LoadedListView(
 				modifier = modifier
 					.fillMaxSize()
 					.padding(horizontal = DEFAULT_PADDING)
-					.testTag("car_list")
+					.testTag("car_list"),
+				horizontalAlignment = Alignment.CenterHorizontally
 			) {
 				itemsIndexed(cars) { _, car ->
 					CarListItem(car, { onCarClick(car.id) }, animatedVisibilityScope)
@@ -128,7 +130,7 @@ fun SharedTransitionScope.CarListItem(
 	car: Car,
 	onCarClick: () -> Unit,
 	animatedVisibilityScope: AnimatedVisibilityScope,
-	modifier: Modifier = Modifier
+	modifier: Modifier = Modifier.widthIn(300.dp, 600.dp)
 ) {
 	Spacer(
 		modifier = modifier

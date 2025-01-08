@@ -6,7 +6,6 @@ import coil.ImageLoaderFactory
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import dagger.hilt.android.HiltAndroidApp
-import okhttp3.OkHttpClient
 
 @HiltAndroidApp
 class DougApp : Application(), ImageLoaderFactory {

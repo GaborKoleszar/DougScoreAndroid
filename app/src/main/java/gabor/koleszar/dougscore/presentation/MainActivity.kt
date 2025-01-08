@@ -7,7 +7,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -45,10 +44,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
-import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
 import gabor.koleszar.dougscore.presentation.components.AnimatedIcon
-import gabor.koleszar.dougscore.presentation.components.BottomSheetDropdownMenu
-import gabor.koleszar.dougscore.presentation.components.SearchField
+import gabor.koleszar.dougscore.presentation.components.BottomSheetContent
 import gabor.koleszar.dougscore.presentation.details.DetailsScreen
 import gabor.koleszar.dougscore.presentation.overview.OverviewScreen
 import gabor.koleszar.dougscore.presentation.overview.OverviewViewModel
@@ -152,7 +149,7 @@ class MainActivity : ComponentActivity() {
 										navController.navigate(Route.DETAILS + "/$carId")
 									},
 									cars = cars,
-									isLoading = overviewViewModel.isLoading,
+									isLoading = overviewViewModel.isLoading.collectAsStateWithLifecycle().value,
 									animatedVisibilityScope = this@composable,
 								)
 								if (isSheetOpen) {
@@ -160,20 +157,13 @@ class MainActivity : ComponentActivity() {
 										sheetState = sheetState,
 										onDismissRequest = { isSheetOpen = false }
 									) {
-										Column(
-											horizontalAlignment = Alignment.CenterHorizontally,
-											modifier = Modifier
-												.padding(DEFAULT_PADDING)
-										) {
-											val searchFieldValue by
-											overviewViewModel.searchText.collectAsStateWithLifecycle()
-											SearchField(
-												searchFieldValue,
-												overviewViewModel::onSearchTextChange,
-												overviewViewModel::onClearSearchField
-											)
-											BottomSheetDropdownMenu()
-										}
+										BottomSheetContent(
+											overviewViewModel.searchText.collectAsStateWithLifecycle().value,
+											overviewViewModel.isDescending.collectAsStateWithLifecycle().value,
+											overviewViewModel::onSearchTextChange,
+											overviewViewModel::onClearSearchField,
+											overviewViewModel::handleEvent
+										)
 									}
 								}
 							}
@@ -197,7 +187,7 @@ class MainActivity : ComponentActivity() {
 								val lastUpdated by settingsViewModel.lastUpdatedTimeStamp.collectAsStateWithLifecycle()
 								SettingsScreen(
 									lastRefreshTimeInMillis = lastUpdated,
-									isLoading = overviewViewModel.isLoading,
+									isLoading = overviewViewModel.isLoading.collectAsStateWithLifecycle().value,
 									onRefreshData = overviewViewModel::refresh,
 									userSettings = userSettings,
 									handleEvent = settingsViewModel::handleEvent,

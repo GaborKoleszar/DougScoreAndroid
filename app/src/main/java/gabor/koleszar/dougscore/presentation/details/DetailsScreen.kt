@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -30,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -57,7 +59,8 @@ fun SharedTransitionScope.DetailsScreen(
 	) {
 		val context = LocalContext.current
 		Column(
-			modifier.fillMaxWidth()
+			modifier.fillMaxWidth(),
+			horizontalAlignment = Alignment.CenterHorizontally
 		) {
 			if (car != null) {
 				val notNullCar = car!!
@@ -69,7 +72,7 @@ fun SharedTransitionScope.DetailsScreen(
 							state = rememberSharedContentState(key = "car_image_${notNullCar.id}"),
 							animatedVisibilityScope = animatedVisibilityScope,
 						)
-						.fillMaxWidth()
+						.widthIn(300.dp, 600.dp)
 						.clip(RoundedCornerShape(DEFAULT_PADDING)),
 					contentScale = ContentScale.FillWidth
 				)
@@ -159,7 +162,7 @@ fun SharedTransitionScope.DetailsScreen(
 					if (videoAvailable) {
 						Button(onClick = {
 							val intent = Intent(Intent.ACTION_VIEW, Uri.parse(notNullCar.videoLink))
-							startActivity(context, intent, null)
+							context.startActivity(intent)
 						}) {
 							Text(text = "Watch on youtube")
 						}
