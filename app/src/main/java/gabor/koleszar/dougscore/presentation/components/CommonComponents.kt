@@ -30,7 +30,7 @@ fun AsyncImageWithMultipleFallback(
 			error = painterResource(id = R.drawable.placeholder),
 			modifier = modifier,
 			contentScale = contentScale ?: ContentScale.Crop,
-			filterQuality = filterQuality ?: FilterQuality.High
+			filterQuality = filterQuality ?: FilterQuality.Low
 		)
 	} else {
 		AsyncImage(
@@ -39,7 +39,7 @@ fun AsyncImageWithMultipleFallback(
 			onError = { fallbackNeeded = true },
 			modifier = modifier,
 			contentScale = contentScale ?: ContentScale.Crop,
-			filterQuality = filterQuality ?: FilterQuality.High
+			filterQuality = filterQuality ?: FilterQuality.Low
 		)
 	}
 }

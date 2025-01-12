@@ -7,16 +7,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,17 +45,17 @@ fun SettingsScreen(
 ) {
 	Box(
 		modifier = modifier
-			.fillMaxWidth()
-			.verticalScroll(rememberScrollState())
+			.fillMaxSize()
+			.verticalScroll(rememberScrollState()),
+		contentAlignment = Alignment.TopCenter
 	) {
 		Card(
-			colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+			colors = CardDefaults.cardColors(
+				containerColor = CardDefaults.cardColors().containerColor.copy(alpha = 0.2f)
+			),
 			modifier = Modifier
-				.fillMaxWidth()
-				.padding(StyleConstants.DEFAULT_PADDING),
-			elevation = CardDefaults.cardElevation(
-				defaultElevation = StyleConstants.ELEVATION
-			)
+				.widthIn(300.dp, 600.dp)
+				.padding(StyleConstants.DEFAULT_PADDING)
 		) {
 			if (isLoading) {
 				LinearProgressIndicator(
@@ -143,6 +144,17 @@ fun SettingsScreen(
 						onCheckedChange = { handleEvent(SettingsEvent.TOGGLE_DYNAMIC_COLOR) },
 						enabled = supportsDynamicTheming(),
 						modifier = Modifier.weight(1f)
+					)
+				}
+				Row(
+					modifier = Modifier.fillMaxWidth(),
+					verticalAlignment = Alignment.CenterVertically
+				) {
+					Text(
+						color = Color.Gray,
+						text = "www.dougdemuro.com",
+						modifier = Modifier.weight(1f),
+						textAlign = TextAlign.Center
 					)
 				}
 				Row(

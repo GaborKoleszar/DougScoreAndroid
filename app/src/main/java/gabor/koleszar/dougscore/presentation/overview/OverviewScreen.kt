@@ -37,7 +37,6 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
-import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -55,6 +54,7 @@ import gabor.koleszar.dougscore.presentation.StyleConstants
 import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
 import gabor.koleszar.dougscore.presentation.StyleConstants.SPACER_WIDTH
 import gabor.koleszar.dougscore.presentation.components.AsyncImageWithMultipleFallback
+import gabor.koleszar.dougscore.presentation.components.DescriptionListItem
 import gabor.koleszar.dougscore.presentation.theme.Bronze
 import gabor.koleszar.dougscore.presentation.theme.DougScoreTheme
 import gabor.koleszar.dougscore.presentation.theme.Gold
@@ -64,6 +64,7 @@ import gabor.koleszar.dougscore.presentation.theme.Silver
 @Composable
 fun SharedTransitionScope.OverviewScreen(
 	onCarClick: (Int) -> Unit,
+	onDescriptionClick: () -> Unit,
 	cars: List<Car>,
 	isLoading: Boolean,
 	animatedVisibilityScope: AnimatedVisibilityScope,
@@ -74,6 +75,7 @@ fun SharedTransitionScope.OverviewScreen(
 	} else {
 		LoadedListView(
 			onCarClick,
+			onDescriptionClick,
 			cars,
 			animatedVisibilityScope,
 			modifier
@@ -84,6 +86,7 @@ fun SharedTransitionScope.OverviewScreen(
 @Composable
 fun SharedTransitionScope.LoadedListView(
 	onCarClick: (Int) -> Unit,
+	onDescriptionClick: () -> Unit,
 	cars: List<Car>,
 	animatedVisibilityScope: AnimatedVisibilityScope,
 	modifier: Modifier = Modifier
@@ -101,6 +104,11 @@ fun SharedTransitionScope.LoadedListView(
 					.testTag("car_list"),
 				horizontalAlignment = Alignment.CenterHorizontally
 			) {
+				item {
+					DescriptionListItem(
+						onClick = {onDescriptionClick()}
+					)
+				}
 				itemsIndexed(cars) { _, car ->
 					CarListItem(car, { onCarClick(car.id) }, animatedVisibilityScope)
 				}
@@ -158,8 +166,7 @@ fun SharedTransitionScope.CarListItem(
 						animatedVisibilityScope = animatedVisibilityScope,
 					)
 					.width(200.dp)
-					.clip(RoundedCornerShape(DEFAULT_PADDING)),
-				filterQuality = FilterQuality.Low
+					.clip(RoundedCornerShape(DEFAULT_PADDING))
 			)
 			Box(modifier = Modifier.fillMaxSize()) {
 				Card(
@@ -230,7 +237,7 @@ fun SharedTransitionScope.CarListItem(
 						)
 					}
 					Text(
-						fontWeight = FontWeight.Bold,
+						fontWeight = FontWeight.SemiBold,
 						text = car.model,
 						maxLines = 1,
 						modifier = Modifier
@@ -241,7 +248,7 @@ fun SharedTransitionScope.CarListItem(
 							.basicMarquee()
 					)
 					Text(
-						text = "Dougscore: " + car.dougScore,
+						text = "Score: " + car.dougScore,
 						modifier = Modifier
 							.sharedBounds(
 								sharedContentState = rememberSharedContentState(key = "car_dougscore_${car.id}"),

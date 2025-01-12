@@ -27,7 +27,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -46,6 +45,7 @@ import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
 import gabor.koleszar.dougscore.presentation.components.AnimatedIcon
 import gabor.koleszar.dougscore.presentation.components.BottomSheetContent
+import gabor.koleszar.dougscore.presentation.description.DescriptionScreen
 import gabor.koleszar.dougscore.presentation.details.DetailsScreen
 import gabor.koleszar.dougscore.presentation.overview.OverviewScreen
 import gabor.koleszar.dougscore.presentation.overview.OverviewViewModel
@@ -148,6 +148,9 @@ class MainActivity : ComponentActivity() {
 									onCarClick = { carId ->
 										navController.navigate(Route.DETAILS + "/$carId")
 									},
+									onDescriptionClick = {
+										navController.navigate(Route.DESCRIPTION)
+									},
 									cars = cars,
 									isLoading = overviewViewModel.isLoading.collectAsStateWithLifecycle().value,
 									animatedVisibilityScope = this@composable,
@@ -191,6 +194,12 @@ class MainActivity : ComponentActivity() {
 									onRefreshData = overviewViewModel::refresh,
 									userSettings = userSettings,
 									handleEvent = settingsViewModel::handleEvent,
+								)
+							}
+							composable(
+								route = Route.DESCRIPTION
+							) {
+								DescriptionScreen(
 								)
 							}
 						}
