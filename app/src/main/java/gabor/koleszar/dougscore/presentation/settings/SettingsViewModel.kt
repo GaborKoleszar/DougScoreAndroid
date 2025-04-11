@@ -3,11 +3,11 @@ package gabor.koleszar.dougscore.presentation.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import gabor.koleszar.dougscore.domain.model.UserSettings
 import gabor.koleszar.dougscore.domain.repository.UserPreferencesRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,38 +16,54 @@ class SettingsViewModel @Inject constructor(
 	private val userPreferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
 
-	private val _userSettings = MutableStateFlow(UserSettings())
-	val userSettings = _userSettings.asStateFlow()
-
-	private val _lastUpdatedTimeStamp = MutableStateFlow(System.currentTimeMillis())
-	val lastUpdatedTimeStamp = _lastUpdatedTimeStamp.asStateFlow()
+	private val _settingsState = MutableStateFlow(SettingsState())
+	val settingsState = _settingsState.asStateFlow()
 
 	init {
 		viewModelScope.launch {
-			userPreferencesRepository.loadUserSettings().collectLatest {
-				_userSettings.emit(it)
-			}
+			loadUserSettings()
 		}
 		viewModelScope.launch {
-			userPreferencesRepository.loadLastTimeDataUpdated().collectLatest {
-				_lastUpdatedTimeStamp.emit(it)
+			userPreferencesRepository.loadLastTimeDataUpdated().collectLatest { newTimeStamp ->
+				_settingsState.update {
+					it.copy(
+						lastUpdatedTimeStamp = newTimeStamp
+					)
+				}
 			}
 		}
 	}
 
-	fun handleEvent(event: SettingsEvent) {
+	suspend fun loadUserSettings() {
+		userPreferencesRepository.loadUserSettings().collectLatest { newUserSettings ->
+			_settingsState.update {
+				it.copy(
+					useDarkTheme = newUserSettings.useDarkTheme,
+					useDeviceTheme = newUserSettings.useDeviceTheme,
+					useDynamicColor = newUserSettings.useDynamicColor,
+					initialState = false
+				)
+			}
+		}
+	}
+
+	fun onAction(event: SettingsAction) {
 		viewModelScope.launch {
 			when (event) {
-				SettingsEvent.TOGGLE_DARK_THEME -> {
-					userPreferencesRepository.saveUseDarkTheme(!userSettings.value.useDarkTheme)
+				SettingsAction.ToggleDarkTheme -> {
+					userPreferencesRepository.saveUseDarkTheme(!settingsState.value.useDarkTheme)
 				}
 
-				SettingsEvent.TOGGLE_DEVICE_THEME -> {
-					userPreferencesRepository.saveUseDeviceTheme(!userSettings.value.useDeviceTheme)
+				SettingsAction.ToggleDeviceTheme -> {
+					userPreferencesRepository.saveUseDeviceTheme(!settingsState.value.useDeviceTheme)
 				}
 
-				SettingsEvent.TOGGLE_DYNAMIC_COLOR -> {
-					userPreferencesRepository.saveUseDynamicColor(!userSettings.value.useDynamicColor)
+				SettingsAction.ToggleDynamicColor -> {
+					userPreferencesRepository.saveUseDynamicColor(!settingsState.value.useDynamicColor)
+				}
+
+				SettingsAction.RefreshCars -> {
+					//TODO
 				}
 			}
 		}

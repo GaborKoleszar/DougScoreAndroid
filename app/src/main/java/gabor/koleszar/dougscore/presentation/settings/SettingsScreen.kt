@@ -38,9 +38,8 @@ import java.util.Date
 fun SettingsScreen(
 	lastRefreshTimeInMillis: Long,
 	isLoading: Boolean,
-	onRefreshData: () -> Unit,
-	userSettings: UserSettings,
-	handleEvent: (SettingsEvent) -> Unit,
+	settingsState: SettingsState,
+	onAction: (SettingsAction) -> Unit,
 	modifier: Modifier = Modifier
 ) {
 	Box(
@@ -91,7 +90,7 @@ fun SettingsScreen(
 						)
 					}
 					Button(
-						onClick = onRefreshData,
+						onClick = { onAction(SettingsAction.RefreshCars) },
 						enabled = !isLoading
 					) {
 						Text(text = "Refresh data")
@@ -109,8 +108,8 @@ fun SettingsScreen(
 						textAlign = TextAlign.Center
 					)
 					Switch(
-						checked = userSettings.useDeviceTheme,
-						onCheckedChange = { handleEvent(SettingsEvent.TOGGLE_DEVICE_THEME) },
+						checked = settingsState.useDeviceTheme,
+						onCheckedChange = { onAction(SettingsAction.ToggleDeviceTheme) },
 						modifier = Modifier.weight(1f)
 					)
 				}
@@ -124,9 +123,9 @@ fun SettingsScreen(
 						textAlign = TextAlign.Center
 					)
 					Switch(
-						checked = userSettings.useDarkTheme,
-						onCheckedChange = { handleEvent(SettingsEvent.TOGGLE_DARK_THEME) },
-						enabled = !userSettings.useDeviceTheme,
+						checked = settingsState.useDarkTheme,
+						onCheckedChange = { onAction(SettingsAction.ToggleDarkTheme) },
+						enabled = !settingsState.useDeviceTheme,
 						modifier = Modifier.weight(1f)
 					)
 				}
@@ -140,8 +139,8 @@ fun SettingsScreen(
 						textAlign = TextAlign.Center
 					)
 					Switch(
-						checked = userSettings.useDynamicColor,
-						onCheckedChange = { handleEvent(SettingsEvent.TOGGLE_DYNAMIC_COLOR) },
+						checked = settingsState.useDynamicColor,
+						onCheckedChange = { onAction(SettingsAction.ToggleDynamicColor) },
 						enabled = supportsDynamicTheming(),
 						modifier = Modifier.weight(1f)
 					)

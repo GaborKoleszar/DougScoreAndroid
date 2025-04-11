@@ -1,16 +1,16 @@
 package gabor.koleszar.dougscore.domain.repository
 
-import gabor.koleszar.dougscore.common.Resource
 import gabor.koleszar.dougscore.data.dto.CarDto
 import gabor.koleszar.dougscore.domain.model.Car
 import kotlinx.coroutines.flow.Flow
 
 interface CarRepository {
 
-	fun getAllCars(
-		shouldFetchFromRemote: Boolean
-	): Flow<Resource<List<Car>>>
+	suspend fun downloadCars(): Boolean
 
-	fun getCarWithId(id: Int): Flow<Resource<Car>>
+	fun getCars(): Flow<List<Car>>
+
+	fun getCarWithId(id: Int): Flow<Car>
+
 	suspend fun setCars(cars: List<CarDto>)
 }

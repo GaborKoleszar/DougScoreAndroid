@@ -3,14 +3,13 @@ package gabor.koleszar.dougscore.presentation.overview
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import gabor.koleszar.dougscore.common.Resource
-import gabor.koleszar.dougscore.domain.model.Car
 import gabor.koleszar.dougscore.domain.repository.CarRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -21,85 +20,90 @@ class OverviewViewModel @Inject constructor(
 	private val carRepository: CarRepository
 ) : ViewModel() {
 
-	private val _searchText = MutableStateFlow("")
-	val searchText = _searchText.asStateFlow()
+	private val _state = MutableStateFlow(OverviewState())
+	val state = _state.asStateFlow()
+		.onStart {
+			getCars()
+		}
+		.map { updatedState ->
+			var filteredCars = updatedState.cars
 
-	private val _isDescending = MutableStateFlow(false)
-	val isDescending = _isDescending.asStateFlow()
-
-	private val _isLoading = MutableStateFlow(true)
-	val isLoading = _isLoading.asStateFlow()
-
-	private val _cars = MutableStateFlow<List<Car>>(emptyList())
-
-	val cars = combine(_searchText, _cars, _isDescending) { query, cars, isDescending ->
-		var filteredCars = cars
-
-		if (query.length >= 3) {
-			filteredCars = cars.filter { car ->
-				car.doesMatchSearchQuery(query.lowercase())
+			if (updatedState.searchQuery.length >= 3) {
+				println("KEY Filterezés ${updatedState.searchQuery}")
+				filteredCars = updatedState.cars.filter { car ->
+					car.doesMatchSearchQuery(updatedState.searchQuery.lowercase())
+				}
 			}
+			if (updatedState.isDescending) {
+				filteredCars = filteredCars.reversed()
+			}
+
+			println("KEY Frissül a lista ${updatedState.searchQuery}")
+			return@map updatedState.copy(cars = filteredCars)
 		}
-		if (isDescending) {
-			filteredCars = filteredCars.reversed()
-		}
+		.stateIn(
+			viewModelScope,
+			SharingStarted.WhileSubscribed(5_000L),
+			_state.value
+		)
 
-		return@combine filteredCars
-	}.stateIn(
-		viewModelScope,
-		SharingStarted.WhileSubscribed(5000),
-		_cars.value
-	)
-
-	init {
-		getCarIntroductions()
-	}
-
-	fun onSearchTextChange(text: String) {
-		_searchText.update { text }
-	}
-
-	fun refresh() {
-		getCarIntroductions(true)
-	}
-
-	fun onClearSearchField() {
-		_searchText.update { "" }
-	}
-
-	fun handleEvent(event: OverviewEvent) {
+	fun onAction(action: OverviewAction) {
 		viewModelScope.launch {
-			when (event) {
-				OverviewEvent.TOGGLE_IS_DESCENDING -> {
-					_isDescending.update { !isDescending.value }
+			when (action) {
+				is OverviewAction.ToggleIsDescending -> {
+					_state.update {
+						it.copy(
+							isDescending = !it.isDescending
+						)
+					}
+				}
+
+				is OverviewAction.ClearSearchField -> {
+					_state.update {
+						it.copy(
+							searchQuery = ""
+						)
+					}
+				}
+
+				is OverviewAction.RefreshList -> {
+					downloadCars()
+				}
+
+				is OverviewAction.SearchTextChange -> {
+					_state.update {
+						println("KEY Beállítódik a search ${action.searchQuery}")
+						it.copy(
+							searchQuery = action.searchQuery
+						)
+					}
+				}
+
+				else -> {
+					// Navigation actions handled in MainActivity
 				}
 			}
 		}
 	}
 
-	private fun getCarIntroductions(
-		shouldFetchFromRemote: Boolean = false
+	private fun downloadCars() {
+		viewModelScope.launch {
+			val successful = carRepository.downloadCars()
+			//TODO add error toast if failed download
+		}
+	}
+
+	private fun getCars(
 	) {
 		viewModelScope.launch {
 			carRepository
-				.getAllCars(shouldFetchFromRemote)
-				.collectLatest { result ->
-					when (result) {
-
-						is Resource.Success -> {
-							result.data?.let { freshCars ->
-								_cars.update { freshCars }
-								_isLoading.update { false }
-							}
-						}
-
-						is Resource.Error -> {
-							_isLoading.update { false }
-						}
-
-						is Resource.Loading -> {
-							_isLoading.update { true }
-						}
+				.getCars()
+				.collectLatest { carList ->
+					_state.update {
+						it.copy(
+							cars = carList,
+							isLoading = false
+						)
 					}
 				}
 		}

@@ -4,15 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -30,24 +29,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
-import gabor.koleszar.dougscore.presentation.components.AnimatedIcon
+import gabor.koleszar.dougscore.R
+import gabor.koleszar.dougscore.presentation.components.AnimatedBackButton
 import gabor.koleszar.dougscore.presentation.components.BottomSheetContent
 import gabor.koleszar.dougscore.presentation.description.DescriptionScreen
 import gabor.koleszar.dougscore.presentation.details.DetailsScreen
-import gabor.koleszar.dougscore.presentation.overview.OverviewScreen
+import gabor.koleszar.dougscore.presentation.overview.OverviewScreenRoot
 import gabor.koleszar.dougscore.presentation.overview.OverviewViewModel
 import gabor.koleszar.dougscore.presentation.settings.SettingsScreen
 import gabor.koleszar.dougscore.presentation.settings.SettingsViewModel
@@ -59,26 +58,29 @@ class MainActivity : ComponentActivity() {
 
 	@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 	override fun onCreate(savedInstanceState: Bundle?) {
-		installSplashScreen()
+		val splashScreen = installSplashScreen()
 		enableEdgeToEdge()
 		super.onCreate(savedInstanceState)
+		val settingsViewModel by viewModels<SettingsViewModel>()
+
+		splashScreen.setKeepOnScreenCondition {
+			settingsViewModel.settingsState.value.initialState
+		}
 
 		setContent {
-			val settingsViewModel = hiltViewModel<SettingsViewModel>()
-			val userSettings by settingsViewModel.userSettings.collectAsStateWithLifecycle()
-
+			val settingsState by settingsViewModel.settingsState.collectAsStateWithLifecycle()
 			/*
 			 * Should use dark theme when system is dark and user wants to follow the system theme
 			 * OR
 			 * dark theme is enabled AND follow device theme is disabled
 			 */
 			val shouldUseDarkTheme =
-				(isSystemInDarkTheme() && userSettings.useDeviceTheme) ||
-						userSettings.useDarkTheme && !userSettings.useDeviceTheme
+				(isSystemInDarkTheme() && settingsState.useDeviceTheme) ||
+						settingsState.useDarkTheme && !settingsState.useDeviceTheme
 
 			DougScoreTheme(
 				darkTheme = shouldUseDarkTheme,
-				dynamicColor = userSettings.useDynamicColor
+				dynamicColor = settingsState.useDynamicColor
 			) {
 				val scrollBehavior =
 					TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
@@ -87,37 +89,31 @@ class MainActivity : ComponentActivity() {
 				var isSheetOpen by rememberSaveable { mutableStateOf(false) }
 				val currentDestination =
 					navController.currentBackStackEntryAsState().value?.destination?.route
-				val overviewViewModel = hiltViewModel<OverviewViewModel>()
 
 				Scaffold(
 					topBar = {
 						CenterAlignedTopAppBar(
 							navigationIcon = {
-								AnimatedIcon(
-									icon1 = Icons.Default.Settings,
-									contentDescription1 = "Settings",
-									onClick1 = { navController.navigate(Route.SETTINGS) },
-									icon2 = Icons.AutoMirrored.Default.ArrowBack,
-									contentDescription2 = "Back",
-									onClick2 = { navController.popBackStack() },
-									showButton1 = currentDestination.equals(Route.OVERVIEW)
+								AnimatedBackButton(
+									currentDestination,
+									navController
 								)
 							},
 							title = {
 								Text(
-									text = "DougScore",
+									text = stringResource(R.string.app_header),
 									maxLines = 1,
 									overflow = TextOverflow.Ellipsis
 								)
 							},
 							actions = {
-								if (currentDestination.equals(Route.OVERVIEW)) {
+								if (currentDestination?.endsWith(Route.OverView.javaClass.simpleName) != false) {
 									IconButton(onClick = {
 										isSheetOpen = true
 									}) {
 										Icon(
 											imageVector = Icons.Default.Search,
-											contentDescription = "Open filters"
+											contentDescription = stringResource(R.string.open_filters_content_description)
 										)
 									}
 								}
@@ -138,21 +134,18 @@ class MainActivity : ComponentActivity() {
 								.padding(scaffoldPadding)
 								.semantics { testTagsAsResourceId = true },
 							navController = navController,
-							startDestination = Route.OVERVIEW,
+							startDestination = Route.OverView,
 						) {
-							composable(
-								route = Route.OVERVIEW
-							) {
-								val cars by overviewViewModel.cars.collectAsStateWithLifecycle()
-								OverviewScreen(
+							composable<Route.OverView> {
+								val overviewViewModel = hiltViewModel<OverviewViewModel>()
+								OverviewScreenRoot(
+									overviewViewModel = overviewViewModel,
 									onCarClick = { carId ->
-										navController.navigate(Route.DETAILS + "/$carId")
+										navController.navigate(Route.Details(carId))
 									},
 									onDescriptionClick = {
-										navController.navigate(Route.DESCRIPTION)
+										navController.navigate(Route.Description)
 									},
-									cars = cars,
-									isLoading = overviewViewModel.isLoading.collectAsStateWithLifecycle().value,
 									animatedVisibilityScope = this@composable,
 								)
 								if (isSheetOpen) {
@@ -160,47 +153,30 @@ class MainActivity : ComponentActivity() {
 										sheetState = sheetState,
 										onDismissRequest = { isSheetOpen = false }
 									) {
+										val overviewState by overviewViewModel.state.collectAsStateWithLifecycle()
 										BottomSheetContent(
-											overviewViewModel.searchText.collectAsStateWithLifecycle().value,
-											overviewViewModel.isDescending.collectAsStateWithLifecycle().value,
-											overviewViewModel::onSearchTextChange,
-											overviewViewModel::onClearSearchField,
-											overviewViewModel::handleEvent
+											overviewState.searchQuery,
+											overviewState.isDescending,
+											overviewViewModel::onAction,
 										)
 									}
 								}
 							}
-							composable(
-								route = Route.DETAILS + "/{carId}",
-								arguments = listOf(
-									navArgument("carId") {
-										type = NavType.IntType
-									}
-								)
-							) {
-								val carId = it.arguments?.getInt("carId")!!
+							composable<Route.Details> {
 								DetailsScreen(
-									carId = carId,
 									animatedVisibilityScope = this@composable,
 								)
 							}
-							composable(
-								route = Route.SETTINGS
-							) {
-								val lastUpdated by settingsViewModel.lastUpdatedTimeStamp.collectAsStateWithLifecycle()
+							composable<Route.Settings> {
 								SettingsScreen(
-									lastRefreshTimeInMillis = lastUpdated,
-									isLoading = overviewViewModel.isLoading.collectAsStateWithLifecycle().value,
-									onRefreshData = overviewViewModel::refresh,
-									userSettings = userSettings,
-									handleEvent = settingsViewModel::handleEvent,
+									lastRefreshTimeInMillis = settingsState.lastUpdatedTimeStamp,
+									isLoading = false,
+									settingsState = settingsState,
+									onAction = settingsViewModel::onAction,
 								)
 							}
-							composable(
-								route = Route.DESCRIPTION
-							) {
-								DescriptionScreen(
-								)
+							composable<Route.Description> {
+								DescriptionScreen()
 							}
 						}
 					}

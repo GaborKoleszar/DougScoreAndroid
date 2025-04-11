@@ -1,6 +1,5 @@
 package gabor.koleszar.dougscore.data.repository
 
-import gabor.koleszar.dougscore.common.Resource
 import gabor.koleszar.dougscore.data.dto.CarDto
 import gabor.koleszar.dougscore.data.local.CarDatabase
 import gabor.koleszar.dougscore.data.mapper.toDomainModel
@@ -11,9 +10,10 @@ import gabor.koleszar.dougscore.domain.model.Car
 import gabor.koleszar.dougscore.domain.repository.CarRepository
 import gabor.koleszar.dougscore.domain.repository.UserPreferencesRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import okio.IOException
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -26,75 +26,35 @@ class CarRepositoryImpl @Inject constructor(
 ) : CarRepository {
 
 	private val dao = database.carDao
-
-	override fun getAllCars(
-		shouldFetchFromRemote: Boolean
-	): Flow<Resource<List<Car>>> {
-
-		return flow {
-			emit(Resource.Loading())
-
-			val localCars = dao.getAllCars()
-			val cacheExists = localCars.isNotEmpty()
-
-			if (cacheExists && !shouldFetchFromRemote) {
-				emit(Resource.Success(
-					data = localCars.map { carEntity ->
-						carEntity.toDomainModel()
-					}
-				))
-				return@flow
-			}
-
-			val remoteCars = try {
-				val response = api.getDougScoreExcelFile()
-				carDataParser.parse(response.byteStream())
-			} catch (e: IOException) {
-				emit(
-					Resource.Error(
-						message = e.localizedMessage ?: e.toString(),
-						data = null
-					)
-				)
-				null
-			} catch (e: HttpException) {
-				emit(
-					Resource.Error(
-						message = e.localizedMessage ?: e.toString(),
-						data = null
-					)
-				)
-				null
-			}
-
-			remoteCars?.let { cars ->
-				dao.deleteAllCars()
-				dao.insert(
-					cars.map {
-						it.toEntity()
-					}
-				)
-				emit(Resource.Success(
-					data = dao.getAllCars().map { it.toDomainModel() }
-				))
-				userPreferencesRepository.saveLastTimeDataUpdated(System.currentTimeMillis())
-			}
+	override suspend fun downloadCars(): Boolean {
+		val remoteCars = try {
+			val response = api.getDougScoreExcelFile()
+			carDataParser.parse(response.byteStream())
+		} catch (e: IOException) {
+			return false
+		} catch (e: HttpException) {
+			return false
 		}
+		dao.insert(remoteCars.map { carDto ->
+			carDto.toEntity()
+		})
+		userPreferencesRepository.saveLastTimeDataUpdated(System.currentTimeMillis())
+		return true
 	}
 
-	override fun getCarWithId(id: Int): Flow<Resource<Car>> {
-		return flow {
-			emit(Resource.Loading())
-			try {
-				val car = dao.getCarWithId(id).toDomainModel()
-				emit(Resource.Success(car))
-			} catch (e: Exception) {
-				emit(
-					Resource.Error("Getting car $id failed")
-				)
+	override fun getCars(): Flow<List<Car>> = dao.getAllCars()
+		.distinctUntilChanged()
+		.map { carEntities ->
+			carEntities.map { carEntity ->
+				carEntity.toDomainModel()
 			}
 		}
-	}
+
+	override fun getCarWithId(id: Int): Flow<Car> = dao.getCarWithId(id)
+		.distinctUntilChanged()
+		.map { carEntity ->
+			carEntity.toDomainModel()
+		}
 
 	override suspend fun setCars(cars: List<CarDto>) {
 		dao.deleteAllCars()

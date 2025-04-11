@@ -3,9 +3,7 @@ package gabor.koleszar.dougscore.presentation.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -24,17 +22,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import gabor.koleszar.dougscore.presentation.StyleConstants
 import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
-import gabor.koleszar.dougscore.presentation.overview.OverviewEvent
+import gabor.koleszar.dougscore.presentation.overview.OverviewAction
 
 @Composable
 fun SearchField(
 	searchValue: String,
-	onSearchTextChange: (String) -> Unit,
-	onClearSearchField: () -> Unit
+	onAction: (OverviewAction) -> Unit
 ) {
 	TextField(
 		value = searchValue,
-		onValueChange = onSearchTextChange,
+		onValueChange = { onAction(OverviewAction.SearchTextChange(it)) },
 		leadingIcon = {
 			Icon(
 				Icons.Default.Search,
@@ -46,7 +43,9 @@ fun SearchField(
 			Icon(
 				Icons.Default.Clear,
 				contentDescription = "Clear search",
-				modifier = Modifier.clickable(onClick = onClearSearchField)
+				modifier = Modifier.clickable(onClick = {
+					onAction(OverviewAction.ClearSearchField)
+				})
 			)
 		},
 		placeholder = { Text("Filter car by name") },
@@ -69,9 +68,7 @@ fun SearchField(
 fun BottomSheetContent(
 	searchText: String,
 	isDescendingOrder: Boolean,
-	onSearchTextChange: (String) -> Unit,
-	onClearSearchField: () -> Unit,
-	onCheckedChange: (OverviewEvent) -> Unit
+	onAction: (OverviewAction) -> Unit,
 ) {
 	Column(
 		horizontalAlignment = Alignment.CenterHorizontally,
@@ -80,8 +77,7 @@ fun BottomSheetContent(
 	) {
 		SearchField(
 			searchText,
-			onSearchTextChange,
-			onClearSearchField
+			onAction
 		)
 		Row(
 			modifier = Modifier.fillMaxWidth(),
@@ -94,7 +90,7 @@ fun BottomSheetContent(
 			)
 			Switch(
 				checked = isDescendingOrder,
-				onCheckedChange = { onCheckedChange(OverviewEvent.TOGGLE_IS_DESCENDING) },
+				onCheckedChange = { onAction(OverviewAction.ToggleIsDescending) },
 				modifier = Modifier.weight(1f)
 			)
 		}

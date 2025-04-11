@@ -22,7 +22,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -42,13 +41,9 @@ import gabor.koleszar.dougscore.presentation.components.DougScoreTable
 @Composable
 fun SharedTransitionScope.DetailsScreen(
 	modifier: Modifier = Modifier,
-	carId: Int,
 	detailsViewModel: DetailsViewModel = hiltViewModel(),
 	animatedVisibilityScope: AnimatedVisibilityScope
 ) {
-	LaunchedEffect(carId) {
-		detailsViewModel.setCarInDetails(carId)
-	}
 	val car by detailsViewModel.carInDetailsScreen.collectAsStateWithLifecycle()
 	Box(
 		modifier = modifier

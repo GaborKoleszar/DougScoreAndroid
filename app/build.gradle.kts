@@ -7,6 +7,7 @@ plugins {
 	alias(libs.plugins.firebase.crashlytics)
 	alias(libs.plugins.baseline.profile)
 	alias(libs.plugins.compose.compiler)
+	alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 android {
@@ -17,8 +18,8 @@ android {
 		applicationId = "gabor.koleszar.dougscore"
 		minSdk = 26
 		targetSdk = 35
-		versionCode = 6
-		versionName = "0.6"
+		versionCode = 7
+		versionName = "0.7"
 
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 		vectorDrawables {
@@ -69,6 +70,7 @@ dependencies {
 	implementation(libs.androidx.ui.tooling.preview)
 	implementation(libs.androidx.material3)
 	implementation(libs.androidx.profileinstaller)
+	implementation(libs.kotlinx.serialization.json)
 	"baselineProfile"(project(":baselineprofile"))
 	debugImplementation(libs.androidx.ui.tooling)
 	debugImplementation(libs.androidx.ui.test.manifest)
@@ -102,7 +104,7 @@ dependencies {
 	ksp(libs.androidx.room.compiler)
 
 	//Preferences Datastore
-	implementation (libs.androidx.datastore.preferences)
+	implementation(libs.androidx.datastore.preferences)
 
 	//Compose lifecycle
 	implementation(libs.androidx.lifecycle.runtime.compose)
