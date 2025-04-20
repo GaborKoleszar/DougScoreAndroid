@@ -12,6 +12,7 @@ import gabor.koleszar.dougscore.domain.repository.UserPreferencesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
@@ -26,6 +27,7 @@ class CarRepositoryImpl @Inject constructor(
 ) : CarRepository {
 
 	private val dao = database.carDao
+
 	override suspend fun downloadCars(): Boolean {
 		val remoteCars = try {
 			val response = api.getDougScoreExcelFile()
@@ -43,6 +45,9 @@ class CarRepositoryImpl @Inject constructor(
 	}
 
 	override fun getCars(): Flow<List<Car>> = dao.getAllCars()
+		.onStart {
+			downloadCars()
+		}
 		.distinctUntilChanged()
 		.map { carEntities ->
 			carEntities.map { carEntity ->
