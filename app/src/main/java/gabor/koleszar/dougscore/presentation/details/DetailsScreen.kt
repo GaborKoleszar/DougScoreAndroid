@@ -63,7 +63,7 @@ fun SharedTransitionScope.DetailsScreen(
 					fallbackModel = notNullCar.getHqFallbackImageLink(),
 					modifier = Modifier
 						.sharedElement(
-							state = rememberSharedContentState(key = "car_image_${notNullCar.id}"),
+							sharedContentState = rememberSharedContentState(key = "car_image_${notNullCar.id}"),
 							animatedVisibilityScope = animatedVisibilityScope,
 						)
 						.widthIn(300.dp, 600.dp)

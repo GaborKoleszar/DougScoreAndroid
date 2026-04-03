@@ -1,6 +1,5 @@
 plugins {
 	id("com.android.test")
-	id("org.jetbrains.kotlin.android")
 	id("androidx.baselineprofile")
 }
 
@@ -9,12 +8,14 @@ android {
 	compileSdk = 35
 
 	compileOptions {
-		sourceCompatibility = JavaVersion.VERSION_1_8
-		targetCompatibility = JavaVersion.VERSION_1_8
+		sourceCompatibility = JavaVersion.VERSION_17
+		targetCompatibility = JavaVersion.VERSION_17
 	}
 
-	kotlinOptions {
-		jvmTarget = "1.8"
+	kotlin {
+		compilerOptions {
+			jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+		}
 	}
 
 	defaultConfig {

@@ -1,6 +1,5 @@
 plugins {
 	alias(libs.plugins.android.gradle.plugin)
-	alias(libs.plugins.kotlin.android)
 	alias(libs.plugins.hilt.android)
 	alias(libs.plugins.kotlin.devtools.ksp)
 	alias(libs.plugins.gms.services)
@@ -12,12 +11,12 @@ plugins {
 
 android {
 	namespace = "gabor.koleszar.dougscore"
-	compileSdk = 35
+	compileSdk = 36
 
 	defaultConfig {
 		applicationId = "gabor.koleszar.dougscore"
 		minSdk = 26
-		targetSdk = 35
+		targetSdk = 36
 		versionCode = 7
 		versionName = "0.7"
 
@@ -41,9 +40,6 @@ android {
 		sourceCompatibility = JavaVersion.VERSION_17
 		targetCompatibility = JavaVersion.VERSION_17
 	}
-	kotlinOptions {
-		jvmTarget = "17"
-	}
 	buildFeatures {
 		compose = true
 	}
@@ -52,10 +48,6 @@ android {
 			excludes += "/META-INF/{AL2.0,LGPL2.1}"
 		}
 	}
-}
-
-composeCompiler {
-	enableStrongSkippingMode = true
 }
 
 dependencies {
@@ -69,6 +61,7 @@ dependencies {
 	implementation(libs.androidx.ui.graphics)
 	implementation(libs.androidx.ui.tooling.preview)
 	implementation(libs.androidx.material3)
+	implementation(libs.androidx.material.icons.extended)
 	implementation(libs.androidx.profileinstaller)
 	implementation(libs.kotlinx.serialization.json)
 	"baselineProfile"(project(":baselineprofile"))

@@ -81,7 +81,7 @@ fun SharedTransitionScope.CarListItem(
 				fallbackModel = car.getHqFallbackImageLink(),
 				modifier = Modifier
 					.sharedElement(
-						state = rememberSharedContentState(key = "car_image_${car.id}"),
+						sharedContentState = rememberSharedContentState(key = "car_image_${car.id}"),
 						animatedVisibilityScope = animatedVisibilityScope,
 					)
 					.width(200.dp)

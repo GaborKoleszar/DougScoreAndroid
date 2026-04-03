@@ -3,6 +3,7 @@ package gabor.koleszar.dougscore.presentation.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import gabor.koleszar.dougscore.domain.repository.CarRepository
 import gabor.koleszar.dougscore.domain.repository.UserPreferencesRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-	private val userPreferencesRepository: UserPreferencesRepository
+	private val userPreferencesRepository: UserPreferencesRepository,
+	private val carRepository: CarRepository
 ) : ViewModel() {
 
 	private val _settingsState = MutableStateFlow(SettingsState())
@@ -63,7 +65,9 @@ class SettingsViewModel @Inject constructor(
 				}
 
 				SettingsAction.RefreshCars -> {
-					//TODO
+					_settingsState.update { it.copy(isLoading = true) }
+					carRepository.downloadCars()
+					_settingsState.update { it.copy(isLoading = false) }
 				}
 			}
 		}

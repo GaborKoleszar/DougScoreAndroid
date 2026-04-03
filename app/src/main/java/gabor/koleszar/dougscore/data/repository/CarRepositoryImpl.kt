@@ -11,6 +11,7 @@ import gabor.koleszar.dougscore.domain.repository.CarRepository
 import gabor.koleszar.dougscore.domain.repository.UserPreferencesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import retrofit2.HttpException
@@ -46,7 +47,9 @@ class CarRepositoryImpl @Inject constructor(
 
 	override fun getCars(): Flow<List<Car>> = dao.getAllCars()
 		.onStart {
-			downloadCars()
+			if (dao.getAllCars().first().isEmpty()) {
+				downloadCars()
+			}
 		}
 		.distinctUntilChanged()
 		.map { carEntities ->

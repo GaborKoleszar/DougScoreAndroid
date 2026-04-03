@@ -170,7 +170,7 @@ class MainActivity : ComponentActivity() {
 							composable<Route.Settings> {
 								SettingsScreen(
 									lastRefreshTimeInMillis = settingsState.lastUpdatedTimeStamp,
-									isLoading = false,
+									isLoading = settingsState.isLoading,
 									settingsState = settingsState,
 									onAction = settingsViewModel::onAction,
 								)
