@@ -1,5 +1,7 @@
 package gabor.koleszar.dougscore.presentation.settings
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -149,10 +152,17 @@ fun SettingsScreen(
 					modifier = Modifier.fillMaxWidth(),
 					verticalAlignment = Alignment.CenterVertically
 				) {
+					val urlContext = LocalContext.current
 					Text(
 						color = Color.Gray,
 						text = "www.dougdemuro.com",
-						modifier = Modifier.weight(1f),
+						modifier = Modifier
+							.weight(1f)
+							.clickable {
+								urlContext.startActivity(
+									Intent(Intent.ACTION_VIEW, Uri.parse("https://www.dougdemuro.com"))
+								)
+							},
 						textAlign = TextAlign.Center
 					)
 				}

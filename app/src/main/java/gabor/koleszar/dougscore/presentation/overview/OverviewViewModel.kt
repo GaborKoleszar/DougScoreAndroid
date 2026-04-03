@@ -101,7 +101,7 @@ class OverviewViewModel @Inject constructor(
 
         return newState.copy(
             cars = if (newState.isDescending) filteredCars.reversed() else filteredCars,
-            isLoading = false,
+            isLoading = if (cars.isNotEmpty()) false else newState.isLoading,
             availableManufacturers = availableManufacturers,
             availableCountries = availableCountries,
             selectedManufacturers = cleanedManufacturers,

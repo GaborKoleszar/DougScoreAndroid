@@ -21,6 +21,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
@@ -129,7 +130,8 @@ class MainActivity : ComponentActivity() {
 							},
 							scrollBehavior = scrollBehavior,
 							colors = TopAppBarDefaults.centerAlignedTopAppBarColors().copy(
-								scrolledContainerColor = TopAppBarDefaults.centerAlignedTopAppBarColors().containerColor
+								scrolledContainerColor = TopAppBarDefaults.centerAlignedTopAppBarColors().containerColor,
+								actionIconContentColor = MaterialTheme.colorScheme.onSurface
 							)
 						)
 					},

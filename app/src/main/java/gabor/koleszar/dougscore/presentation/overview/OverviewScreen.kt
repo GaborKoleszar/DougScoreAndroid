@@ -66,33 +66,31 @@ fun SharedTransitionScope.OverviewScreen(
 			.fillMaxSize(),
 		contentAlignment = Alignment.Center
 	) {
-		if (overviewState.cars.isNotEmpty()) {
-			LazyColumn(
-				modifier = modifier
-					.fillMaxSize()
-					.padding(horizontal = DEFAULT_PADDING)
-					.testTag("car_list"),
-				horizontalAlignment = Alignment.CenterHorizontally
-			) {
-				item {
-					DescriptionListItem(
-						onClick = { onAction(OverviewAction.DescriptionClick) }
-					)
+		when {
+			overviewState.isLoading && overviewState.cars.isEmpty() -> {
+				Column(
+					verticalArrangement = Arrangement.Center,
+					horizontalAlignment = Alignment.CenterHorizontally,
+					modifier = modifier.fillMaxSize()
+				) {
+					Text(text = stringResource(R.string.overview_scree_loading_data_please_wait))
+					Spacer(modifier = Modifier.height(SPACER_WIDTH))
+					CircularProgressIndicator()
 				}
-				if (overviewState.isLoading) {
+			}
+			overviewState.cars.isNotEmpty() -> {
+				LazyColumn(
+					modifier = modifier
+						.fillMaxSize()
+						.padding(horizontal = DEFAULT_PADDING)
+						.testTag("car_list"),
+					horizontalAlignment = Alignment.CenterHorizontally
+				) {
 					item {
-						Column(
-							verticalArrangement = Arrangement.Center,
-							horizontalAlignment = Alignment.CenterHorizontally,
-							modifier = modifier
-								.fillMaxSize()
-						) {
-							Text(text = stringResource(R.string.overview_scree_loading_data_please_wait))
-							Spacer(modifier = Modifier.height(SPACER_WIDTH))
-							CircularProgressIndicator()
-						}
+						DescriptionListItem(
+							onClick = { onAction(OverviewAction.DescriptionClick) }
+						)
 					}
-				} else {
 					itemsIndexed(overviewState.cars) { _, car ->
 						CarListItem(
 							car,
@@ -102,23 +100,10 @@ fun SharedTransitionScope.OverviewScreen(
 					}
 				}
 			}
-		} else {
-			Text(text = "No results found.")
+			else -> {
+				Text(text = "No results found.")
+			}
 		}
-	}
-}
-
-@Composable
-fun InitialListView(modifier: Modifier = Modifier) {
-	Column(
-		verticalArrangement = Arrangement.Center,
-		horizontalAlignment = Alignment.CenterHorizontally,
-		modifier = modifier
-			.fillMaxSize()
-	) {
-		Text(text = stringResource(R.string.overview_scree_loading_data_please_wait))
-		Spacer(modifier = Modifier.height(SPACER_WIDTH))
-		CircularProgressIndicator()
 	}
 }
 
