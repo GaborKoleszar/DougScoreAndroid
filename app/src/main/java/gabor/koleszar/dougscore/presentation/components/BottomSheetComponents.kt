@@ -3,7 +3,6 @@ package gabor.koleszar.dougscore.presentation.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import gabor.koleszar.dougscore.presentation.StyleConstants
@@ -64,9 +62,7 @@ fun SearchField(
         shape = RoundedCornerShape(StyleConstants.BORDER_RADIUS),
         maxLines = 1,
         singleLine = true,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(DEFAULT_PADDING),
+        modifier = Modifier.fillMaxWidth(),
         colors = TextFieldDefaults.colors(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
@@ -86,7 +82,7 @@ fun BottomSheetContent(
     onAction: (OverviewAction) -> Unit,
 ) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
             .padding(DEFAULT_PADDING)
             .verticalScroll(rememberScrollState())
@@ -94,17 +90,13 @@ fun BottomSheetContent(
         SearchField(searchText, onAction)
         Row(
             modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = "Reverse ordering",
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
-            )
+            Text(text = "Reverse ordering")
             Switch(
                 checked = isDescendingOrder,
                 onCheckedChange = { onAction(OverviewAction.ToggleIsDescending) },
-                modifier = Modifier.weight(1f)
             )
         }
         FilterChipSection(
@@ -134,16 +126,11 @@ private fun FilterChipSection(
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = DEFAULT_PADDING),
-            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier.weight(1f),
-            )
+            Text(text = label)
             if (selectedItems.isNotEmpty()) {
                 TextButton(onClick = onClear) {
                     Text("Clear")
@@ -151,7 +138,6 @@ private fun FilterChipSection(
             }
         }
         LazyRow(
-            contentPadding = PaddingValues(horizontal = DEFAULT_PADDING),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             items(items) { item ->
