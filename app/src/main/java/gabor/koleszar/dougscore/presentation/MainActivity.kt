@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,7 +36,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -62,6 +63,7 @@ class MainActivity : ComponentActivity() {
 		enableEdgeToEdge()
 		super.onCreate(savedInstanceState)
 		val settingsViewModel by viewModels<SettingsViewModel>()
+		val overviewViewModel by viewModels<OverviewViewModel>()
 
 		splashScreen.setKeepOnScreenCondition {
 			settingsViewModel.settingsState.value.initialState
@@ -69,6 +71,9 @@ class MainActivity : ComponentActivity() {
 
 		setContent {
 			val settingsState by settingsViewModel.settingsState.collectAsStateWithLifecycle()
+			val overviewState by overviewViewModel.state.collectAsStateWithLifecycle()
+			val hasActiveFilters = overviewState.selectedManufacturers.isNotEmpty() ||
+					overviewState.selectedCountries.isNotEmpty()
 			/*
 			 * Should use dark theme when system is dark and user wants to follow the system theme
 			 * OR
@@ -111,10 +116,14 @@ class MainActivity : ComponentActivity() {
 									IconButton(onClick = {
 										isSheetOpen = true
 									}) {
-										Icon(
-											imageVector = Icons.Default.Search,
-											contentDescription = stringResource(R.string.open_filters_content_description)
-										)
+										BadgedBox(
+											badge = { if (hasActiveFilters) Badge() }
+										) {
+											Icon(
+												imageVector = Icons.Default.Search,
+												contentDescription = stringResource(R.string.open_filters_content_description)
+											)
+										}
 									}
 								}
 							},
@@ -137,7 +146,6 @@ class MainActivity : ComponentActivity() {
 							startDestination = Route.OverView,
 						) {
 							composable<Route.OverView> {
-								val overviewViewModel = hiltViewModel<OverviewViewModel>()
 								OverviewScreenRoot(
 									overviewViewModel = overviewViewModel,
 									onCarClick = { carId ->
@@ -153,11 +161,14 @@ class MainActivity : ComponentActivity() {
 										sheetState = sheetState,
 										onDismissRequest = { isSheetOpen = false }
 									) {
-										val overviewState by overviewViewModel.state.collectAsStateWithLifecycle()
 										BottomSheetContent(
-											overviewState.searchQuery,
-											overviewState.isDescending,
-											overviewViewModel::onAction,
+											searchText = overviewState.searchQuery,
+											isDescendingOrder = overviewState.isDescending,
+											availableManufacturers = overviewState.availableManufacturers,
+											selectedManufacturers = overviewState.selectedManufacturers,
+											availableCountries = overviewState.availableCountries,
+											selectedCountries = overviewState.selectedCountries,
+											onAction = overviewViewModel::onAction,
 										)
 									}
 								}
