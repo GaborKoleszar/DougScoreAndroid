@@ -47,7 +47,10 @@ class CarRepositoryImpl @Inject constructor(
 
 	override fun getCars(): Flow<List<Car>> = dao.getAllCars()
 		.onStart {
-			if (dao.getAllCars().first().isEmpty()) {
+			val isEmpty = dao.getAllCars().first().isEmpty()
+			val lastUpdated = userPreferencesRepository.loadLastTimeDataUpdated().first()
+			val isStale = System.currentTimeMillis() - lastUpdated > 7 * 24 * 60 * 60 * 1000L
+			if (isEmpty || isStale) {
 				downloadCars()
 			}
 		}
