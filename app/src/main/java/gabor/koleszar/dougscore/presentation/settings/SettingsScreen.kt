@@ -32,6 +32,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import gabor.koleszar.dougscore.R
 import gabor.koleszar.dougscore.domain.model.UserSettings
 import gabor.koleszar.dougscore.presentation.StyleConstants
 import gabor.koleszar.dougscore.presentation.util.DateTimeFormatter
@@ -83,7 +85,7 @@ fun SettingsScreen(
 						horizontalAlignment = Alignment.CenterHorizontally
 					) {
 						Text(
-							text = "Last refreshed"
+							text = stringResource(R.string.last_refreshed)
 						)
 						Text(
 							text = DateTimeFormatter.getTimeAgo(
@@ -96,7 +98,7 @@ fun SettingsScreen(
 						onClick = { onAction(SettingsAction.RefreshCars) },
 						enabled = !isLoading
 					) {
-						Text(text = "Refresh data")
+						Text(text = stringResource(R.string.refresh_data))
 
 					}
 				}
@@ -106,7 +108,7 @@ fun SettingsScreen(
 					verticalAlignment = Alignment.CenterVertically
 				) {
 					Text(
-						text = "Use device theme",
+						text = stringResource(R.string.use_device_theme),
 						modifier = Modifier.weight(1f),
 						textAlign = TextAlign.Center
 					)
@@ -121,7 +123,7 @@ fun SettingsScreen(
 					verticalAlignment = Alignment.CenterVertically
 				) {
 					Text(
-						text = "Dark theme",
+						text = stringResource(R.string.dark_theme),
 						modifier = Modifier.weight(1f),
 						textAlign = TextAlign.Center
 					)
@@ -137,7 +139,7 @@ fun SettingsScreen(
 					verticalAlignment = Alignment.CenterVertically
 				) {
 					Text(
-						text = "Dynamic colors",
+						text = stringResource(R.string.dynamic_colors),
 						modifier = Modifier.weight(1f),
 						textAlign = TextAlign.Center
 					)
@@ -155,7 +157,7 @@ fun SettingsScreen(
 					val urlContext = LocalContext.current
 					Text(
 						color = Color.Gray,
-						text = "www.dougdemuro.com",
+						text = stringResource(R.string.doug_demuro_website),
 						modifier = Modifier
 							.weight(1f)
 							.clickable {
@@ -179,7 +181,7 @@ fun SettingsScreen(
 					}
 					Text(
 						color = Color.Gray,
-						text = "Version $version",
+						text = stringResource(R.string.version_label, version ?: ""),
 						modifier = Modifier.weight(1f),
 						textAlign = TextAlign.Center
 					)

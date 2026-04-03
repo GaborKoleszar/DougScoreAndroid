@@ -122,7 +122,7 @@ fun SharedTransitionScope.OverviewScreen(
 			}
 
 			else -> {
-				Text(text = "No results found.")
+				Text(text = stringResource(R.string.no_results_found))
 			}
 		}
 		AnimatedVisibility(
@@ -135,7 +135,7 @@ fun SharedTransitionScope.OverviewScreen(
 				onClick = { scope.launch { listState.animateScrollToItem(0) } },
 				modifier = Modifier.padding(24.dp),
 			) {
-				Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Scroll to top")
+				Icon(Icons.Default.KeyboardArrowUp, contentDescription = stringResource(R.string.scroll_to_top))
 			}
 		}
 	}

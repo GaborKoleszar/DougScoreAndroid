@@ -14,7 +14,6 @@
     <string name="details_car_weekend_cool_factor">Cool factor</string>
     <string name="details_car_weekend_total">Total Weekend</string>
     <string name="overview_scree_loading_data_please_wait">Loading data, please wait …</string>
-
     <string name="description1">There are 10 separate categories, and they’re each judged on a scale of 1 through 10 — with “1” being the worst, and “10” being the best, meaning the highest possible DougScore is 100. The ten categories are split into two separate groups: “Weekend” and “Daily.” The “Weekend” categories measure a car’s appeal to enthusiasts; in other words, how much fun it would be to drive on the weekend. The “Daily” categories, meanwhile, focus on a car’s livability and practicality.</string>
     <string name="description2">Each car is judged against all other cars and not only its segment. That’s an important point because it means these categories aren’t relative, but rather absolute: the car with the very highest DougScore is the best overall car I’ve ever driven, and the car with the lowest is the worst. The car with the highest “Weekend” score is the best enthusiast car I’ve driven; the car with the highest “Daily” score is the most practical and livable car I’ve driven.</string>
     <string name="description3">And yes, this means I’ll be comparing a Hummer H2 to a Ferrari 488; a Trabant to a Lamborghini Huracan. The H2 will probably beat the others for practicality. The 488 and Huracan will win for everything else. The Trabant will simply lose.</string>
@@ -25,6 +24,24 @@
     <string name="settings_content_description">Settings</string>
     <string name="back_content_description">Back</string>
     <string name="open_filters_content_description">Open filters</string>
-
+    <string name="no_results_found">No results found.</string>
+    <string name="scroll_to_top">Scroll to top</string>
+    <string name="last_refreshed">Last refreshed</string>
+    <string name="refresh_data">Refresh data</string>
+    <string name="use_device_theme">Use device theme</string>
+    <string name="dark_theme">Dark theme</string>
+    <string name="dynamic_colors">Dynamic colors</string>
+    <string name="doug_demuro_website">www.dougdemuro.com</string>
+    <string name="version_label">Version %s</string>
+    <string name="manufacturer_label">Manufacturer :</string>
+    <string name="model_label">Model :</string>
+    <string name="vehicle_country_label">Vehicle country :</string>
+    <string name="filming_location_label">Filming location :</string>
+    <string name="daily_score">Daily score</string>
+    <string name="weekend_score">Weekend score</string>
+    <string name="total_dougscore_label">Total DougScore : %d</string>
+    <string name="global_ranking_label">Global ranking : #%d</string>
+    <string name="watch_on_youtube">Watch on youtube</string>
+    <string name="how_does_dougscore_work">How does the DougScore work?</string>
 
 </resources>

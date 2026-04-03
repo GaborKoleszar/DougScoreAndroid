@@ -82,7 +82,7 @@ fun DescriptionListItem(
 		) {
 			Text(
 				fontWeight = FontWeight.SemiBold,
-				text = "How does the DougScore work?"
+				text = stringResource(R.string.how_does_dougscore_work)
 			)
 		}
 	}

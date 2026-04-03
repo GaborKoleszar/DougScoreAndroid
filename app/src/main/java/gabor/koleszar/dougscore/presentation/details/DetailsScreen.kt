@@ -29,10 +29,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import gabor.koleszar.dougscore.R
 import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
 import gabor.koleszar.dougscore.presentation.StyleConstants.SPACER_WIDTH
 import gabor.koleszar.dougscore.presentation.components.AsyncImageWithMultipleFallback
@@ -76,7 +78,7 @@ fun SharedTransitionScope.DetailsScreen(
 					//Basic info
 					Spacer(modifier = Modifier.height(DEFAULT_PADDING))
 					Row {
-						Text(text = "Manufacturer : ")
+						Text(text = stringResource(R.string.manufacturer_label))
 						Text(
 							fontWeight = FontWeight.Bold,
 							text = notNullCar.manufacturer,
@@ -88,7 +90,7 @@ fun SharedTransitionScope.DetailsScreen(
 						)
 					}
 					Row {
-						Text(text = "Model : ")
+						Text(text = stringResource(R.string.model_label))
 						Text(
 							fontWeight = FontWeight.Bold,
 							text = notNullCar.model,
@@ -100,11 +102,11 @@ fun SharedTransitionScope.DetailsScreen(
 						)
 					}
 					Row {
-						Text(text = "Vehicle country : ")
+						Text(text = stringResource(R.string.vehicle_country_label))
 						Text(fontWeight = FontWeight.Bold, text = notNullCar.vehicleCountry)
 					}
 					Row {
-						Text(text = "Filming location : ")
+						Text(text = stringResource(R.string.filming_location_label))
 						Text(
 							fontWeight = FontWeight.Bold,
 							text = "${notNullCar.filmingLocationCity}, ${notNullCar.filmingLocationState}"
@@ -120,20 +122,20 @@ fun SharedTransitionScope.DetailsScreen(
 							modifier = Modifier.weight(0.5f),
 							horizontalAlignment = Alignment.CenterHorizontally
 						) {
-							Text(fontWeight = FontWeight.Bold, text = "Daily score")
+							Text(fontWeight = FontWeight.Bold, text = stringResource(R.string.daily_score))
 						}
 						Column(
 							modifier = Modifier.weight(0.5f),
 							horizontalAlignment = Alignment.CenterHorizontally
 						) {
-							Text(fontWeight = FontWeight.Bold, text = "Weekend score")
+							Text(fontWeight = FontWeight.Bold, text = stringResource(R.string.weekend_score))
 						}
 					}
 					DougScoreTable(notNullCar)
 					Spacer(modifier = Modifier.height(DEFAULT_PADDING))
 					Text(
 						fontWeight = FontWeight.Bold,
-						text = "Total DougScore : ${notNullCar.dougScore}",
+						text = stringResource(R.string.total_dougscore_label, notNullCar.dougScore),
 						modifier = Modifier
 							.sharedBounds(
 								sharedContentState = rememberSharedContentState(key = "car_dougscore_${notNullCar.id}"),
@@ -142,7 +144,7 @@ fun SharedTransitionScope.DetailsScreen(
 					)
 					Text(
 						fontWeight = FontWeight.Bold,
-						text = "Global ranking : #${notNullCar.id + 1}",
+						text = stringResource(R.string.global_ranking_label, notNullCar.id + 1),
 						modifier = Modifier
 							.sharedBounds(
 								sharedContentState = rememberSharedContentState(key = "car_rank_${notNullCar.id}"),
@@ -158,7 +160,7 @@ fun SharedTransitionScope.DetailsScreen(
 							val intent = Intent(Intent.ACTION_VIEW, Uri.parse(notNullCar.videoLink))
 							context.startActivity(intent)
 						}) {
-							Text(text = "Watch on youtube")
+							Text(text = stringResource(R.string.watch_on_youtube))
 						}
 					}
 					Spacer(modifier = Modifier.height(DEFAULT_PADDING))
