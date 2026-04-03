@@ -5,7 +5,7 @@ plugins {
 
 android {
 	namespace = "gabor.koleszar.baselineprofile"
-	compileSdk = 35
+	compileSdk = 36
 
 	compileOptions {
 		sourceCompatibility = JavaVersion.VERSION_17
@@ -36,10 +36,10 @@ baselineProfile {
 }
 
 dependencies {
-	implementation("androidx.test.ext:junit:1.1.5")
-	implementation("androidx.test.espresso:espresso-core:3.5.1")
-	implementation("androidx.test.uiautomator:uiautomator:2.2.0")
-	implementation("androidx.benchmark:benchmark-macro-junit4:1.2.3")
+	implementation("androidx.test.ext:junit:1.3.0")
+	implementation("androidx.test.espresso:espresso-core:3.7.0")
+	implementation("androidx.test.uiautomator:uiautomator:2.3.0")
+	implementation("androidx.benchmark:benchmark-macro-junit4:1.4.1")
 }
 
 androidComponents {
