@@ -1,7 +1,9 @@
 package gabor.koleszar.dougscore.presentation.overview.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
@@ -23,7 +25,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,18 +63,19 @@ fun SharedTransitionScope.CarListItem(
 ) {
 	Spacer(
 		modifier = modifier
-			.fillMaxWidth()
-			.height(SPACER_WIDTH)
+            .fillMaxWidth()
+            .height(SPACER_WIDTH)
 	)
 	Box(
 		modifier = modifier
-			.fillMaxWidth()
-			.clickable(onClick = onCarClick),
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(DEFAULT_PADDING))
+            .clickable(onClick = onCarClick),
 	) {
 		Row(
 			modifier = Modifier
-				.height(110.dp)
-				.fillMaxWidth(),
+                .height(110.dp)
+                .fillMaxWidth(),
 			horizontalArrangement = Arrangement.SpaceBetween,
 			verticalAlignment = Alignment.CenterVertically
 		) {
@@ -80,42 +83,36 @@ fun SharedTransitionScope.CarListItem(
 				model = car.getMaxresImageLink(),
 				fallbackModel = car.getHqFallbackImageLink(),
 				modifier = Modifier
-					.sharedElement(
-						sharedContentState = rememberSharedContentState(key = "car_image_${car.id}"),
-						animatedVisibilityScope = animatedVisibilityScope,
-					)
-					.width(200.dp)
-					.clip(RoundedCornerShape(DEFAULT_PADDING))
+                    .sharedElement(
+                        sharedContentState = rememberSharedContentState(key = "car_image_${car.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                    )
+                    .width(200.dp)
+                    .clip(RoundedCornerShape(DEFAULT_PADDING))
 			)
 			Box(modifier = Modifier.fillMaxSize()) {
 				Card(
-					shape = RoundedCornerShape(
-						0.dp,
-						DEFAULT_PADDING,
-						DEFAULT_PADDING,
-						0.dp
-					),
 					colors = CardDefaults.cardColors(
 						containerColor = CardDefaults.cardColors().containerColor.copy(alpha = 0.4f)
 					),
 					modifier = Modifier
-						.fillMaxSize()
-						.graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
-						.drawWithContent {
-							drawContent()
-							drawRect(
-								brush = Brush.horizontalGradient(
-									0.0f to Color.Transparent, 1.0f to Color.Black
-								), blendMode = BlendMode.DstIn
-							)
-						},
+                        .fillMaxSize()
+                        .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
+                        .drawWithContent {
+                            drawContent()
+                            drawRect(
+                                brush = Brush.horizontalGradient(
+                                    0.0f to Color.Transparent, 1.0f to Color.Black
+                                ), blendMode = BlendMode.DstIn
+                            )
+                        },
 					elevation = CardDefaults.cardElevation(StyleConstants.ZERO_ELEVATION)
 				) {
 				}
 				Column(
 					modifier = Modifier
-						.padding(DEFAULT_PADDING)
-						.fillMaxHeight(),
+                        .padding(DEFAULT_PADDING)
+                        .fillMaxHeight(),
 					horizontalAlignment = Alignment.Start,
 					verticalArrangement = Arrangement.SpaceBetween
 				) {
@@ -129,12 +126,12 @@ fun SharedTransitionScope.CarListItem(
 							maxLines = 1,
 							overflow = TextOverflow.Ellipsis,
 							modifier = Modifier
-								.sharedBounds(
-									sharedContentState = rememberSharedContentState(key = "car_manufacturer_${car.id}"),
-									animatedVisibilityScope = animatedVisibilityScope,
-								)
-								.basicMarquee()
-								.weight(0.9f)
+                                .sharedBounds(
+                                    sharedContentState = rememberSharedContentState(key = "car_manufacturer_${car.id}"),
+                                    animatedVisibilityScope = animatedVisibilityScope,
+                                )
+                                .basicMarquee()
+                                .weight(0.9f)
 						)
 						Spacer(modifier = Modifier.width(SPACER_WIDTH))
 						Text(
@@ -160,11 +157,11 @@ fun SharedTransitionScope.CarListItem(
 						text = car.model,
 						maxLines = 1,
 						modifier = Modifier
-							.sharedBounds(
-								sharedContentState = rememberSharedContentState(key = "car_model_${car.id}"),
-								animatedVisibilityScope = animatedVisibilityScope,
-							)
-							.basicMarquee()
+                            .sharedBounds(
+                                sharedContentState = rememberSharedContentState(key = "car_model_${car.id}"),
+                                animatedVisibilityScope = animatedVisibilityScope,
+                            )
+                            .basicMarquee()
 					)
 					Text(
 						text = "Score: " + car.dougScore,
@@ -181,8 +178,8 @@ fun SharedTransitionScope.CarListItem(
 	}
 	Spacer(
 		modifier = modifier
-			.fillMaxWidth()
-			.height(SPACER_WIDTH)
+            .fillMaxWidth()
+            .height(SPACER_WIDTH)
 	)
 }
 
@@ -192,16 +189,17 @@ fun SharedTransitionScope.CarListItem(
 * * * * * * * * * *
 */
 
-@Preview(
-	showBackground = false
-)
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Preview(showBackground = false)
 @Composable
 fun CarListItemPreview() {
-	val car = remember {
-		dummyCars().first()
-	}
+	val car = dummyCars().first()
 	DougScoreTheme {
-		//CarListItem(car, {})
+		SharedTransitionLayout {
+			AnimatedVisibility(visible = true) {
+				CarListItem(car = car, onCarClick = {}, animatedVisibilityScope = this)
+			}
+		}
 	}
 }
 
