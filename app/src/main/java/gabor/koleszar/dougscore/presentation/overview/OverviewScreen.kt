@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gabor.koleszar.dougscore.R
 import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
@@ -35,7 +34,7 @@ import gabor.koleszar.dougscore.presentation.theme.DougScoreTheme
 
 @Composable
 fun SharedTransitionScope.OverviewScreenRoot(
-	overviewViewModel: OverviewViewModel = hiltViewModel(),
+	overviewViewModel: OverviewViewModel,
 	onCarClick: (Int) -> Unit,
 	onDescriptionClick: () -> Unit,
 	animatedVisibilityScope: AnimatedVisibilityScope,
