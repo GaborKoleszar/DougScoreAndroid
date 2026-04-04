@@ -36,8 +36,8 @@ class XlsxCarDataParser @Inject constructor() : CarDataParser<CarDto> {
 						CarDto(
 							id = index,
 							year = row.getCell(YEAR_COLUMN).numericCellValue.toInt(),
-							manufacturer = row.getCell(MANUFACTURER_COLUMN).toString(),
-							model = row.getCell(MODEL_COLUMN).toString(),
+							manufacturer = row.getCell(MANUFACTURER_COLUMN).toString().trim(),
+							model = row.getCell(MODEL_COLUMN).toString().trim(),
 							weekendScore = WeekendScore(
 								styling = row.getCell(W_STYLING_COLUMN).numericCellValue.toInt()
 									.toByte(),
@@ -69,9 +69,9 @@ class XlsxCarDataParser @Inject constructor() : CarDataParser<CarDto> {
 							dougScore = row.getCell(DOUGSCORE_COLUMN).numericCellValue.toInt(),
 							videoLink = youtubeUrl,
 							videoId = getVideoId(youtubeUrl),
-							filmingLocationCity = row.getCell(CITY_COLUMN).toString(),
-							filmingLocationState = row.getCell(STATE_COLUMN).toString(),
-							vehicleCountry = row.getCell(VEHICLE_COUNTRY_COLUMN).toString()
+							filmingLocationCity = row.getCell(CITY_COLUMN).toString().trim(),
+							filmingLocationState = row.getCell(STATE_COLUMN).toString().trim(),
+							vehicleCountry = row.getCell(VEHICLE_COUNTRY_COLUMN).toString().trim()
 						)
 					)
 					index++

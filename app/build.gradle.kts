@@ -1,24 +1,24 @@
 plugins {
 	alias(libs.plugins.android.gradle.plugin)
-	alias(libs.plugins.kotlin.android)
 	alias(libs.plugins.hilt.android)
 	alias(libs.plugins.kotlin.devtools.ksp)
 	alias(libs.plugins.gms.services)
 	alias(libs.plugins.firebase.crashlytics)
 	alias(libs.plugins.baseline.profile)
 	alias(libs.plugins.compose.compiler)
+	alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 android {
 	namespace = "gabor.koleszar.dougscore"
-	compileSdk = 35
+	compileSdk = 36
 
 	defaultConfig {
 		applicationId = "gabor.koleszar.dougscore"
 		minSdk = 26
-		targetSdk = 35
-		versionCode = 6
-		versionName = "0.6"
+		targetSdk = 36
+		versionCode = 8
+		versionName = "0.8"
 
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 		vectorDrawables {
@@ -40,9 +40,6 @@ android {
 		sourceCompatibility = JavaVersion.VERSION_17
 		targetCompatibility = JavaVersion.VERSION_17
 	}
-	kotlinOptions {
-		jvmTarget = "17"
-	}
 	buildFeatures {
 		compose = true
 	}
@@ -51,10 +48,6 @@ android {
 			excludes += "/META-INF/{AL2.0,LGPL2.1}"
 		}
 	}
-}
-
-composeCompiler {
-	enableStrongSkippingMode = true
 }
 
 dependencies {
@@ -68,7 +61,9 @@ dependencies {
 	implementation(libs.androidx.ui.graphics)
 	implementation(libs.androidx.ui.tooling.preview)
 	implementation(libs.androidx.material3)
+	implementation(libs.androidx.material.icons.extended)
 	implementation(libs.androidx.profileinstaller)
+	implementation(libs.kotlinx.serialization.json)
 	"baselineProfile"(project(":baselineprofile"))
 	debugImplementation(libs.androidx.ui.tooling)
 	debugImplementation(libs.androidx.ui.test.manifest)
@@ -102,7 +97,7 @@ dependencies {
 	ksp(libs.androidx.room.compiler)
 
 	//Preferences Datastore
-	implementation (libs.androidx.datastore.preferences)
+	implementation(libs.androidx.datastore.preferences)
 
 	//Compose lifecycle
 	implementation(libs.androidx.lifecycle.runtime.compose)

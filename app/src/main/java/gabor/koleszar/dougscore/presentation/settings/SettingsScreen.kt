@@ -1,5 +1,7 @@
 package gabor.koleszar.dougscore.presentation.settings
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -29,6 +32,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import gabor.koleszar.dougscore.R
 import gabor.koleszar.dougscore.domain.model.UserSettings
 import gabor.koleszar.dougscore.presentation.StyleConstants
 import gabor.koleszar.dougscore.presentation.util.DateTimeFormatter
@@ -38,9 +43,8 @@ import java.util.Date
 fun SettingsScreen(
 	lastRefreshTimeInMillis: Long,
 	isLoading: Boolean,
-	onRefreshData: () -> Unit,
-	userSettings: UserSettings,
-	handleEvent: (SettingsEvent) -> Unit,
+	settingsState: SettingsState,
+	onAction: (SettingsAction) -> Unit,
 	modifier: Modifier = Modifier
 ) {
 	Box(
@@ -81,7 +85,7 @@ fun SettingsScreen(
 						horizontalAlignment = Alignment.CenterHorizontally
 					) {
 						Text(
-							text = "Last refreshed"
+							text = stringResource(R.string.last_refreshed)
 						)
 						Text(
 							text = DateTimeFormatter.getTimeAgo(
@@ -91,10 +95,10 @@ fun SettingsScreen(
 						)
 					}
 					Button(
-						onClick = onRefreshData,
+						onClick = { onAction(SettingsAction.RefreshCars) },
 						enabled = !isLoading
 					) {
-						Text(text = "Refresh data")
+						Text(text = stringResource(R.string.refresh_data))
 
 					}
 				}
@@ -104,13 +108,13 @@ fun SettingsScreen(
 					verticalAlignment = Alignment.CenterVertically
 				) {
 					Text(
-						text = "Use device theme",
+						text = stringResource(R.string.use_device_theme),
 						modifier = Modifier.weight(1f),
 						textAlign = TextAlign.Center
 					)
 					Switch(
-						checked = userSettings.useDeviceTheme,
-						onCheckedChange = { handleEvent(SettingsEvent.TOGGLE_DEVICE_THEME) },
+						checked = settingsState.useDeviceTheme,
+						onCheckedChange = { onAction(SettingsAction.ToggleDeviceTheme) },
 						modifier = Modifier.weight(1f)
 					)
 				}
@@ -119,14 +123,14 @@ fun SettingsScreen(
 					verticalAlignment = Alignment.CenterVertically
 				) {
 					Text(
-						text = "Dark theme",
+						text = stringResource(R.string.dark_theme),
 						modifier = Modifier.weight(1f),
 						textAlign = TextAlign.Center
 					)
 					Switch(
-						checked = userSettings.useDarkTheme,
-						onCheckedChange = { handleEvent(SettingsEvent.TOGGLE_DARK_THEME) },
-						enabled = !userSettings.useDeviceTheme,
+						checked = settingsState.useDarkTheme,
+						onCheckedChange = { onAction(SettingsAction.ToggleDarkTheme) },
+						enabled = !settingsState.useDeviceTheme,
 						modifier = Modifier.weight(1f)
 					)
 				}
@@ -135,13 +139,13 @@ fun SettingsScreen(
 					verticalAlignment = Alignment.CenterVertically
 				) {
 					Text(
-						text = "Dynamic colors",
+						text = stringResource(R.string.dynamic_colors),
 						modifier = Modifier.weight(1f),
 						textAlign = TextAlign.Center
 					)
 					Switch(
-						checked = userSettings.useDynamicColor,
-						onCheckedChange = { handleEvent(SettingsEvent.TOGGLE_DYNAMIC_COLOR) },
+						checked = settingsState.useDynamicColor,
+						onCheckedChange = { onAction(SettingsAction.ToggleDynamicColor) },
 						enabled = supportsDynamicTheming(),
 						modifier = Modifier.weight(1f)
 					)
@@ -150,10 +154,17 @@ fun SettingsScreen(
 					modifier = Modifier.fillMaxWidth(),
 					verticalAlignment = Alignment.CenterVertically
 				) {
+					val urlContext = LocalContext.current
 					Text(
 						color = Color.Gray,
-						text = "www.dougdemuro.com",
-						modifier = Modifier.weight(1f),
+						text = stringResource(R.string.doug_demuro_website),
+						modifier = Modifier
+							.weight(1f)
+							.clickable {
+								urlContext.startActivity(
+									Intent(Intent.ACTION_VIEW, Uri.parse("https://www.dougdemuro.com"))
+								)
+							},
 						textAlign = TextAlign.Center
 					)
 				}
@@ -170,7 +181,7 @@ fun SettingsScreen(
 					}
 					Text(
 						color = Color.Gray,
-						text = "Version $version",
+						text = stringResource(R.string.version_label, version ?: ""),
 						modifier = Modifier.weight(1f),
 						textAlign = TextAlign.Center
 					)

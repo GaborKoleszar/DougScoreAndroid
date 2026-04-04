@@ -3,13 +3,10 @@ package gabor.koleszar.dougscore.presentation.overview
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import gabor.koleszar.dougscore.common.Resource
 import gabor.koleszar.dougscore.domain.model.Car
 import gabor.koleszar.dougscore.domain.repository.CarRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -18,90 +15,104 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OverviewViewModel @Inject constructor(
-	private val carRepository: CarRepository
+    private val carRepository: CarRepository
 ) : ViewModel() {
 
-	private val _searchText = MutableStateFlow("")
-	val searchText = _searchText.asStateFlow()
+    private val _carsFromRepo = carRepository.getCars().stateIn(
+        viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
 
-	private val _isDescending = MutableStateFlow(false)
-	val isDescending = _isDescending.asStateFlow()
+    private val _state = MutableStateFlow(OverviewState())
+    val state = _state
+        .combine(_carsFromRepo) { state, cars ->
+            updateCarsList(state, cars)
+        }.stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = OverviewState()
+        )
 
-	private val _isLoading = MutableStateFlow(true)
-	val isLoading = _isLoading.asStateFlow()
+    fun onAction(action: OverviewAction) {
+        viewModelScope.launch {
+            when (action) {
+                is OverviewAction.ToggleIsDescending -> {
+                    _state.update { it.copy(isDescending = !it.isDescending) }
+                }
+                is OverviewAction.ClearSearchField -> {
+                    _state.update { it.copy(searchQuery = "") }
+                }
+                is OverviewAction.RefreshList -> {
+                    downloadCars()
+                }
+                is OverviewAction.SearchTextChange -> {
+                    _state.update { it.copy(searchQuery = action.searchQuery) }
+                }
+                is OverviewAction.ToggleManufacturerFilter -> {
+                    _state.update {
+                        val newSet = if (action.manufacturer in it.selectedManufacturers)
+                            it.selectedManufacturers - action.manufacturer
+                        else
+                            it.selectedManufacturers + action.manufacturer
+                        it.copy(selectedManufacturers = newSet)
+                    }
+                }
+                is OverviewAction.ToggleCountryFilter -> {
+                    _state.update {
+                        val newSet = if (action.country in it.selectedCountries)
+                            it.selectedCountries - action.country
+                        else
+                            it.selectedCountries + action.country
+                        it.copy(selectedCountries = newSet)
+                    }
+                }
+                is OverviewAction.ClearManufacturerFilters -> {
+                    _state.update { it.copy(selectedManufacturers = emptySet()) }
+                }
+                is OverviewAction.ClearCountryFilters -> {
+                    _state.update { it.copy(selectedCountries = emptySet()) }
+                }
+                else -> {
+                    // Navigation actions handled in MainActivity
+                }
+            }
+        }
+    }
 
-	private val _cars = MutableStateFlow<List<Car>>(emptyList())
+    private fun updateCarsList(newState: OverviewState, cars: List<Car>): OverviewState {
+        val availableManufacturers = cars.map { it.manufacturer }.distinct().sorted()
+        val availableCountries = cars.map { it.vehicleCountry }.distinct().sorted()
 
-	val cars = combine(_searchText, _cars, _isDescending) { query, cars, isDescending ->
-		var filteredCars = cars
+        // Drop stale selections after a data refresh
+        val cleanedManufacturers = newState.selectedManufacturers.intersect(availableManufacturers.toSet())
+        val cleanedCountries = newState.selectedCountries.intersect(availableCountries.toSet())
 
-		if (query.length >= 3) {
-			filteredCars = cars.filter { car ->
-				car.doesMatchSearchQuery(query.lowercase())
-			}
-		}
-		if (isDescending) {
-			filteredCars = filteredCars.reversed()
-		}
+        var filteredCars = cars
+        if (newState.searchQuery.length > 3) {
+            filteredCars = filteredCars.filter { it.doesMatchSearchQuery(newState.searchQuery.lowercase()) }
+        }
+        if (cleanedManufacturers.isNotEmpty()) {
+            filteredCars = filteredCars.filter { it.manufacturer in cleanedManufacturers }
+        }
+        if (cleanedCountries.isNotEmpty()) {
+            filteredCars = filteredCars.filter { it.vehicleCountry in cleanedCountries }
+        }
 
-		return@combine filteredCars
-	}.stateIn(
-		viewModelScope,
-		SharingStarted.WhileSubscribed(5000),
-		_cars.value
-	)
+        return newState.copy(
+            cars = if (newState.isDescending) filteredCars.reversed() else filteredCars,
+            isLoading = if (cars.isNotEmpty()) false else newState.isLoading,
+            availableManufacturers = availableManufacturers,
+            availableCountries = availableCountries,
+            selectedManufacturers = cleanedManufacturers,
+            selectedCountries = cleanedCountries,
+        )
+    }
 
-	init {
-		getCarIntroductions()
-	}
-
-	fun onSearchTextChange(text: String) {
-		_searchText.update { text }
-	}
-
-	fun refresh() {
-		getCarIntroductions(true)
-	}
-
-	fun onClearSearchField() {
-		_searchText.update { "" }
-	}
-
-	fun handleEvent(event: OverviewEvent) {
-		viewModelScope.launch {
-			when (event) {
-				OverviewEvent.TOGGLE_IS_DESCENDING -> {
-					_isDescending.update { !isDescending.value }
-				}
-			}
-		}
-	}
-
-	private fun getCarIntroductions(
-		shouldFetchFromRemote: Boolean = false
-	) {
-		viewModelScope.launch {
-			carRepository
-				.getAllCars(shouldFetchFromRemote)
-				.collectLatest { result ->
-					when (result) {
-
-						is Resource.Success -> {
-							result.data?.let { freshCars ->
-								_cars.update { freshCars }
-								_isLoading.update { false }
-							}
-						}
-
-						is Resource.Error -> {
-							_isLoading.update { false }
-						}
-
-						is Resource.Loading -> {
-							_isLoading.update { true }
-						}
-					}
-				}
-		}
-	}
+    private fun downloadCars() {
+        viewModelScope.launch {
+            val successful = carRepository.downloadCars()
+            //TODO add error toast if failed download
+        }
+    }
 }
