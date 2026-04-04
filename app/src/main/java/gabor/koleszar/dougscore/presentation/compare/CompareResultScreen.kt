@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -54,7 +53,9 @@ fun CompareResultScreen(
     ) {
         if (state.isLoading || state.car1 == null || state.car2 == null) {
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp),
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator()
@@ -63,6 +64,7 @@ fun CompareResultScreen(
             CarComparePanel(car = state.car1, otherCar = state.car2)
             HorizontalDivider(modifier = Modifier.padding(vertical = DEFAULT_PADDING))
             CarComparePanel(car = state.car2, otherCar = state.car1)
+            Spacer(modifier = Modifier.height(DEFAULT_PADDING))
         }
     }
 }
@@ -88,10 +90,7 @@ private fun CarComparePanel(
             contentScale = ContentScale.FillWidth
         )
         Spacer(modifier = Modifier.height(DEFAULT_PADDING))
-        Row {
-            Text(text = car.manufacturer, fontWeight = FontWeight.Bold)
-            Text(text = " ${car.model}", fontWeight = FontWeight.Bold)
-        }
+        Text(text = "${car.manufacturer} ${car.model}", fontWeight = FontWeight.Bold)
         Row(
             modifier = Modifier
                 .fillMaxWidth()

@@ -25,7 +25,7 @@ class CompareResultViewModel @Inject constructor(
             CompareResultState(
                 car1 = car1,
                 car2 = car2,
-                isLoading = false,
+                isLoading = car1 == null || car2 == null,
             )
         }
         .stateIn(
