@@ -18,4 +18,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "DougScore"
 include(":app")
-include(":baselineprofile")
+include(":baselineProfile")

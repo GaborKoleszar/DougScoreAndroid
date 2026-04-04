@@ -64,7 +64,7 @@ dependencies {
 	implementation(libs.androidx.material.icons.extended)
 	implementation(libs.androidx.profileinstaller)
 	implementation(libs.kotlinx.serialization.json)
-	"baselineProfile"(project(":baselineprofile"))
+	"baselineProfile"(project(":baselineProfile"))
 	debugImplementation(libs.androidx.ui.tooling)
 	debugImplementation(libs.androidx.ui.test.manifest)
 
