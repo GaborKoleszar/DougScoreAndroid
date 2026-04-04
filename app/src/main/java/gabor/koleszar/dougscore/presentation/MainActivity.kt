@@ -198,10 +198,10 @@ class MainActivity : ComponentActivity() {
 								DescriptionScreen()
 							}
 							composable<Route.CarPicker> {
+								val fromCarId = it.toRoute<Route.CarPicker>().fromCarId
 								CarPickerScreenRoot(
 									onCarClick = { selectedCarId ->
-										val route = it.toRoute<Route.CarPicker>()
-										navController.navigate(Route.CompareResult(route.fromCarId, selectedCarId))
+										navController.navigate(Route.CompareResult(fromCarId, selectedCarId))
 									}
 								)
 							}

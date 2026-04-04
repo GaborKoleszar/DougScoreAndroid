@@ -2,6 +2,7 @@ package gabor.koleszar.dougscore.presentation.compare
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import gabor.koleszar.dougscore.domain.repository.CarRepository
