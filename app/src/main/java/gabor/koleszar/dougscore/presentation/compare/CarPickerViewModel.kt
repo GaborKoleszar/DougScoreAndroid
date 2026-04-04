@@ -24,7 +24,7 @@ class CarPickerViewModel @Inject constructor(
 
     private val _carsFromRepo = repository.getCars().stateIn(
         viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.WhileSubscribed(5_000L),
         initialValue = emptyList()
     )
 
@@ -34,7 +34,7 @@ class CarPickerViewModel @Inject constructor(
             val query = state.searchQuery
             var filteredCars = cars.filter { it.id != fromCarId }
             if (query.isNotEmpty()) {
-                filteredCars = filteredCars.filter { it.doesMatchSearchQuery(query.lowercase()) }
+                filteredCars = filteredCars.filter { it.doesMatchSearchQuery(query) }
             }
             state.copy(
                 cars = filteredCars,
@@ -42,7 +42,7 @@ class CarPickerViewModel @Inject constructor(
             )
         }.stateIn(
             viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
+            started = SharingStarted.WhileSubscribed(5_000L),
             initialValue = CarPickerState()
         )
 
@@ -51,7 +51,9 @@ class CarPickerViewModel @Inject constructor(
             is CarPickerAction.SearchTextChange -> {
                 _state.update { it.copy(searchQuery = action.query) }
             }
-            else -> {}
+            else -> {
+                // CarClick navigation is handled as a callback in CarPickerScreenRoot
+            }
         }
     }
 }
