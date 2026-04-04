@@ -106,6 +106,8 @@ fun OneLineText(
 	Text(text = text, modifier = modifier.basicMarquee(), maxLines = 1)
 }
 
+// Relative comparison color — green if this car wins, red if it loses.
+// Unlike StyleConstants.getColorFromSubScore, this is not an absolute score-band color.
 @Composable
 private fun compareColor(mine: Int, theirs: Int): Color = when {
 	mine > theirs -> ScoreGreen
