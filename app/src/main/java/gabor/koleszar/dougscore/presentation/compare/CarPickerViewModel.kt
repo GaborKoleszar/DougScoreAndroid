@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,15 +32,10 @@ class CarPickerViewModel @Inject constructor(
     val state = _state
         .combine(_carsFromRepo) { state, cars ->
             val query = state.searchQuery
-            val filteredCars = cars
-                .filter { it.id != fromCarId }
-                .let { list ->
-                    if (query.isNotEmpty()) {
-                        list.filter { it.doesMatchSearchQuery(query.lowercase()) }
-                    } else {
-                        list
-                    }
-                }
+            var filteredCars = cars.filter { it.id != fromCarId }
+            if (query.isNotEmpty()) {
+                filteredCars = filteredCars.filter { it.doesMatchSearchQuery(query.lowercase()) }
+            }
             state.copy(
                 cars = filteredCars,
                 isLoading = if (cars.isNotEmpty()) false else state.isLoading,
@@ -53,15 +47,11 @@ class CarPickerViewModel @Inject constructor(
         )
 
     fun onAction(action: CarPickerAction) {
-        viewModelScope.launch {
-            when (action) {
-                is CarPickerAction.SearchTextChange -> {
-                    _state.update { it.copy(searchQuery = action.query) }
-                }
-                is CarPickerAction.CarClick -> {
-                    // Navigation handled in MainActivity
-                }
+        when (action) {
+            is CarPickerAction.SearchTextChange -> {
+                _state.update { it.copy(searchQuery = action.query) }
             }
+            else -> {}
         }
     }
 }

@@ -43,5 +43,6 @@
     <string name="global_ranking_label">Global ranking : #%d</string>
     <string name="watch_on_youtube">Watch on youtube</string>
     <string name="how_does_dougscore_work">How does the DougScore work?</string>
+    <string name="car_picker_search_hint">Search cars…</string>
 
 </resources>

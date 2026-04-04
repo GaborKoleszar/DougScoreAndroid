@@ -16,20 +16,20 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.SearchBar
-import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import gabor.koleszar.dougscore.R
 import gabor.koleszar.dougscore.domain.model.Car
 import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
 import gabor.koleszar.dougscore.presentation.StyleConstants.SPACER_WIDTH
@@ -54,7 +54,6 @@ fun CarPickerScreenRoot(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CarPickerScreen(
     state: CarPickerState,
@@ -62,32 +61,19 @@ fun CarPickerScreen(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxSize()) {
-        SearchBar(
-            inputField = {
-                SearchBarDefaults.InputField(
-                    query = state.searchQuery,
-                    onQueryChange = { onAction(CarPickerAction.SearchTextChange(it)) },
-                    onSearch = {},
-                    expanded = false,
-                    onExpandedChange = {},
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = null,
-                        )
-                    },
-                    placeholder = { Text("Search cars...") },
-                )
-            },
-            expanded = false,
-            onExpandedChange = {},
+        OutlinedTextField(
+            value = state.searchQuery,
+            onValueChange = { onAction(CarPickerAction.SearchTextChange(it)) },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = DEFAULT_PADDING),
-        ) {}
+                .padding(horizontal = DEFAULT_PADDING, vertical = SPACER_WIDTH),
+            placeholder = { Text(stringResource(R.string.car_picker_search_hint)) },
+            singleLine = true,
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) }
+        )
 
         when {
-            state.isLoading -> {
+            state.isLoading && state.cars.isEmpty() -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center,
@@ -101,7 +87,7 @@ fun CarPickerScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text("No results found")
+                    Text(stringResource(R.string.no_results_found))
                 }
             }
 
@@ -120,7 +106,7 @@ fun CarPickerScreen(
 }
 
 @Composable
-fun CompactCarListItem(
+private fun CompactCarListItem(
     car: Car,
     onCarClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -130,35 +116,29 @@ fun CompactCarListItem(
             .fillMaxWidth()
             .height(SPACER_WIDTH)
     )
-    Box(
+    Row(
         modifier = modifier
             .height(70.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(DEFAULT_PADDING))
             .clickable(onClick = onCarClick),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
+        AsyncImageWithMultipleFallback(
+            model = car.getMaxresImageLink(),
+            fallbackModel = car.getHqFallbackImageLink(),
             modifier = Modifier
-                .height(70.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
+                .width(120.dp)
+                .clip(RoundedCornerShape(DEFAULT_PADDING)),
+        )
+        Column(
+            modifier = Modifier
+                .padding(horizontal = DEFAULT_PADDING)
+                .weight(1f),
         ) {
-            AsyncImageWithMultipleFallback(
-                model = car.getMaxresImageLink(),
-                fallbackModel = car.getHqFallbackImageLink(),
-                modifier = Modifier
-                    .width(120.dp)
-                    .clip(RoundedCornerShape(DEFAULT_PADDING)),
-            )
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = DEFAULT_PADDING)
-                    .weight(1f),
-            ) {
-                Text(text = car.manufacturer, fontWeight = FontWeight.Bold)
-                Text(text = car.model)
-                Text(text = "Score: ${car.dougScore}")
-            }
+            Text(text = car.manufacturer, fontWeight = FontWeight.Bold)
+            Text(text = car.model)
+            Text(text = "Score: ${car.dougScore}")
         }
     }
     Spacer(
