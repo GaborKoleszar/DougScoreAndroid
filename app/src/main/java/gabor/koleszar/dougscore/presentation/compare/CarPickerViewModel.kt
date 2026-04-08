@@ -38,6 +38,7 @@ class CarPickerViewModel @Inject constructor(
             }
             state.copy(
                 cars = filteredCars,
+                selectedCar = cars.find { it.id == fromCarId },
                 isLoading = if (cars.isNotEmpty()) false else state.isLoading,
             )
         }.stateIn(
