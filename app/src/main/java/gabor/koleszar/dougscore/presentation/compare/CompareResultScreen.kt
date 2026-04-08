@@ -2,6 +2,9 @@ package gabor.koleszar.dougscore.presentation.compare
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,18 +40,22 @@ import gabor.koleszar.dougscore.presentation.StyleConstants.SPACER_WIDTH
 import gabor.koleszar.dougscore.presentation.components.AsyncImageWithMultipleFallback
 import gabor.koleszar.dougscore.presentation.components.SideBySideScoreTable
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun CompareResultScreenRoot(
+fun SharedTransitionScope.CompareResultScreenRoot(
+    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
     viewModel: CompareResultViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    CompareResultScreen(state = state, modifier = modifier)
+    CompareResultScreen(state = state, animatedVisibilityScope = animatedVisibilityScope, modifier = modifier)
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun CompareResultScreen(
+fun SharedTransitionScope.CompareResultScreen(
     state: CompareResultState,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -73,8 +80,18 @@ fun CompareResultScreen(
                     .padding(DEFAULT_PADDING),
                 horizontalArrangement = Arrangement.spacedBy(SPACER_WIDTH)
             ) {
-                CarImageHeader(car = state.car1, modifier = Modifier.weight(1f))
-                CarImageHeader(car = state.car2, modifier = Modifier.weight(1f))
+                CarImageHeader(
+                    car = state.car1,
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    imageSharedElementKey = "car_image_${state.car1.id}",
+                    modifier = Modifier.weight(1f)
+                )
+                CarImageHeader(
+                    car = state.car2,
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    imageSharedElementKey = "car_image_compare_${state.car2.id}",
+                    modifier = Modifier.weight(1f)
+                )
             }
             SideBySideScoreTable(
                 car1 = state.car1,
@@ -106,9 +123,12 @@ fun CompareResultScreen(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun CarImageHeader(
+private fun SharedTransitionScope.CarImageHeader(
     car: Car,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    imageSharedElementKey: String,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -118,7 +138,12 @@ private fun CarImageHeader(
         AsyncImageWithMultipleFallback(
             model = car.getMaxresImageLink(),
             fallbackModel = car.getHqFallbackImageLink(),
-            modifier = Modifier.clip(RoundedCornerShape(DEFAULT_PADDING)),
+            modifier = Modifier
+                .sharedElement(
+                    sharedContentState = rememberSharedContentState(key = imageSharedElementKey),
+                    animatedVisibilityScope = animatedVisibilityScope,
+                )
+                .clip(RoundedCornerShape(DEFAULT_PADDING)),
             contentScale = ContentScale.FillWidth
         )
         Spacer(modifier = Modifier.height(SPACER_WIDTH))

@@ -202,11 +202,14 @@ class MainActivity : ComponentActivity() {
 								CarPickerScreenRoot(
 									onCarClick = { selectedCarId ->
 										navController.navigate(Route.CompareResult(fromCarId, selectedCarId))
-									}
+									},
+									animatedVisibilityScope = this@composable,
 								)
 							}
 							composable<Route.CompareResult> {
-								CompareResultScreenRoot()
+								CompareResultScreenRoot(
+									animatedVisibilityScope = this@composable,
+								)
 							}
 						}
 					}

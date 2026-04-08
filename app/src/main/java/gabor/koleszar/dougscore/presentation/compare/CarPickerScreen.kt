@@ -1,6 +1,8 @@
 package gabor.koleszar.dougscore.presentation.compare
 
-import androidx.compose.foundation.background
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,7 +31,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,9 +47,11 @@ import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
 import gabor.koleszar.dougscore.presentation.StyleConstants.SPACER_WIDTH
 import gabor.koleszar.dougscore.presentation.components.AsyncImageWithMultipleFallback
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun CarPickerScreenRoot(
+fun SharedTransitionScope.CarPickerScreenRoot(
     onCarClick: (carId: Int) -> Unit,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
     viewModel: CarPickerViewModel = hiltViewModel(),
 ) {
@@ -61,15 +64,17 @@ fun CarPickerScreenRoot(
                 else -> viewModel.onAction(action)
             }
         },
+        animatedVisibilityScope = animatedVisibilityScope,
         modifier = modifier,
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun CarPickerScreen(
+fun SharedTransitionScope.CarPickerScreen(
     state: CarPickerState,
     onAction: (CarPickerAction) -> Unit,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
 ) {
     val bottomSheetHeight = if (state.selectedCar != null) 140.dp else 0.dp
@@ -141,6 +146,8 @@ fun CarPickerScreen(
                             CompactCarListItem(
                                 car = car,
                                 onCarClick = { onAction(CarPickerAction.CarClick(car.id)) },
+                                animatedVisibilityScope = animatedVisibilityScope,
+                                imageSharedElementKey = "car_image_compare_${car.id}",
                             )
                         }
                     }
@@ -154,7 +161,8 @@ fun CarPickerScreen(
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter),
                 shape = BottomSheetDefaults.ExpandedShape,
-                color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                tonalElevation = DEFAULT_PADDING,
+                shadowElevation = DEFAULT_PADDING
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -167,6 +175,8 @@ fun CarPickerScreen(
                     CompactCarListItem(
                         car = state.selectedCar,
                         onCarClick = null,
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        imageSharedElementKey = "car_image_${state.selectedCar.id}",
                         modifier = Modifier
                             .padding(horizontal = DEFAULT_PADDING)
                     )
@@ -177,10 +187,13 @@ fun CarPickerScreen(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun CompactCarListItem(
+private fun SharedTransitionScope.CompactCarListItem(
     car: Car,
     onCarClick: (() -> Unit)?,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    imageSharedElementKey: String,
     modifier: Modifier = Modifier,
 ) {
     Spacer(
@@ -200,6 +213,10 @@ private fun CompactCarListItem(
             model = car.getMaxresImageLink(),
             fallbackModel = car.getHqFallbackImageLink(),
             modifier = Modifier
+                .sharedElement(
+                    sharedContentState = rememberSharedContentState(key = imageSharedElementKey),
+                    animatedVisibilityScope = animatedVisibilityScope,
+                )
                 .width(120.dp)
                 .clip(RoundedCornerShape(DEFAULT_PADDING)),
         )
