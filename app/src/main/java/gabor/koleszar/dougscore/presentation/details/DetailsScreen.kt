@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -44,7 +45,8 @@ import gabor.koleszar.dougscore.presentation.components.DougScoreTable
 fun SharedTransitionScope.DetailsScreen(
 	modifier: Modifier = Modifier,
 	detailsViewModel: DetailsViewModel = hiltViewModel(),
-	animatedVisibilityScope: AnimatedVisibilityScope
+	animatedVisibilityScope: AnimatedVisibilityScope,
+	onCompareClick: (Int) -> Unit,
 ) {
 	val car by detailsViewModel.carInDetailsScreen.collectAsStateWithLifecycle()
 	Box(
@@ -162,6 +164,9 @@ fun SharedTransitionScope.DetailsScreen(
 						}) {
 							Text(text = stringResource(R.string.watch_on_youtube))
 						}
+					}
+					OutlinedButton(onClick = { onCompareClick(notNullCar.id) }) {
+						Text(text = stringResource(R.string.compare_button_label))
 					}
 					Spacer(modifier = Modifier.height(DEFAULT_PADDING))
 				}

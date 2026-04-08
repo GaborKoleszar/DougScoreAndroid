@@ -42,10 +42,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import dagger.hilt.android.AndroidEntryPoint
 import gabor.koleszar.dougscore.R
 import gabor.koleszar.dougscore.presentation.components.AnimatedBackButton
 import gabor.koleszar.dougscore.presentation.components.BottomSheetContent
+import gabor.koleszar.dougscore.presentation.compare.CarPickerScreenRoot
+import gabor.koleszar.dougscore.presentation.compare.CompareResultScreenRoot
 import gabor.koleszar.dougscore.presentation.description.DescriptionScreen
 import gabor.koleszar.dougscore.presentation.details.DetailsScreen
 import gabor.koleszar.dougscore.presentation.overview.OverviewScreenRoot
@@ -178,6 +181,9 @@ class MainActivity : ComponentActivity() {
 							composable<Route.Details> {
 								DetailsScreen(
 									animatedVisibilityScope = this@composable,
+									onCompareClick = { carId ->
+										navController.navigate(Route.CarPicker(carId))
+									}
 								)
 							}
 							composable<Route.Settings> {
@@ -190,6 +196,17 @@ class MainActivity : ComponentActivity() {
 							}
 							composable<Route.Description> {
 								DescriptionScreen()
+							}
+							composable<Route.CarPicker> {
+								val fromCarId = it.toRoute<Route.CarPicker>().fromCarId
+								CarPickerScreenRoot(
+									onCarClick = { selectedCarId ->
+										navController.navigate(Route.CompareResult(fromCarId, selectedCarId))
+									}
+								)
+							}
+							composable<Route.CompareResult> {
+								CompareResultScreenRoot()
 							}
 						}
 					}
