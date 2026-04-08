@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -254,7 +255,6 @@ fun SideBySideScoreTable(
 		SideBySideScoreRow(car1.weekendScore.total.toInt(), car2.weekendScore.total.toInt(), stringResource(R.string.details_car_weekend_total), fontWeight = FontWeight.Bold)
 
 		Spacer(modifier = Modifier.height(SPACER_WIDTH))
-		HorizontalDivider()
 		SideBySideScoreRow(car1.dougScore, car2.dougScore, stringResource(R.string.compare_dougscore_label), fontWeight = FontWeight.Bold)
 	}
 }
