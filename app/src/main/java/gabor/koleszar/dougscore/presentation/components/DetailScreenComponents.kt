@@ -4,8 +4,11 @@ import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import gabor.koleszar.dougscore.R
 import gabor.koleszar.dougscore.domain.model.Car
 import gabor.koleszar.dougscore.presentation.StyleConstants
@@ -220,6 +225,85 @@ fun CompareScoreTable(
 			text = thisCar.dougScore.toString(),
 			color = compareColor(thisCar.dougScore, otherCar.dougScore),
 			fontWeight = FontWeight.Bold
+		)
+	}
+}
+
+@Composable
+fun SideBySideScoreTable(
+	car1: Car,
+	car2: Car,
+	modifier: Modifier = Modifier
+) {
+	Column(modifier = modifier.fillMaxWidth()) {
+		SideBySideSectionHeader(text = stringResource(R.string.daily_score))
+		SideBySideScoreRow(car1.dailyScore.value.toInt(), car2.dailyScore.value.toInt(), stringResource(R.string.details_car_daily_value))
+		SideBySideScoreRow(car1.dailyScore.comfort.toInt(), car2.dailyScore.comfort.toInt(), stringResource(R.string.details_car_daily_comfort))
+		SideBySideScoreRow(car1.dailyScore.features.toInt(), car2.dailyScore.features.toInt(), stringResource(R.string.details_car_daily_features))
+		SideBySideScoreRow(car1.dailyScore.practicality.toInt(), car2.dailyScore.practicality.toInt(), stringResource(R.string.details_car_daily_practicality))
+		SideBySideScoreRow(car1.dailyScore.quality.toInt(), car2.dailyScore.quality.toInt(), stringResource(R.string.details_car_daily_quality))
+		SideBySideScoreRow(car1.dailyScore.total.toInt(), car2.dailyScore.total.toInt(), stringResource(R.string.details_car_daily_total), fontWeight = FontWeight.Bold)
+
+		Spacer(modifier = Modifier.height(SPACER_WIDTH))
+		SideBySideSectionHeader(text = stringResource(R.string.weekend_score))
+		SideBySideScoreRow(car1.weekendScore.acceleration.toInt(), car2.weekendScore.acceleration.toInt(), stringResource(R.string.details_car_weekend_acceleration))
+		SideBySideScoreRow(car1.weekendScore.styling.toInt(), car2.weekendScore.styling.toInt(), stringResource(R.string.details_car_weekend_styling))
+		SideBySideScoreRow(car1.weekendScore.handling.toInt(), car2.weekendScore.handling.toInt(), stringResource(R.string.details_car_weekend_handling))
+		SideBySideScoreRow(car1.weekendScore.funFactor.toInt(), car2.weekendScore.funFactor.toInt(), stringResource(R.string.details_car_weekend_fun_factor))
+		SideBySideScoreRow(car1.weekendScore.coolFactor.toInt(), car2.weekendScore.coolFactor.toInt(), stringResource(R.string.details_car_weekend_cool_factor))
+		SideBySideScoreRow(car1.weekendScore.total.toInt(), car2.weekendScore.total.toInt(), stringResource(R.string.details_car_weekend_total), fontWeight = FontWeight.Bold)
+
+		Spacer(modifier = Modifier.height(SPACER_WIDTH))
+		HorizontalDivider()
+		SideBySideScoreRow(car1.dougScore, car2.dougScore, stringResource(R.string.compare_dougscore_label), fontWeight = FontWeight.Bold)
+	}
+}
+
+@Composable
+private fun SideBySideSectionHeader(text: String) {
+	Text(
+		text = text,
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(vertical = 4.dp),
+		textAlign = TextAlign.Center,
+		fontWeight = FontWeight.SemiBold,
+		color = MaterialTheme.colorScheme.primary
+	)
+}
+
+@Composable
+private fun SideBySideScoreRow(
+	car1Value: Int,
+	car2Value: Int,
+	label: String,
+	fontWeight: FontWeight = FontWeight.Normal
+) {
+	Row(
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(vertical = 2.dp),
+		verticalAlignment = Alignment.CenterVertically
+	) {
+		Text(
+			text = car1Value.toString(),
+			modifier = Modifier.weight(0.25f),
+			textAlign = TextAlign.End,
+			fontWeight = fontWeight,
+			color = compareColor(car1Value, car2Value)
+		)
+		Text(
+			text = label,
+			modifier = Modifier.weight(0.5f),
+			textAlign = TextAlign.Center,
+			fontWeight = fontWeight
+		)
+		Text(
+			text = car2Value.toString(),
+			modifier = Modifier.weight(0.25f),
+			textAlign = TextAlign.Start,
+			fontWeight = fontWeight,
+			color = compareColor(car2Value, car1Value)
 		)
 	}
 }

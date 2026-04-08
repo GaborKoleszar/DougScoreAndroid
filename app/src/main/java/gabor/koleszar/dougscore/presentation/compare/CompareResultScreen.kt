@@ -1,5 +1,6 @@
 package gabor.koleszar.dougscore.presentation.compare
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,12 +8,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,17 +19,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import gabor.koleszar.dougscore.R
 import gabor.koleszar.dougscore.domain.model.Car
 import gabor.koleszar.dougscore.presentation.StyleConstants.DEFAULT_PADDING
 import gabor.koleszar.dougscore.presentation.StyleConstants.SPACER_WIDTH
 import gabor.koleszar.dougscore.presentation.components.AsyncImageWithMultipleFallback
-import gabor.koleszar.dougscore.presentation.components.CompareScoreTable
+import gabor.koleszar.dougscore.presentation.components.SideBySideScoreTable
 
 @Composable
 fun CompareResultScreenRoot(
@@ -61,54 +60,47 @@ fun CompareResultScreen(
                 CircularProgressIndicator()
             }
         } else {
-            CarComparePanel(car = state.car1, otherCar = state.car2)
-            HorizontalDivider(modifier = Modifier.padding(vertical = DEFAULT_PADDING))
-            CarComparePanel(car = state.car2, otherCar = state.car1)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(DEFAULT_PADDING),
+                horizontalArrangement = Arrangement.spacedBy(SPACER_WIDTH)
+            ) {
+                CarImageHeader(car = state.car1, modifier = Modifier.weight(1f))
+                CarImageHeader(car = state.car2, modifier = Modifier.weight(1f))
+            }
+            SideBySideScoreTable(
+                car1 = state.car1,
+                car2 = state.car2,
+                modifier = Modifier.padding(horizontal = DEFAULT_PADDING)
+            )
             Spacer(modifier = Modifier.height(DEFAULT_PADDING))
         }
     }
 }
 
 @Composable
-private fun CarComparePanel(
+private fun CarImageHeader(
     car: Car,
-    otherCar: Car,
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(DEFAULT_PADDING),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AsyncImageWithMultipleFallback(
             model = car.getMaxresImageLink(),
             fallbackModel = car.getHqFallbackImageLink(),
-            modifier = Modifier
-                .widthIn(300.dp, 600.dp)
-                .clip(RoundedCornerShape(DEFAULT_PADDING)),
+            modifier = Modifier.clip(RoundedCornerShape(DEFAULT_PADDING)),
             contentScale = ContentScale.FillWidth
         )
-        Spacer(modifier = Modifier.height(DEFAULT_PADDING))
-        Text(text = "${car.manufacturer} ${car.model}", fontWeight = FontWeight.Bold)
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(SPACER_WIDTH)
-        ) {
-            Column(
-                modifier = Modifier.weight(0.5f),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(fontWeight = FontWeight.Bold, text = stringResource(R.string.daily_score))
-            }
-            Column(
-                modifier = Modifier.weight(0.5f),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(fontWeight = FontWeight.Bold, text = stringResource(R.string.weekend_score))
-            }
-        }
-        CompareScoreTable(thisCar = car, otherCar = otherCar)
+        Spacer(modifier = Modifier.height(SPACER_WIDTH))
+        Text(
+            text = "${car.manufacturer} ${car.model}",
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
