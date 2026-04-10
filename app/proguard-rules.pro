@@ -60,3 +60,6 @@
 -keep class com.microsoft.schemas.** { *; }
 
 #ENDOF APACHE POI
+
+# Keep navigation Route class names so simpleName-based route checks work in release builds
+-keepnames class gabor.koleszar.dougscore.presentation.Route$*

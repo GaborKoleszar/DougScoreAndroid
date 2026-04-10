@@ -32,6 +32,8 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalConfiguration
+import android.content.res.Configuration
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -77,7 +79,9 @@ fun SharedTransitionScope.CarPickerScreen(
     animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
 ) {
-    val bottomSheetHeight = if (state.selectedCar != null) 140.dp else 0.dp
+    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val showSelectedCar = state.selectedCar != null && !isLandscape
+    val bottomSheetHeight = if (showSelectedCar) 140.dp else 0.dp
 
     Box(modifier = modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -155,7 +159,7 @@ fun SharedTransitionScope.CarPickerScreen(
             }
         }
 
-        if (state.selectedCar != null) {
+        if (showSelectedCar) {
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -203,7 +207,6 @@ private fun SharedTransitionScope.CompactCarListItem(
     )
     Row(
         modifier = modifier
-            .height(70.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(DEFAULT_PADDING))
             .then(if (onCarClick != null) Modifier.clickable(onClick = onCarClick) else Modifier),
@@ -218,6 +221,7 @@ private fun SharedTransitionScope.CompactCarListItem(
                     animatedVisibilityScope = animatedVisibilityScope,
                 )
                 .width(120.dp)
+                .height(70.dp)
                 .clip(RoundedCornerShape(DEFAULT_PADDING)),
         )
         Column(
