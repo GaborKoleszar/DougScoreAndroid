@@ -96,16 +96,16 @@ class MainActivity : ComponentActivity() {
 				val navController = rememberNavController()
 				val sheetState = rememberModalBottomSheetState()
 				var isSheetOpen by rememberSaveable { mutableStateOf(false) }
-				val currentDestination =
-					navController.currentBackStackEntryAsState().value?.destination?.route
+				val isOnOverview = navController.currentBackStackEntryAsState().value
+						?.destination?.route == Route.OverView.serializer().descriptor.serialName
 
 				Scaffold(
 					topBar = {
 						CenterAlignedTopAppBar(
 							navigationIcon = {
 								AnimatedBackButton(
-									currentDestination,
-									navController
+									isOnOverview = isOnOverview,
+									navController = navController
 								)
 							},
 							title = {
@@ -116,7 +116,7 @@ class MainActivity : ComponentActivity() {
 								)
 							},
 							actions = {
-								if (currentDestination?.endsWith(Route.OverView.javaClass.simpleName) != false) {
+								if (isOnOverview) {
 									IconButton(onClick = {
 										isSheetOpen = true
 									}) {

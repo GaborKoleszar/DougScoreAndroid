@@ -34,19 +34,21 @@ import gabor.koleszar.dougscore.presentation.StyleConstants.SPACER_WIDTH
 
 @Composable
 fun AnimatedBackButton(
-	currentDestination: String?,
+	isOnOverview: Boolean,
 	navController: NavController,
 ) {
-	var icon = Icons.Default.Settings
-	var contentDescription = stringResource(R.string.settings_content_description)
-	var onClick = { navController.navigate(Route.Settings) }
+	val icon: androidx.compose.ui.graphics.vector.ImageVector
+	val contentDescription: String
+	val onClick: () -> Unit
 
-	currentDestination?.let {
-		if (!it.endsWith(Route.OverView.javaClass.simpleName)) {
-			icon = Icons.AutoMirrored.Default.ArrowBack
-			contentDescription = stringResource(R.string.back_content_description)
-			onClick = { navController.navigateUp() }
-		}
+	if (isOnOverview) {
+		icon = Icons.Default.Settings
+		contentDescription = stringResource(R.string.settings_content_description)
+		onClick = { navController.navigate(Route.Settings) }
+	} else {
+		icon = Icons.AutoMirrored.Default.ArrowBack
+		contentDescription = stringResource(R.string.back_content_description)
+		onClick = { navController.navigateUp() }
 	}
 
 	AnimatedContent(targetState = icon) { targetIcon ->
